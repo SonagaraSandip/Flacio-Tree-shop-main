@@ -1,6 +1,6 @@
 //Single product item with logic for image, hover, etc.
 
-import React, { useState,  } from "react";
+import React, { useState } from "react";
 import { ShoppingBag, Heart, ArrowDownUp, Search } from "lucide-react";
 import { MdPlayArrow } from "react-icons/md";
 
@@ -189,11 +189,7 @@ const ProductCard = ({ product }) => {
                   ${product.originalPrice.toFixed(2)}
                 </p>
                 <p className="text-red-600 font-librebaskerville text-md">
-                  $
-                  {(
-                    product.originalPrice *
-                    (1 - product.discountPercent / 100)
-                  ).toFixed(1)}
+                  ${product.discountPrice.toFixed(2)}
                 </p>
               </>
             ) : (

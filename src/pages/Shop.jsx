@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
 import ShopBG from "../assets/Shop/bg-breadcrumb.webp";
-import { ChevronDown, Check, X } from "lucide-react";
+import {
+  ChevronDown,
+  Check,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  FilterX,
+} from "lucide-react";
 import { IoIosStarOutline } from "react-icons/io";
 import products from "../data/products";
 import ProductListCard from "../data/ProductListCard";
@@ -33,6 +40,7 @@ const Shop = () => {
 
   const MAX_PRICE = 153;
   const MIN_PRICE = 0;
+  const productPerPage = 9;
   const [openCollection, setOpenCollection] = useState(true);
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [openAvailability, setOpenAvailability] = useState(true);
@@ -43,6 +51,8 @@ const Shop = () => {
   const [selectedColor, setSelectedColor] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [openFeature, setOpenFeature] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState("FeaturedFilter");
 
   //right side
   const [layout, setLayout] = useState("grid3");
@@ -98,6 +108,18 @@ const Shop = () => {
     openSize,
     openColor,
     openFeature,
+  ]);
+
+  // Reset to page 1 whenever filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    selectedCollection,
+    availability,
+    price,
+    selectedSize,
+    selectedColor,
+    filter,
   ]);
 
   const [activeThumb, setActiveThumb] = useState(null); // min or max
@@ -163,6 +185,37 @@ const Shop = () => {
     return true;
   });
 
+  // selected filter logic here
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const getPrice = (product) =>
+      product.discountPrice || product.originalPrice;
+    const priceA = getPrice(a);
+    const priceB = getPrice(b);
+    // Implement your custom sorting logic here
+    switch (filter) {
+      case "bestselling":
+        return b.isBestSelling - a.isBestSelling;
+      case "title-ascending":
+        return a.name.localeCompare(b.name);
+      case "title-descending":
+        return b.name.localeCompare(a.name);
+      case "price-ascending":
+        return priceA - priceB;
+      case "price-descending":
+        return priceB - priceA;
+      case "created-ascending":
+        return a.id - b.id;
+      case "created-descending":
+        return b.id - a.id;
+      default:
+        return 0;
+    }
+  });
+
   const getAvailableSizes = () => {
     const availableSizes = new Set();
 
@@ -202,6 +255,10 @@ const Shop = () => {
   const handleMaxChange = (e) => {
     const value = Math.max(Number(e.target.value), price.min + 1);
     setPrice((prev) => ({ ...prev, max: value }));
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // smooth scroll to top
+    });
   };
 
   const resetSize = (sizeToRemove) => {
@@ -216,6 +273,10 @@ const Shop = () => {
     setSelectedSize((prev) =>
       prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
     );
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // smooth scroll to top
+    });
   };
 
   const resetColor = (colorToRemove) => {
@@ -244,6 +305,10 @@ const Shop = () => {
     setSelectedColor((prev) =>
       prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
     );
+    window.scrollTo({
+      top: 300,
+      behavior: "smooth", // smooth scroll to top
+    });
   };
 
   // Get count of products for each color in filtered results
@@ -293,6 +358,22 @@ const Shop = () => {
     resetSize();
     resetColor();
   };
+
+  // pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / productPerPage);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // smooth scroll to top
+    });
+  };
+  const indexofLastProduct = currentPage * productPerPage;
+  const indexofFirstProduct = indexofLastProduct - productPerPage;
+  const currentProducts = sortedProducts.slice(
+    indexofFirstProduct,
+    indexofLastProduct
+  );
 
   return (
     <Layout className="relative ">
@@ -1060,7 +1141,11 @@ const Shop = () => {
 
                 {/* filter is here */}
                 <div className=" h-full w-full flex items-center justify-center relative">
-                  <select className="p-3  self-start border border-gray-500 items-center text-sm font-librebaskerville cursor-pointer">
+                  <select
+                    onChange={handleFilterChange}
+                    value={filter}
+                    className="p-3  self-start border border-gray-500 items-center text-sm font-librebaskerville cursor-pointer"
+                  >
                     <option value="FeaturedFilter">Featured</option>
                     <option value="bestselling">Best Selling</option>
                     <option value="title-ascending">Alphabetically, A-Z</option>
@@ -1075,7 +1160,7 @@ const Shop = () => {
                 </div>
               </div>
             </div>
-            {/* Filter show here */}
+            {/* selected Filter show here */}
             <div className="mb-4 mt-0 md:-mt-3 text-gray-500 ">
               <div className="flex flex-wrap">
                 {availability.inStock && (
@@ -1186,7 +1271,7 @@ const Shop = () => {
                   : "grid grid-cols-4 gap-6"
               }
             >
-              {filteredProducts.length === 0 && (
+              {currentProducts.length === 0 && (
                 <div className="col-span-4 text-center">
                   <p className="text-gray-500 text-4xl flex items-center justify-center  font-librebaskerville mt-4">
                     No products found.
@@ -1202,7 +1287,7 @@ const Shop = () => {
                 </div>
               )}
 
-              {filteredProducts.map((product) => (
+              {currentProducts.map((product) => (
                 <div key={product.id}>
                   {/* Render product based on layout */}
                   {layout === "list" ? (
@@ -1215,6 +1300,51 @@ const Shop = () => {
                 </div>
               ))}
             </div>
+
+            {/* pagination */}
+            {filteredProducts.length > productPerPage && (
+              <div className="col-span-4 my-6 text-center">
+                <p className="text-gray-500 text-4xl flex gap-2 items-center justify-center  font-librebaskerville mt-4">
+                  <button
+                    onClick={() =>
+                      currentPage > 1 && handlePageChange(currentPage - 1)
+                    }
+                    disabled={currentPage === 1}
+                    className={`px-1 py-2 border border-black  text-gray-700 hover:bg-black hover:text-white hover:border-white font-poppins transition duration-300 ${
+                      currentPage === 1 ? "hidden" : ""
+                    }`}
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  {[...Array(totalPages)].map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handlePageChange(index + 1)}
+                      className={`border border-black px-3 py-2 text-sm font-poppins  ${
+                        currentPage === index + 1
+                          ? "bg-black text-white"
+                          : " hover:bg-black hover:text-white hover:border-white"
+                      }`}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={() =>
+                      currentPage < totalPages &&
+                      handlePageChange(currentPage + 1)
+                    }
+                    disabled={currentPage === totalPages}
+                    className={`border border-black text-gray-700 hover:bg-black hover:text-white hover:border-white font-poppins px-1 py-2 transition duration-300 ${
+                      currentPage === totalPages ? "hidden" : ""
+                    }`}
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -191,11 +191,7 @@ const ProductListCard = ({ product }) => {
                   ${product.originalPrice.toFixed(2)}
                 </p>
                 <p className="text-red-600 font-librebaskerville text-md">
-                  $
-                  {(
-                    product.originalPrice *
-                    (1 - product.discountPercent / 100)
-                  ).toFixed(1)}
+                  ${product.discountPrice.toFixed(2)}
                 </p>
               </>
             ) : (
