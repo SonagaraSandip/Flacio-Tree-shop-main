@@ -11,6 +11,7 @@ import Shop from "./pages/Shop";
 import Product from "./pages/Product";
 import Blog from "./pages/Blog";
 import Featured from "./pages/Featured";
+import ScrollToTopAction from "./pages/ScrollToTopAction";
 
 function AppWrapper() {
   const [homeLayout, setHomeLayout] = useState("modern");
@@ -20,11 +21,12 @@ function AppWrapper() {
   return (
     <>
       <Navbar setLayout={setHomeLayout} transparentUntilScroll={transparent} />
+      <ScrollToTopAction />
       <Routes>
         <Route path="/" element={<Home layout={homeLayout} />} />
         <Route path="/collections" element={<Shop />} />
         <Route path="/collections/:collectionId" element={<Shop />} />
-        <Route path="/product" element={<Product />} />
+        <Route path="/product/:productName" element={<Product />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/featured" element={<Featured />} />
       </Routes>

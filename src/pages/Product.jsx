@@ -1,11 +1,12 @@
-import React from 'react'
+import React from "react";
+import ProductPageCard from "../data/ProductPageCard";
 
 const Product = () => {
   return (
     <div>
-      product
+      <ProductPageCard productpageCard={ProductPageCard} />
     </div>
-  )
-}
+  );
+};
 
-export default Product
+export default Product;

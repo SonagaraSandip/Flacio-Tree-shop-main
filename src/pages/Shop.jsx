@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import ShopBG from "../assets/Shop/bg-breadcrumb.webp";
 import {
   ChevronDown,

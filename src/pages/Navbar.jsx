@@ -183,7 +183,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
     <div
       className={` top-0 left-0 w-full z-50 transition-all duration-1000 ease-in-out ${
         scrolled
-          ? "bg-white text-black fixed "
+          ? "bg-white text-black fixed border-b border-gray-300 shadow-sm"
           : "bg-transparent text-white absolute"
       } `}
     >
@@ -370,7 +370,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
               onMouseLeave={() => setHoveredMenu(null)}
             >
               <Link
-                to="/product"
+                to="/product/jade-succulent"
                 className="cursor-pointer flex items-center font-poppins gap-1"
               >
                 <span className="hover:underline">PRODUCT</span>

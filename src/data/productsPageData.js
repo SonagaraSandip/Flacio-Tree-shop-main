@@ -1,11 +1,11 @@
-// products.js
+// productsPageData.js
 
 import TigerGreen from "../assets/Home/Tiger-Aloe/tiger-green-360x.png";
 import TigerBlack from "../assets/Home/Tiger-Aloe/tiger-black-360x.png";
 import TigerPink from "../assets/Home/Tiger-Aloe/Tiger-aloe-pink_600x.webp";
 
 import RubbyRubberFront from "../assets/Home/rubby-rubber/Rubby-rubber_540x.webp";
-import RubbyRubberBack from "../assets/Home/rubby-rubber/Rubby-rubber_540x.webp";
+import RubbyRubberBack from "../assets/Home/rubby-rubber/Rubby-rubber_540xpink.webp";
 
 import PeaseLilyFront from "../assets/Home/Pease-lily/Pease-lily-360x.webp";
 import PeaseLilyBack from "../assets/Home/Pease-lily/Pease-lily-black-360x.webp";
@@ -14,13 +14,14 @@ import PhilippineFront from "../assets/Home/Philippine/PhilippineFront.webp";
 import PhilippineBack from "../assets/Home/Philippine/Philippine-Back-540x.webp";
 
 import BeginnerFront from "../assets/Home/Beginner/Beginner-front_540x1.webp";
+import BeginnerPink from "../assets/Home/Beginner/Beginner-front_540xpink.webp";
 import BeginnerBack from "../assets/Home/Beginner/Beginner-back_540x.webp";
 
 import DragonFront from "../assets/Home/Dragon/Dragon-front_540x.webp";
 import DragonBack from "../assets/Home/Dragon/Dragon-back_540x.webp";
 
 import PalmFront from "../assets/Home/palm/Palm_540x.webp";
-import PalmBack from "../assets/Home/palm/Palm_540x.webp";
+import PalmBack from "../assets/Home/palm/Palm_540xBack.webp";
 
 import BoughtFront from "../assets/Home/Bought-together/Bought-together-front_540x.webp";
 import BoughtBack from "../assets/Home/Bought-together/Bought-together-back_540x.webp";
@@ -30,8 +31,9 @@ import UmbrellaBack from "../assets/Home/Umbrella-Tree/16-7_600xBack.webp";
 
 import JadeSucculentFront from "../assets/Home/jade-suss/1_7d889b7e-e9b3-48c1-8e8d-a696e8d84f7d_360x.webp";
 import JadeSucculentBack from "../assets/Home/jade-suss/2_600xback.webp";
+import JadeSucculentBlack from "../assets/Home/jade-suss/3_1080x1080black.webp";
 
-const products = [
+const productsPageData = [
   {
     id: 1,
     name: "Umbrella Tree",
@@ -42,14 +44,7 @@ const products = [
     discountPercent: 31,
     discountPrice: 51,
     frontImage: UmbrellaFront,
-    backImage: UmbrellaBack,
-    isTopRated: false,
-    isBestSelling: true,
     inStock: true,
-    AirPurifying: true,
-    CeramicPots: true,
-    HerbSeeds: false,
-    IndoorPlants: false,
     variants: [
       {
         color: "Geometric",
@@ -74,22 +69,10 @@ const products = [
     rating: 0,
     originalPrice: 153.0,
     frontImage: TigerGreen,
-    backImage: TigerBlack,
     isTopRated: true,
     isBestSelling: false,
     inStock: true,
-    AirPurifying: true,
-    CeramicPots: true,
-    HerbSeeds: false,
-    IndoorPlants: false,
     variants: [
-      {
-        color: "Green",
-        hex: "#A8D5BA",
-        image: TigerGreen,
-        price: 155.0,
-        inStock: true,
-      },
       {
         color: "Black",
         hex: "#000000",
@@ -102,6 +85,13 @@ const products = [
         hex: "#FFC0CB",
         image: TigerPink,
         price: 150.0,
+        inStock: true,
+      },
+      {
+        color: "Blue",
+        hex: "#0057FF",
+        image: TigerGreen,
+        price: 155.0,
         inStock: true,
       },
     ],
@@ -117,14 +107,7 @@ const products = [
     discountPercent: 43,
     discountPrice: 61.0,
     frontImage: RubbyRubberFront,
-    backImage: PeaseLilyBack,
-    isTopRated: true,
-    isBestSelling: true,
     inStock: true,
-    AirPurifying: true,
-    CeramicPots: true,
-    HerbSeeds: true,
-    IndoorPlants: true,
     variants: [
       {
         color: "Black",
@@ -136,8 +119,15 @@ const products = [
       {
         color: "Pink",
         hex: "#FFC0CB",
-        image: BeginnerBack,
+        image: RubbyRubberBack,
         price: 54.0,
+        inStock: true,
+      },
+      {
+        color: "Blue",
+        hex: "#0057FF",
+        image: BeginnerBack,
+        price: 155.0,
         inStock: true,
       },
     ],
@@ -153,14 +143,7 @@ const products = [
     discountPercent: 33,
     discountPrice: 64.0,
     frontImage: PeaseLilyFront,
-    backImage: PeaseLilyBack,
-    isTopRated: true,
-    isBestSelling: true,
     inStock: true,
-    AirPurifying: true,
-    CeramicPots: true,
-    HerbSeeds: false,
-    IndoorPlants: false,
     variants: [
       {
         color: "Black",
@@ -170,10 +153,17 @@ const products = [
         inStock: true,
       },
       {
-        color: "Grey",
+        color: "White",
         hex: "#FFFFFF",
         image: PeaseLilyFront,
         price: 62,
+        inStock: true,
+      },
+      {
+        color: "Pink",
+        hex: "#FFC0CB",
+        image: JadeSucculentFront,
+        price: 54.0,
         inStock: true,
       },
     ],
@@ -188,13 +178,7 @@ const products = [
     originalPrice: 80,
     frontImage: PhilippineFront,
     backImage: PhilippineBack,
-    isTopRated: true,
-    isBestSelling: false,
     inStock: true,
-    AirPurifying: false,
-    CeramicPots: true,
-    HerbSeeds: true,
-    IndoorPlants: false,
     variants: [
       {
         color: "Plaid",
@@ -204,7 +188,7 @@ const products = [
         inStock: true,
       },
       {
-        color: "Flaor",
+        color: "Floral",
 
         image: PhilippineBack,
         price: 85,
@@ -220,21 +204,14 @@ const products = [
     rating: 0,
     originalPrice: 130,
     frontImage: BeginnerFront,
-    backImage: BeginnerBack,
     isTopRated: true,
-    isBestSelling: true,
     inStock: true,
-    AirPurifying: true,
-    CeramicPots: true,
-    HerbSeeds: false,
-    IndoorPlants: true,
-    size: [30, 50, 60],
     variants: [
       {
-        color: "Black",
-        hex: "#000000",
-        image: BeginnerFront,
-        price: 130,
+        color: "Pink",
+        hex: "#FFC0CB",
+        image: BeginnerPink,
+        price: 145,
         inStock: true,
       },
       {
@@ -242,6 +219,13 @@ const products = [
         hex: "#FFA500",
         image: BeginnerBack,
         price: 145,
+        inStock: true,
+      },
+      {
+        color: "Black",
+        hex: "#000000",
+        image: BeginnerFront,
+        price: 130,
         inStock: true,
       },
     ],
@@ -254,20 +238,18 @@ const products = [
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
     originalPrice: 100,
-
     frontImage: DragonFront,
-    backImage: DragonBack,
-    isTopRated: true,
-    isBestSelling: false,
     inStock: false, // Out of stock
     outOfStock: true,
-    AirPurifying: true,
-    CeramicPots: false,
-    HerbSeeds: true,
-    IndoorPlants: true,
     variants: [
       {
         color: "Striped",
+        image: DragonFront,
+        price: 88,
+        inStock: false, // Out of stock
+      },
+      {
+        color: "Plaid",
         image: DragonFront,
         price: 88,
         inStock: false, // Out of stock
@@ -283,14 +265,7 @@ const products = [
     rating: 0,
     originalPrice: 50,
     frontImage: PalmFront,
-    backImage: PalmBack,
-    isTopRated: true,
-    isBestSelling: true,
     inStock: true,
-    AirPurifying: false,
-    CeramicPots: true,
-    HerbSeeds: true,
-    IndoorPlants: false,
     variants: [
       {
         color: "White",
@@ -301,7 +276,7 @@ const products = [
       },
       {
         color: "Blue",
-        hex: "#1E90FF",
+        hex: "#0057FF",
         image: PalmBack,
         price: 54,
         inStock: true,
@@ -317,14 +292,7 @@ const products = [
     rating: 0,
     originalPrice: 82,
     frontImage: BoughtFront,
-    backImage: BoughtBack,
-    isTopRated: true,
-    isBestSelling: false,
     inStock: true,
-    AirPurifying: false,
-    CeramicPots: true,
-    HerbSeeds: true,
-    IndoorPlants: true,
     variants: [
       {
         color: "Red",
@@ -349,33 +317,34 @@ const products = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
-    originalPrice: 82,
+    originalPrice: 60,
+    priceRange: 153,
     frontImage: JadeSucculentFront,
-    backImage: JadeSucculentBack,
-    isTopRated: false,
-    isBestSelling: true,
     inStock: true,
-    AirPurifying: false,
-    CeramicPots: true,
-    HerbSeeds: true,
-    IndoorPlants: true,
     variants: [
       {
-        color: "Red",
-        hex: "#FF0000",
+        color: "Pink",
+        hex: "#FFC0CB",
         image: JadeSucculentFront,
         price: 82,
         inStock: true,
       },
       {
-        color: "Gray",
-        hex: "#808080",
+        color: "Red",
+        hex: "#FF0000",
         image: JadeSucculentBack,
         price: 84,
+        inStock: true,
+      },
+      {
+        color: "Black",
+        hex: "#000000",
+        image: JadeSucculentBlack,
+        price: 86,
         inStock: true,
       },
     ],
   },
 ];
 
-export default products;
+export default productsPageData;
