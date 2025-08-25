@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import ShopBG from "../assets/Shop/bg-breadcrumb.webp";
 import {
   ChevronDown,
@@ -14,6 +15,7 @@ import products from "../data/products";
 import ProductListCard from "../data/ProductListCard";
 import ProductCard from "../data/ProductCard";
 import ScrollToTop from "./ScrollToTop";
+import queryString from "query-string";
 
 import Footer from "./Footer";
 
@@ -32,6 +34,10 @@ import { HiOutlineBars3 } from "react-icons/hi2";
 import { TfiLayoutGrid4Alt } from "react-icons/tfi";
 
 const Shop = () => {
+  // const { collection } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const filterSectionStyle = {
     // Subtract the header height
 
@@ -53,6 +59,16 @@ const Shop = () => {
   const [openFeature, setOpenFeature] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("FeaturedFilter");
+
+
+  useEffect(() => {
+    if (location.pathname === "/collections") {
+      const params = queryString.parse(location.search);
+      const searchString = queryString.stringify(params);
+
+      navigate(`/collections/all?${searchString}`);
+    }
+  }, [location, navigate]);
 
   //right side
   const [layout, setLayout] = useState("grid3");
@@ -292,7 +308,7 @@ const Shop = () => {
     { name: "Blue", value: "#0057FF", count: 3 },
     { name: "Floral", image: Floral, count: 2 },
     { name: "Geometric", image: Geometric, count: 1 },
-    { name: "Grey", value: "#999999", count: 1 },
+    { name: "Gray", value: "#999999", count: 1 },
     { name: "Orange", value: "#FF7A00", count: 1 },
     { name: "Pink", value: "#FFB6C1", count: 5 },
     { name: "Plaid", image: Plaid, count: 2 },

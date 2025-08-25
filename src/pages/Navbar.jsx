@@ -249,7 +249,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
               className="relative group "
             >
               <Link
-                to="/shop"
+                to="/collections"
                 className="cursor-pointer font-poppins flex items-center  gap-1"
               >
                 <span className="hover:underline">SHOP</span>

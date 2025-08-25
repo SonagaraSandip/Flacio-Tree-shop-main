@@ -22,7 +22,8 @@ function AppWrapper() {
       <Navbar setLayout={setHomeLayout} transparentUntilScroll={transparent} />
       <Routes>
         <Route path="/" element={<Home layout={homeLayout} />} />
-        <Route path="/shop" element={<Shop />} />
+        <Route path="/collections" element={<Shop />} />
+        <Route path="/collections/:collectionId" element={<Shop />} />
         <Route path="/product" element={<Product />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/featured" element={<Featured />} />
