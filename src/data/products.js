@@ -292,13 +292,13 @@ const products = [
       {
         color: "Striped",
         image: DragonFront,
-        price: 88,
+        price: 80,
         inStock: false, // Out of stock
       },
       {
         color: "Plaid",
         image: DragonFront,
-        price: 88,
+        price: 80,
         inStock: false, // Out of stock
       },
     ],

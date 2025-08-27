@@ -30,6 +30,7 @@ import UmbrellaFront from "../assets/Home/Umbrella-Tree/14-9_360x.webp";
 import UmbrellaBack from "../assets/Home/Umbrella-Tree/16-7_600xBack.webp";
 
 import JadeSucculentFront from "../assets/Home/jade-suss/1_7d889b7e-e9b3-48c1-8e8d-a696e8d84f7d_360x.webp";
+import jade from "../assets/Home/jade-suss/1_7d889b7e-e9b3-48c1-8e8d-a696e8d84f7d_1080x1080.jpg";
 import JadeSucculentBack from "../assets/Home/jade-suss/2_600xback.webp";
 import JadeSucculentBlack from "../assets/Home/jade-suss/3_1080x1080black.webp";
 
@@ -238,6 +239,7 @@ const productsPageData = [
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
     originalPrice: 100,
+    discountPrice: 80,
     frontImage: DragonFront,
     inStock: false, // Out of stock
     outOfStock: true,
@@ -245,14 +247,12 @@ const productsPageData = [
       {
         color: "Striped",
         image: DragonFront,
-        price: 88,
-        inStock: false, // Out of stock
+        inStock: false,
       },
       {
         color: "Plaid",
-        image: DragonFront,
-        price: 88,
-        inStock: false, // Out of stock
+        image: DragonBack,
+        inStock: false,
       },
     ],
   },
@@ -319,13 +319,13 @@ const productsPageData = [
     rating: 0,
     originalPrice: 60,
     priceRange: 153,
-    frontImage: JadeSucculentFront,
+    frontImage: jade,
     inStock: true,
     variants: [
       {
         color: "Pink",
         hex: "#FFC0CB",
-        image: JadeSucculentFront,
+        image: jade,
         price: 82,
         inStock: true,
       },
