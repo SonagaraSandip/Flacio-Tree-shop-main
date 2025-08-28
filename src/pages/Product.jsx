@@ -1,11 +1,140 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProductPageCard from "../data/ProductPageCard";
 import { IoStar, IoStarOutline } from "react-icons/io5";
-import { User } from "lucide-react";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
+import { User, CheckCheck } from "lucide-react";
 
 const Product = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [writeReview, setWriteReview] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [titleCharCount, setTitleCharCount] = useState(100);
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [commentCharCount, setCommentCharCount] = useState(5000);
+  const [comment, setComment] = useState("");
+  const [images, setImages] = useState([]);
+  const [name, setName] = useState("");
+  const [review, setReview] = useState([
+    {
+      name: "d.",
+      date: "08/27/2025",
+      rating: 3,
+      title: "hello",
+      comment: "how are you you okkk",
+    },
+  ]); // this for default review in product
+  const [submitted, setSubmitted] = useState(false);
+  const [filter, setFilter] = useState("most-recent");
+
+  //update title char count
+  useEffect(() => {
+    setTitleCharCount(100 - reviewTitle.length);
+  }, [reviewTitle]);
+
+  const handleTitleChange = (e) => {
+    setReviewTitle(e.target.value);
+  };
+
+  //update comment char count
+  useEffect(() => {
+    setCommentCharCount(5000 - comment.length);
+  }, [comment]);
+
+  const handleCommentChange = (e) => {
+    setComment(e.target.value);
+  };
+
+  //handle image upload
+  const handleImageupload = (e) => {
+    const files = Array.from(e.target.files);
+
+    //limit to uplaod max 5 image
+    if (images.length + files.length > 5) {
+      alert("you can only upload up to 5 images");
+      return;
+    }
+
+    const newImage = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setImages((prev) => [...prev, ...newImage]);
+  };
+
+  //handle remove image
+  const handleRemoveImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  //handle filter change
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  //add sorting function
+  const sortReviews = (review, filterType) => {
+    switch (filterType) {
+      case "highest-rating":
+        return [...review].sort((a, b) => b.rating - a.rating);
+      case "lowest-rating":
+        return [...review].sort((a, b) => a.rating - b.rating);
+      case "most-helpful":
+        return [...review].sort((a, b) => b.helpful - a.helpful);
+      case "piture-first":
+        return [...review].sort((a, b) => b.images.length - a.images.length);
+      case "picture-only":
+        return [...review].filter((r) => r.images.length > 0);
+      case "most-recent":
+      default:
+        return review.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+  };
+
+  //get sorted review
+  const sortedReviews = sortReviews(review, filter);
+
+  //useEffect when i have saved review them get that review in display
+  useEffect(() => {
+    const savedReview = localStorage.getItem("reviews");
+    if (savedReview) {
+      setReview(JSON.parse(savedReview));
+    }
+  }, []);
+
+  //handle submit review
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+
+    if (rating === 0) {
+      alert("Please select a rating before submitting the review");
+      return;
+    }
+    const newReview = {
+      name: name,
+      date: new Date().toDateString(),
+      rating: rating,
+      title: reviewTitle,
+      comment: comment,
+      
+    };
+
+    const updatedReview = [...review, newReview];
+    setReview(updatedReview);
+
+    //saved in localstorage
+    localStorage.setItem("reviews", JSON.stringify(updatedReview));
+
+    setSubmitted(true); //show submmited message
+    setWriteReview(false); //close write review
+    setName("");
+    setRating(0);
+    setReviewTitle("");
+    setComment("");
+    setImages([]);
+  };
+
   return (
     <div>
       <ProductPageCard productpageCard={ProductPageCard} />
@@ -112,7 +241,7 @@ const Product = () => {
                   Based on 1 review
                 </p>
               </div>
-              <div className="h-24 w-px bg-gray-300 mx-28" />
+              <div className="h-24 w-px bg-gray-300 mx-8 sm:mx-12 md:mx-20 lg:mx-28" />
               <div className="flex flex-col ">
                 <h2 className="text-gray-900 font-poppins text-xl flex items-center justify-center">
                   Customer Reviews
@@ -175,50 +304,114 @@ const Product = () => {
                   </div>
                 </div>
               </div>
-              <div className="h-24 w-px bg-gray-300 mx-28" />
-              <button
-                onClick={() => setWriteReview(!writeReview)}
-                className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
-              >
-                {writeReview ? "Cancel Review" : "Write a Review"}
-              </button>
+              <div className="h-24 w-px bg-gray-300 mx-8 sm:mx-12 md:mx-20 lg:mx-28" />
+              {!submitted ? (
+                <button
+                  onClick={() => setWriteReview(!writeReview)}
+                  className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
+                >
+                  {writeReview ? "Cancel Review" : "Write a Review"}
+                </button>
+              ) : (
+                <button
+                  onClick={() => window.location.reload()}
+                  className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
+                >
+                  Refresh Page
+                </button>
+              )}
             </div>
 
             {/* if user click on write review */}
-            {writeReview && (
-              <form className="flex flex-col items-center justify-center gap-4 my-6 mb-12 border-t border-gray-300 text-sm text-gray-500 font-poppins max-w-6xl mx-auto">
+            {writeReview && !submitted && (
+              <form
+                onSubmit={handleSubmitReview}
+                className="flex flex-col items-center justify-center gap-4 my-6 mb-12 border-t border-gray-300 text-sm text-gray-500 font-poppins max-w-6xl mx-auto"
+              >
                 <h1 className="text-2xl text-gray-600 font-bold font-poppins mt-4">
                   Write a review
                 </h1>
                 <p className="text-sm text-gray-500">Rating</p>
-                <div className="flex gap-1">
-                  <IoStar size={20} />
-                  <IoStar size={20} />
-                  <IoStar size={20} />
-                  <IoStarOutline size={20} />
-                  <IoStarOutline size={20} />
+                {/* rating star */}
+                <div id="rating" required className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      onClick={() => setRating(star)}
+                      className="cursor-pointer"
+                    >
+                      {star <= rating ? (
+                        <IoStar size={24} className="text-yellow-500" />
+                      ) : (
+                        <IoStarOutline size={24} className="text-gray-500 " />
+                      )}
+                    </span>
+                  ))}
                 </div>
-                <lable className="mt-4">Review Title (100)</lable>
+                <label className="mt-4">
+                  Review Title (
+                  <span id="titleCharCount">{titleCharCount}</span>)
+                </label>
                 <input
                   type="text"
+                  id="title"
                   className="border border-gray-400 px-4 py-2 w-1/2"
                   placeholder="Give your review a title"
                   maxLength={100}
+                  value={reviewTitle}
+                  onChange={handleTitleChange}
                 />
-                <lable className="mt-4">Review (5000)</lable>
+
+                <label className="mt-4">
+                  Review (<span>{commentCharCount}</span>)
+                </label>
                 <textarea
                   type="text"
+                  id="review"
                   rows={4}
                   className="border border-gray-400 px-4 py-2 w-1/2"
                   placeholder="Write your comments here.."
                   maxLength={5000}
+                  value={comment}
+                  onChange={handleCommentChange}
                   required
                 />
-                <lable className="mt-4">Picture/Video (optional)</lable>
-                <input
-                  type="file"
-                  className="border border-gray-400 px-4 py-2"
-                />
+                {/* image upload */}
+                <label className="mt-4">Picture/Video (optional)</label>
+                <div className="flex gap-3 ">
+                  {images.length < 5 && (
+                    <label className="w-32 h-32 group border border-gray-300 hover:border-zinc-300 flex items-center justify-center cursor-pointer">
+                      <FaCloudUploadAlt
+                        size={60}
+                        className="text-gray-500 group-hover:scale-110 group-hover:text-blue-500 transition-transform duration-500"
+                      />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        hidden
+                        onChange={handleImageupload}
+                      />
+                    </label>
+                  )}
+                  {/* preview images */}
+                  {images.map((image, index) => (
+                    <div key={index} className="relative w-32 h-32">
+                      <img
+                        src={image.preview}
+                        alt="preview"
+                        className="w-full h-full object-cover border border-gray-300"
+                      />
+                      <button>
+                        <MdDeleteForever
+                          size={16}
+                          className="absolute top-2 right-2 cursor-pointer w-6 h-6 bg-gray-100 rounded-full text-red-600 hover:bg-black hover:text-white shadow-md transition-colors duration-300"
+                          onClick={() => handleRemoveImage(index)}
+                        />
+                      </button>
+                    </div>
+                  ))}
+                </div>
                 <p className="mt-4">
                   Name (displayed publicly like{" "}
                   <span className="text-black">
@@ -232,14 +425,17 @@ const Product = () => {
                   </span>
                   )
                 </p>
+                {/* name */}
                 <input
                   type="text"
                   id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="border border-gray-400 px-4 py-2 w-1/2"
                   placeholder="Enter your name ( publicly displayed )"
                   required
                 />
-                <lable className="mt-4">Email</lable>
+                <label className="mt-4">Email</label>
                 <input
                   type="email"
                   className="border border-gray-400 px-4 py-2 w-1/2"
@@ -262,15 +458,37 @@ const Product = () => {
                   >
                     cancel Review
                   </button>
-                  <button type="submit" className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 ">
+                  <button
+                    type="submit"
+                    className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
+                  >
                     Submit Review
                   </button>
                 </div>
               </form>
             )}
 
+            {/* if summit show this message */}
+            {submitted && (
+              <div className="flex flex-col items-center justify-center gap-4 my-6 mb-12 text-gray-500 font-poppins ">
+                <CheckCheck
+                  size={36}
+                  className="rounded-full text-green-600 "
+                />
+                <h1 className="text-2xl text-green-600 font-semibold">
+                  Review submitted successfully!
+                </h1>
+                <p>Thank you! for your review.</p>
+              </div>
+            )}
+
+            {/* filter selector */}
             <div className="border-y border-gray-400">
-              <select className="my-4">
+              <select
+                onChange={handleFilterChange}
+                value={filter}
+                className="my-4"
+              >
                 <option value="most-recent">Most Recent</option>
                 <option value="highest-rating">Highest Rating</option>
                 <option value="lowest-rating">Lowest Rating</option>
@@ -279,24 +497,33 @@ const Product = () => {
                 <option value="most-helpful">Most Helpful</option>
               </select>
             </div>
-            <div className="flex justify-between my-2">
-              <div className="flex gap-1">
-                <IoStar />
-                <IoStar />
-                <IoStar />
-                <IoStarOutline />
-                <IoStarOutline />
+
+            {/* show all comment here */}
+            {sortedReviews.map((rev, index) => (
+              <div key={index} className="my-4">
+                <div className="flex justify-between my-2">
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) =>
+                      star <= rev.rating ? (
+                        <IoStar size={16} className="text-yellow-400" />
+                      ) : (
+                        <IoStarOutline size={16} className="text-gray-400" />
+                      )
+                    )}
+                  </div>
+                  <div className="text-sm text-gray-500">{rev.date}</div>
+                </div>
+
+                <div className="flex flex-col gap-3 my-2 font-poppins text-gray-500">
+                  <div className="flex gap-2">
+                    <User className="h-8 w-8 bg-gray-200 text-black" />
+                    <p className="text-md ">Name: {rev.name}</p>
+                  </div>
+                  <p className="text-gray-900">Title : {rev.title}</p>
+                  <p className="text-md">Comment: {rev.comment}</p>
+                </div>
               </div>
-              <p className="text-sm text-gray-500">08/27/2025</p>
-            </div>
-            <div className="flex flex-col gap-3 my-2 font-poppins text-gray-500">
-              <div className="flex gap-2">
-                <User className="h-8 w-8 bg-gray-200 text-black" />
-                <p className="text-md ">d.</p>
-              </div>
-              <p className="text-gray-900">hello</p>
-              <p className="text-md">how are you you okkk</p>
-            </div>
+            ))}
           </div>
         )}
 
