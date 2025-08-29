@@ -41,6 +41,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "24 sold in last 09 hours",
     originalPrice: 90,
     discountPercent: 31,
     discountPrice: 51,
@@ -68,6 +69,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "31 sold in last 13 hours",
     originalPrice: 153.0,
     frontImage: TigerGreen,
     isTopRated: true,
@@ -104,6 +106,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "29 sold in last 17 hours",
     originalPrice: 90.0,
     discountPercent: 43,
     discountPrice: 61.0,
@@ -140,6 +143,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 4,
+    sellOrder: "43 sold in last 24 hours",
     originalPrice: 90,
     discountPercent: 33,
     discountPrice: 64.0,
@@ -176,6 +180,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "27 sold in last 14 hours",
     originalPrice: 80,
     frontImage: PhilippineFront,
     backImage: PhilippineBack,
@@ -203,6 +208,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "29 sold in last 15 hours",
     originalPrice: 130,
     frontImage: BeginnerFront,
     isTopRated: true,
@@ -238,6 +244,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "48 sold in last 18 hours",
     originalPrice: 100,
     discountPrice: 80,
     frontImage: DragonFront,
@@ -263,6 +270,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "51 sold in last 22 hours",
     originalPrice: 50,
     frontImage: PalmFront,
     inStock: true,
@@ -290,6 +298,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "13 sold in last 02 hours",
     originalPrice: 82,
     frontImage: BoughtFront,
     inStock: true,
@@ -317,6 +326,7 @@ const productsPageData = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "35 sold in last 11 hours",
     originalPrice: 60,
     priceRange: 153,
     frontImage: jade,

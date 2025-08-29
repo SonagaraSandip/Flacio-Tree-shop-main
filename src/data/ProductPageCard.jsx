@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import AnimatedNumbers from "react-animated-numbers";
 import ProductPageData from "./productsPageData";
 import { IoIosEye } from "react-icons/io";
 import { FaGripfire } from "react-icons/fa";
@@ -16,7 +17,7 @@ import {
 } from "lucide-react";
 import TigerAloe from "../assets/Home/Tiger-Aloe/tiger-black-360x.png";
 import PeaseLily from "../assets/Home/Pease-lily/Pease-lily-360x.webp";
-import Visa from '../assets/product/visa.avif'
+import Visa from "../assets/product/visa.avif";
 
 const ProductPageCard = () => {
   const { productName } = useParams();
@@ -32,6 +33,7 @@ const ProductPageCard = () => {
   });
   const [currentProductQuantity, setCurrentProductQuantity] = useState(1);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [viewer, setViewer] = useState(30);
 
   //set current product quantitywhen ever productpage is change
   useEffect(() => {
@@ -46,6 +48,17 @@ const ProductPageCard = () => {
       setSelectedVariant(firstInStockVariant);
     }
   }, [productpage]);
+
+  const randomNumber = Math.floor(Math.random() * (40 - 30 + 1)) + 30;
+
+  //auto increment viewer
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setViewer(() => randomNumber);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  });
 
   //update quantity
   const handleQuantityChange = (product, amount) => {
@@ -128,7 +141,6 @@ const ProductPageCard = () => {
                   <img
                     key={variant.image}
                     src={variant.image}
-                    
                     alt={`${productpage.name} - ${variant.color}`}
                     className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
                       selectedVariant?.image === variant.image ? "scale-75" : ""
@@ -201,7 +213,7 @@ const ProductPageCard = () => {
               size={24}
               className="mr-2 flex items-center animate-pulse"
             />
-            31
+            {viewer}
             <span className="ml-1 font-poppins text-md ">
               people are viewing this right now
             </span>
@@ -227,7 +239,7 @@ const ProductPageCard = () => {
               />
 
               <span className="font-poppins text-md text-red-500 font-semibold">
-                35 sold in last 11 hours
+                {productpage.sellOrder}
               </span>
             </div>
           )}
@@ -406,7 +418,21 @@ const ProductPageCard = () => {
                     >
                       <Minus size={20} />
                     </button>
-                    <div>{currentProductQuantity}</div>
+                    <AnimatedNumbers
+                      animateToNumber={currentProductQuantity}
+                      fontStyle={{
+                        fontFamily: "Poppins",
+                        fontSize: 16,
+                        color: "black",
+                      }}
+                      transitions={(index) => ({
+                        type: "tween",
+                        duration: index * 0.3,
+                      })}
+                    >
+                      {currentProductQuantity}
+                    </AnimatedNumbers>
+
                     <button
                       onClick={() => handleCurrentProductQuantityChange(1)}
                       className="px-3 "
@@ -517,33 +543,48 @@ const ProductPageCard = () => {
           {/* order in next 12 hours*/}
           {!isOutOfStock && (
             <div className="flex items-center border-y border-gray-200 mt-4 gap-2 p-6">
-            <Truck
-              size={28}
-              className="text-gray-700 rounded-full "
-            />
-            <div className="h-10 w-px bg-gray-300 mx-2" />
-            <p className="font-poppins text-gray-500 ">
-              Order within the next 12 hours 22 minutes to get it <br />
-              between <span className="border-b border-black text-black">Monday, Sep 1</span> and <span className="border-b border-black text-black">Friday, Sep 5</span>
-            </p>
-          </div>
+              <Truck size={28} className="text-gray-700 rounded-full " />
+              <div className="h-10 w-px bg-gray-300 mx-2" />
+              <p className="font-poppins text-gray-500 ">
+                Order within the next 12 hours 22 minutes to get it <br />
+                between{" "}
+                <span className="border-b border-black text-black">
+                  Monday, Sep 1
+                </span>{" "}
+                and{" "}
+                <span className="border-b border-black text-black">
+                  Friday, Sep 5
+                </span>
+              </p>
+            </div>
           )}
 
           {/* buy more save more */}
           <div className="flex flex-col w-full bg-gray-100 mt-8 p-6 ">
-            <h1 className="font-poppins flex items-center justify-center text-black mb-6">Buy more save more!</h1>
+            <h1 className="font-poppins flex items-center justify-center text-black mb-6">
+              Buy more save more!
+            </h1>
             <div className="flex justify-between px-2">
               <div className="flex flex-col">
-                <h2 className="font-poppins text-black">5 item (s) get <span className="text-sm text-red-600 font-semibold">10% off</span></h2>
+                <h2 className="font-poppins text-black">
+                  5 item (s) get{" "}
+                  <span className="text-sm text-red-600 font-semibold">
+                    10% off
+                  </span>
+                </h2>
                 <p className=" text-gray-500 text-xs">on each product</p>
               </div>
-              <button className="text-sm font-poppins border border-black px-6 bg-gradient-to-r from-green-100 via-white  to-green-100 hover:bg-gradient-to-r hover:from-green-500 hover:via-green-700 hover:to-green-500 hover:text-white transition-colors duration-300">ADD</button>
+              <button className="text-sm font-poppins border border-black px-6 bg-gradient-to-r from-green-100 via-white  to-green-100 hover:bg-gradient-to-r hover:from-green-500 hover:via-green-700 hover:to-green-500 hover:text-white transition-colors duration-300">
+                ADD
+              </button>
             </div>
           </div>
 
-           {/* Guarantee checkout */}
+          {/* Guarantee checkout */}
           <div className="flex flex-col w-full bg-gray-100 mt-4 p-6">
-            <h1 className="font-poppins flex items-center justify-center text-black mb-6">Guaranteed Checkout</h1>
+            <h1 className="font-poppins flex items-center justify-center text-black mb-6">
+              Guaranteed Checkout
+            </h1>
             <img src={Visa} alt="visa-checkout" />
           </div>
         </div>

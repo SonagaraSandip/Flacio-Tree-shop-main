@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import ProductPageCard from "../data/ProductPageCard";
+import products from "../data/products";
+import ProductCard from "../data/ProductCard";
+import Footer from "../pages/Footer";
+import ScrollToTop from "../pages/ScrollToTop";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import { User, CheckCheck } from "lucide-react";
+import { User, CheckCheck, ChevronLeft, ChevronRight } from "lucide-react";
 
 const Product = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -26,6 +30,46 @@ const Product = () => {
   ]); // this for default review in product
   const [submitted, setSubmitted] = useState(false);
   const [filter, setFilter] = useState("most-recent");
+  const [hovered, setHovered] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef(null);
+
+  //featuredProducts
+  const relatedProducts = useMemo(
+    () =>
+      products.filter((products) => [1, 5, 8, 6, 3, 10].includes(products.id)),
+    []
+  );
+
+  //get visiable products for the carousal
+  const getVisibleProducts = () => {
+    const products = [];
+    const count = Math.min(4, relatedProducts.length); //show 4 product or less
+
+    for (let i = 0; i < count; i++) {
+      const index = (currentIndex + i) % relatedProducts.length;
+      products.push(relatedProducts[index]);
+    }
+    return products;
+  };
+
+  const visibleProducts = getVisibleProducts();
+
+  // get random 4 id for recently view products
+  const randomIds = new Set();
+  //generate random interger form 1 t 10
+  while (randomIds.size < 4) {
+    const randomNumber = Math.floor(Math.random() * 10) + 1;
+    randomIds.add(randomNumber);
+  }
+
+  //convert set to arry format
+  const randomIdsArray = Array.from(randomIds);
+
+  //random 4 products ids
+  const randomProducts = randomIdsArray.map((id) =>
+    products.find((product) => product.id === id)
+  );
 
   //update title char count
   useEffect(() => {
@@ -117,7 +161,6 @@ const Product = () => {
       rating: rating,
       title: reviewTitle,
       comment: comment,
-      
     };
 
     const updatedReview = [...review, newReview];
@@ -135,11 +178,25 @@ const Product = () => {
     setImages([]);
   };
 
+  //handle next
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === relatedProducts.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  //handle prev button
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? relatedProducts.length - 1 : prevIndex - 1
+    );
+  };
+
   return (
     <div>
       <ProductPageCard productpageCard={ProductPageCard} />
 
-      <div className="flex flex-col">
+      <div className="flex flex-col mx-8">
         <div className="my-16 text-3xl text-gray-500 font-librebaskerville flex items-center justify-center gap-8">
           <button
             value={"description"}
@@ -568,7 +625,65 @@ const Product = () => {
             </ul>
           </div>
         )}
+
+        {/*  Related products*/}
+        <div className="relative mx-8 mb-[100px]">
+          <h1 className="text-3xl font-librebaskerville flex items-center justify-center">
+            Related Products
+          </h1>
+          <div className="mx-auto w-24 h-[3px] bg-black mb-4 mt-2" />
+
+          <div
+            className="relative"
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            ref={carouselRef}
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center mt-12">
+              {visibleProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            {/*left -right button show if mouse hover */}
+            {hovered && relatedProducts.length > 4 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className={`absolute z-10 top-1/2 -left-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2 
+                    
+                  `}
+                >
+                  <ChevronLeft size={32} />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className={`absolute z-10 top-1/2 -right-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2`}
+                >
+                  <ChevronRight size={32} />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+        {/* Recently Viewed Products */}
+        <div className=" mx-8 mb-[100px]">
+          <h1 className="text-3xl font-librebaskerville flex items-center justify-center">
+            Recently Viewed Products
+          </h1>
+          <div className="mx-auto w-32 h-[3px] bg-black mb-4 mt-2" />
+
+          <div className="relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center mt-12">
+              {randomProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
+
+      <Footer />
+      <ScrollToTop />
     </div>
   );
 };
