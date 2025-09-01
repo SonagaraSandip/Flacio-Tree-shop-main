@@ -41,7 +41,7 @@ const Product = () => {
     []
   );
 
-  //get visiable products for the carousal
+  //get visiable products for the carousal images in related products
   const getVisibleProducts = () => {
     const products = [];
     const count = Math.min(4, relatedProducts.length); //show 4 product or less

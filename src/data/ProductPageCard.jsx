@@ -14,6 +14,9 @@ import {
   Truck,
   CircleQuestionMark,
   Link,
+  ChevronRight,
+  ChevronLeft,
+  X,
 } from "lucide-react";
 import TigerAloe from "../assets/Home/Tiger-Aloe/tiger-black-360x.png";
 import PeaseLily from "../assets/Home/Pease-lily/Pease-lily-360x.webp";
@@ -34,10 +37,17 @@ const ProductPageCard = () => {
   const [currentProductQuantity, setCurrentProductQuantity] = useState(1);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [viewer, setViewer] = useState(30);
+  const [hovered, setHovered] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenQuestion, setIsOpenQuestion] = useState(false);
+  const [isShipping, setIsShipping] = useState(false);
+  const [isShare, setIsShare] = useState(false);
 
   //set current product quantitywhen ever productpage is change
   useEffect(() => {
     setCurrentProductQuantity(1);
+    setCurrentImageIndex(0);
   }, [productpage]);
 
   useEffect(() => {
@@ -60,6 +70,26 @@ const ProductPageCard = () => {
     return () => clearInterval(interval);
   });
 
+  //handle next image
+  const handleNextImage = () => {
+    if (productpage && productpage.variants.length > 0) {
+      const nextIndex = (currentImageIndex + 1) % productpage.variants.length;
+      setCurrentImageIndex(nextIndex);
+      setSelectedVariant(productpage.variants[nextIndex]);
+    }
+  };
+
+  //handle prev image
+  const handlePrevImage = () => {
+    if (productpage && productpage.variants.length > 0) {
+      const PrevIndex =
+        (currentImageIndex - 1 + productpage.variants.length) %
+        productpage.variants.length;
+      setCurrentImageIndex(PrevIndex);
+      setSelectedVariant(productpage.variants[PrevIndex]);
+    }
+  };
+
   //update quantity
   const handleQuantityChange = (product, amount) => {
     setQuantity((prevQuantity) => ({
@@ -69,8 +99,9 @@ const ProductPageCard = () => {
   };
 
   //handle color select
-  const handleColorSelect = (variant) => {
+  const handleColorSelect = (variant, index) => {
     setSelectedVariant(variant);
+    setCurrentImageIndex(index);
   };
 
   const handleCurrentProductQuantityChange = (amount) => {
@@ -131,19 +162,18 @@ const ProductPageCard = () => {
               {productpage.variants.map((variant, index) => (
                 <div
                   key={`${variant.color} - ${index}`}
-                  onClick={() => setSelectedVariant(variant)}
+                  onClick={() => handleColorSelect(variant, index)}
                   className={`hover:border hover:border-gray-700 mb-6 ${
-                    selectedVariant?.image === variant.image
-                      ? "border border-black"
-                      : ""
+                    currentImageIndex === index ? "border border-black" : ""
                   }`}
                 >
                   <img
                     key={variant.image}
                     src={variant.image}
+                    loading="lazy"
                     alt={`${productpage.name} - ${variant.color}`}
                     className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
-                      selectedVariant?.image === variant.image ? "scale-75" : ""
+                      currentImageIndex === index ? "scale-75" : ""
                     }`}
                   />
                 </div>
@@ -165,11 +195,51 @@ const ProductPageCard = () => {
               )}
             </div>
 
-            <img
-              src={selectedVariant?.image}
-              alt={productpage.name}
-              className="w-full h-auto pr-8 object-cover "
-            />
+            <div
+              className="relative h-full w-full"
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+            >
+              <img
+                src={selectedVariant?.image}
+                alt={productpage.name}
+                loading="lazy"
+                onClick={() => setIsOpen(true)}
+                style={{ cursor: hovered ? <Plus /> : "pointer" }}
+                className={`w-full h-auto pr-8 object-cover ${
+                  hovered ? " " : "cursor-pointer"
+                } `}
+              />
+
+              {hovered && productpage.variants.length > 1 && (
+                <>
+                  <button
+                    onClick={handlePrevImage}
+                    disabled={currentImageIndex === 0}
+                    className={`absolute z-10 top-1/2 left-4 border border-gray-500 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2  ${
+                      currentImageIndex === 0
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    } `}
+                  >
+                    <ChevronLeft size={32} />
+                  </button>
+                  <button
+                    onClick={handleNextImage}
+                    disabled={
+                      currentImageIndex === productpage.variants.length - 1
+                    }
+                    className={`absolute z-10 top-1/2 border border-gray-500 right-12 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2 ${
+                      currentImageIndex === productpage.variants.length - 1
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
+                    } `}
+                  >
+                    <ChevronRight size={32} />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
         {/* product details */}
@@ -208,6 +278,7 @@ const ProductPageCard = () => {
             )}
           </h2>
           <div className="border border-gray-100 my-3" />
+
           <div className="flex mb-2">
             <IoIosEye
               size={24}
@@ -273,6 +344,7 @@ const ProductPageCard = () => {
                   <img
                     src={TigerAloe}
                     alt="Tiger Aloe"
+                    loading="lazy"
                     className="h-24 w-20 object-cover mr-4"
                   />
                   <div className="flex flex-col justify-center">
@@ -313,6 +385,7 @@ const ProductPageCard = () => {
                   <img
                     src={PeaseLily}
                     alt="Pease-lily"
+                    loading="lazy"
                     className="h-24 w-20 object-cover mr-4"
                   />
                   <div className="flex flex-col justify-center">
@@ -512,7 +585,10 @@ const ProductPageCard = () => {
               </div>
               <span className="text-sm font-librebaskerville">Compare</span>
             </div>
-            <div className="group flex items-center cursor-pointer">
+            <div
+              onClick={() => setIsOpenQuestion(true)}
+              className="group flex items-center cursor-pointer"
+            >
               <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
                 <CircleQuestionMark
                   size={20}
@@ -521,7 +597,10 @@ const ProductPageCard = () => {
               </div>
               <span className="text-sm font-librebaskerville">Quetions</span>
             </div>
-            <div className="group flex items-center cursor-pointer">
+            <div
+              onClick={() => setIsShipping(true)}
+              className="group flex items-center cursor-pointer"
+            >
               <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
                 <Package
                   size={20}
@@ -532,7 +611,10 @@ const ProductPageCard = () => {
                 Shipping Info
               </span>
             </div>
-            <div className="group flex items-center cursor-pointer">
+            <div
+              onClick={() => setIsShare(true)}
+              className="group flex items-center cursor-pointer"
+            >
               <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
                 <Link size={20} className=" flex items-center justify-center" />
               </div>
@@ -585,9 +667,178 @@ const ProductPageCard = () => {
             <h1 className="font-poppins flex items-center justify-center text-black mb-6">
               Guaranteed Checkout
             </h1>
-            <img src={Visa} alt="visa-checkout" />
+            <img src={Visa} alt="visa-checkout" loading="lazy" />
           </div>
         </div>
+
+        {/*  image open in full screen*/}
+        {isOpen && (
+          <div
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white max-w-screen"
+          >
+            <img
+              src={selectedVariant?.image}
+              alt={productpage.name}
+              loading="lazy"
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-2xl mx-auto max-h-screen object-contain py-8"
+            ></img>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="flex gap-4 absolute bottom-12 items-center justify-center"
+            >
+              <button
+                onClick={handlePrevImage}
+                // disabled={currentImageIndex === 0}
+                className={`  bg-white text-gray-500 w-10 h-10 rounded-full items-center justify-center flex hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg `}
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className=" bg-white text-gray-800 w-14 h-14 rounded-full items-center justify-center flex  hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg "
+              >
+                <X />
+              </button>
+              <button
+                onClick={handleNextImage}
+                // disabled={currentImageIndex === productpage.variants.length - 1}
+                className={`bg-white text-gray-500 w-10 h-10 rounded-full items-center justify-center flex  hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg
+                  `}
+              >
+                <ChevronRight size={24} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* open Question pop-up */}
+        {isOpenQuestion && (
+          <div
+            onClick={() => setIsOpenQuestion(false)}
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60  w-screen"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-lg mx-auto p-8 flex flex-col items-center justify-center  "
+            >
+              <button
+                onClick={() => setIsOpenQuestion(false)}
+                className=" w-full flex items-center justify-end"
+              >
+                <X className="text-base font-normal text-gray-500 hover:text-black" />
+              </button>
+              <h1 className="text-2xl text-black w-full font-librebaskerville ">
+                Quetion
+              </h1>
+              <form className="w-full">
+                <div className="flex flex-col my-4 gap-6 text-md font-poppins w-full">
+                  <div className="flex gap-6 w-full">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Your Name"
+                      required
+                      className="bg-zinc-100 text-black p-2 w-full "
+                    />
+                    <input
+                      type="email"
+                      name="name"
+                      required
+                      placeholder="Your Email"
+                      className="bg-zinc-100 text-black p-2 w-full"
+                    />
+                  </div>
+                  <input
+                    type="number"
+                    name="tel"
+                    allow="tel"
+                    placeholder="Your phone Number"
+                    minLength={8}
+                    maxLength={10}
+                    required
+                    className="bg-zinc-100 text-black p-2 w-full"
+                  />
+                  <textarea
+                    type="text"
+                    rows={8}
+                    name="name"
+                    placeholder="Your messasge..."
+                    className="bg-zinc-100 text-black p-2 w-full"
+                  />
+                  <button
+                    type="submit"
+                    className="border border-black bg-white hover:bg-green-900 text-black hover:text-white p-2 w-full font-poppins"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* open shipping pop-up */}
+        {isShipping && (
+          <div
+            onClick={() => setIsShipping(false)}
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60  w-screen"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-3xl mx-auto p-8 flex flex-col items-center justify-center  "
+            >
+              <button
+                onClick={() => setIsShipping(false)}
+                className=" w-full flex items-center justify-end"
+              >
+                <X className="text-base font-normal text-gray-500 hover:text-black" />
+              </button>
+              <h1 className="text-2xl text-black w-full font-librebaskerville ">
+                Shipping Info
+              </h1>
+              <div className="flex flex-col my-4 gap-4 text-md font-poppins w-full ">
+                <h1 className="">
+                  <span className="font-semibold">Return Policy :</span><span className="text-gray-500"> We will
+                  gladly accept returns for any reason within 30 days of receipt
+                  of delivery.</span>
+                </h1>
+                <h1 >
+                  <span className="font-semibold">Availability :</span> <span className="text-gray-500">Ships anywhere in the United States.</span>
+                </h1>
+                <h1 >
+                  <span className="font-semibold">Processing Time :</span><span className="text-gray-500">Allow 3-4 business days processing time for your order to ship.</span>
+                </h1>
+              </div>
+            </div>
+          </div>
+        )}
+
+        
+        {/* open share pop-up */}
+        {isShare && (
+          <div
+            onClick={() => setIsShare(false)}
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60  w-screen"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-lg mx-auto p-8 flex flex-col items-center justify-center  "
+            >
+              <button
+                onClick={() => setIsShare(false)}
+                className=" w-full flex items-center justify-end"
+              >
+                <X className="text-base font-normal text-gray-500 hover:text-black" />
+              </button>
+              <h1 className="text-xl text-black w-full font-librebaskerville ">
+                copy link
+              </h1>
+              
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
