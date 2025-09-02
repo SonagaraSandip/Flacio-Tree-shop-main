@@ -197,7 +197,7 @@ const products = [
 
   {
     id: 5,
-    name: "A Philippine (Upsell)",
+    name: "A Philippine Upsell",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,

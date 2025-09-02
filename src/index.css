@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
   overflow-x: hidden;
 }
@@ -15,22 +14,21 @@ body {
   transform: scale(1.2);
 }
 
-
- @font-face  {
-      font-family: 'librebaskerville';
-      font-style: normal;
-      font-weight: 400;
-      src: url('/src/fonts/LibreBaskerville-Regular.ttf') format('truetype');
-    }
- @font-face  {
-      font-family: 'librebaskerville-italic';
-      font-style: normal;
-      font-weight: 400;
-      src: url('/src/fonts/LibreBaskerville-Italic.ttf') format('truetype');
-    }
-     @font-face  {
-      font-family: 'poppins';
-      font-style: normal;
-      font-weight: 400;
-      src: url('/src/fonts/Poppins-Regular.ttf') format('truetype');
-    }
+@font-face {
+  font-family: "librebaskerville";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/src/fonts/LibreBaskerville-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "librebaskerville-italic";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/src/fonts/LibreBaskerville-Italic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "poppins";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/src/fonts/Poppins-Regular.ttf") format("truetype");
+}

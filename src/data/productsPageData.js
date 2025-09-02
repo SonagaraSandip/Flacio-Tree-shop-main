@@ -22,6 +22,7 @@ import DragonBack from "../assets/Home/Dragon/Dragon-back_540x.webp";
 
 import PalmFront from "../assets/Home/palm/Palm_540x.webp";
 import PalmBack from "../assets/Home/palm/Palm_540xBack.webp";
+import PalmVideo from "../assets/Home/palm/PalmVideo.mp4"
 
 import BoughtFront from "../assets/Home/Bought-together/Bought-together-front_540x.webp";
 import BoughtBack from "../assets/Home/Bought-together/Bought-together-back_540x.webp";
@@ -176,7 +177,7 @@ const productsPageData = [
 
   {
     id: 5,
-    name: "A Philippine (Upsell)",
+    name: "A Philippine Upsell",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
@@ -287,6 +288,13 @@ const productsPageData = [
         hex: "#0057FF",
         image: PalmBack,
         price: 54,
+        inStock: true,
+      },
+      {
+        color: "Palm video",
+        hex: null,
+        image: PalmVideo,
+        price: null,
         inStock: true,
       },
     ],

@@ -24,11 +24,16 @@ export default {
           "0%, 100%": { transform: "scale(1)" },
           "50%": { transform: "scale(1.05)" },
         },
+        moveStripes: {
+          "0%": { backgroundPosition: "0 0" },
+          "100%": { backgroundPosition: "500px 0" },
+        },
       },
       animation: {
         bounceX: "bounceX 1s infinite",
         scalePulse: "scalePulse 4s ease-in-out infinite",
         "spin-slow": "spin 8s linear infinite",
+        moveStripes: "moveStripes 2s linear infinite",
       },
     },
   },

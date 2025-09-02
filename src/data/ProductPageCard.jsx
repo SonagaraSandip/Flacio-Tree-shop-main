@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
 import ProductPageData from "./productsPageData";
 import { IoIosEye } from "react-icons/io";
 import { FaGripfire } from "react-icons/fa";
+import { FaWhatsapp, FaFacebook } from "react-icons/fa";
 import {
   CircleCheck,
   Heart,
@@ -16,14 +17,25 @@ import {
   Link,
   ChevronRight,
   ChevronLeft,
+  Check,
+  Phone,
   X,
+  Map,
+  MapPin,
 } from "lucide-react";
 import TigerAloe from "../assets/Home/Tiger-Aloe/tiger-black-360x.png";
 import PeaseLily from "../assets/Home/Pease-lily/Pease-lily-360x.webp";
+import BoughtRed from "../assets/Home/Bought-together/Bought-together-back_540x.webp";
+import BoughtGrey from "../assets/Home/Bought-together/Bought-together-front_540x.webp";
+import BegginerPink from "../assets/Home/Beginner/Beginner-front_540xpink.webp";
+import BegginerOrange from "../assets/Home/Beginner/Beginner-back_540x.webp";
+import BegginerBlack from "../assets/Home/Beginner/Beginner-front_540x1.webp";
 import Visa from "../assets/product/visa.avif";
+import { FaXTwitter } from "react-icons/fa6";
 
 const ProductPageCard = () => {
   const { productName } = useParams();
+  const navigate = useNavigate();
   const productpage = ProductPageData.find(
     (item) =>
       item.name.toLowerCase() === productName.replace(/-/g, " ").toLowerCase()
@@ -43,8 +55,34 @@ const ProductPageCard = () => {
   const [isOpenQuestion, setIsOpenQuestion] = useState(false);
   const [isShipping, setIsShipping] = useState(false);
   const [isShare, setIsShare] = useState(false);
+  const [viewStore, setViewStore] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [boughtTogetherColor, setBoughtTogetherColor] = useState("Red");
+  const [beginnerSetColor, setBegginerSetColor] = useState("Pink / 30 cm");
+  const [isBegginerInclude, setIsBegginerInclude] = useState(true);
+  const [selectSize, setSelectSize] = useState(30);
 
-  //set current product quantitywhen ever productpage is change
+  const url = window.location.href;
+
+  const today = new Date();
+
+  const startDate = new Date(today);
+  startDate.setDate(startDate.getDate() + 3);
+  const formattedStartDate = startDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const endDate = new Date(today);
+  endDate.setDate(endDate.getDate() + 5);
+  const formattedEndDate = endDate.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  //set current product quantity whenever productpage is change
   useEffect(() => {
     setCurrentProductQuantity(1);
     setCurrentImageIndex(0);
@@ -132,6 +170,56 @@ const ProductPageCard = () => {
     setAcceptTerms(event.target.checked);
   };
 
+  //handle copy to clipboard button
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
+  };
+
+  //add this for maapping
+  const boughtTogetherPrices = {
+    Red: 52,
+    Grey: 51,
+  };
+
+  const begginerSetPrices = {
+    "Pink / 30 cm": 130,
+    "Pink / 50 cm": 130,
+    "Pink / 60 cm": 130,
+    "Orange / 30 cm": 138,
+    "Orange / 50 cm": 138,
+    "Orange / 60 cm": 138,
+    "Black / 30 cm": 130,
+    "Black / 50 cm": 130,
+    "Black / 60 cm": 130,
+  };
+
+  //images for each product
+  const boughtTogetherImages = {
+    Red: BoughtRed,
+    Grey: BoughtGrey,
+  };
+
+  const begginerSetImages = {
+    "Pink / 30 cm": BegginerPink,
+    "Pink / 50 cm": BegginerPink,
+    "Pink / 60 cm": BegginerPink,
+    "Orange / 30 cm": BegginerOrange,
+    "Orange / 50 cm": BegginerOrange,
+    "Orange / 60 cm": BegginerOrange,
+    "Black / 30 cm": BegginerBlack,
+    "Black / 50 cm": BegginerBlack,
+    "Black / 60 cm": BegginerBlack,
+  };
+
+  //calculate total price
+  const totalPrice =
+    boughtTogetherPrices[boughtTogetherColor] +
+    (isBegginerInclude ? begginerSetPrices[beginnerSetColor] : 0);
+
   const isOutOfStock = productpage.variants.every(
     (variant) => !variant.inStock
   );
@@ -161,21 +249,32 @@ const ProductPageCard = () => {
             <div className="px-4 ">
               {productpage.variants.map((variant, index) => (
                 <div
-                  key={`${variant.color} - ${index}`}
+                  key={`${variant.color || "video"} - ${index}`}
                   onClick={() => handleColorSelect(variant, index)}
                   className={`hover:border hover:border-gray-700 mb-6 ${
                     currentImageIndex === index ? "border border-black" : ""
                   }`}
                 >
-                  <img
-                    key={variant.image}
-                    src={variant.image}
-                    loading="lazy"
-                    alt={`${productpage.name} - ${variant.color}`}
-                    className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
-                      currentImageIndex === index ? "scale-75" : ""
-                    }`}
-                  />
+                  {variant.image ? (
+                    <img
+                      key={variant.image}
+                      src={variant.image}
+                      loading="lazy"
+                      alt={`${productpage.name} - ${variant.color}`}
+                      className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                        currentImageIndex === index ? "scale-75" : ""
+                      }`}
+                    />
+                  ) : variant.video ? (
+                    <video
+                      src={variant.video}
+                      controls
+                      loading="lazy"
+                      className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                        currentImageIndex === index ? "scale-75" : ""
+                      }`}
+                    />
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -455,7 +554,7 @@ const ProductPageCard = () => {
                         className={`flex w-6 h-6 rounded-full border-2 ${
                           selectedVariant?.color === variant.color
                             ? "border-black"
-                            : "border-transparent"
+                            : "border-zinc-300 shadow-lg"
                         }`}
                         onClick={() => handleColorSelect(variant)}
                         style={{
@@ -467,6 +566,50 @@ const ProductPageCard = () => {
                 ))}
               </div>
             </>
+          )}
+
+          {/* if product is peace-lily then show this only 90 items left */}
+          {productpage.name.toLowerCase().replace(" ", "-") ===
+            "peace-lily" && (
+            <div className="flex flex-col w-ful">
+              <h1 className="font-poppins text-sm mt-4 text-gray-900">
+                Only <span className="text-red-600">90 item(s)</span> left in
+                stock
+              </h1>
+              <div className="w-full bg-gray-300 h-2 my-4 rounded">
+                <div
+                  style={{ width: "40%" }}
+                  className="h-2 w-full rounded bg-gradient-to-r from-red-500 via-yellow-500 to-red-600 animate-moveStripes"
+                ></div>
+              </div>
+            </div>
+          )}
+
+          {/* if product is the-beginner-set then show size selection also */}
+          {productpage.name.toLowerCase().replace(/\s+/g, "-") ===
+            "the-beginner-set" && (
+            <div className="flex flex-col gap-2 my-4">
+              <div className="flex gap-2 font-poppins ">
+                <h1 className="text-md ">Size :</h1>
+                <p className="text-md">{selectSize} cm</p>
+              </div>
+              <div className="flex gap-2">
+                {[30, 50, 60].map((size, index) => (
+                  <div key={index} className="relative">
+                    <button
+                      className={`flex font-poppins px-5 py-2 border transition-transform duration-500 ${
+                        selectSize === size
+                          ? "border-black bg-black text-white"
+                          : "hover:bg-zinc-900 hover:text-white text-gray-500 border-gray-500"
+                      }`}
+                      onClick={() => setSelectSize(size)}
+                    >
+                      {size} cm
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {/* Add to Cart Button */}
@@ -565,9 +708,12 @@ const ProductPageCard = () => {
                 <button
                   className={`w-full font-poppins text-md flex items-center justify-center group  px-4 py-3  border  mt-2 transition-opacity duration-1000 ${
                     acceptTerms
-                      ? "cursor-pointer bg-gradient-to-r from-green-900 via-green-600 to-green-900 text-white border-white rounded-md"
+                      ? "cursor-pointer bg-gradient-to-l from-green-900 via-green-600 to-green-900 text-white border-white animate-moveStripes rounded-md"
                       : "cursor-not-allowed border-gray-400"
                   }`}
+                  style={{
+                    width: "100%",
+                  }}
                 >
                   Buy It Now
                 </button>
@@ -631,11 +777,11 @@ const ProductPageCard = () => {
                 Order within the next 12 hours 22 minutes to get it <br />
                 between{" "}
                 <span className="border-b border-black text-black">
-                  Monday, Sep 1
+                  {formattedStartDate}
                 </span>{" "}
-                and{" "}
+                to{" "}
                 <span className="border-b border-black text-black">
-                  Friday, Sep 5
+                  {formattedEndDate}
                 </span>
               </p>
             </div>
@@ -661,6 +807,59 @@ const ProductPageCard = () => {
               </button>
             </div>
           </div>
+
+          {/* if product === a-philippine-upsell the show tiger aloe product here  */}
+          {productpage.name.toLowerCase().replace(/\s+/g, "-") ===
+            "a-philippine-upsell" &&
+            !isOutOfStock && (
+              <div className="flex items-center justify-between my-4">
+                <div className="flex flex-col font-poppins text-md">
+                  <h1 className="text-black justify-start text-xl font-librebaskerville mb-4">
+                    Buy It With
+                  </h1>
+                  <p className="text-gray-500 text-md">TIGER ALOE</p>
+                  <p className="text-gray-500 text-md ">$ 150.00</p>
+
+                  <button
+                    onClick={() => navigate("/product/tiger-aloe")}
+                    className="text-xs font-normal border border-gray-500 hover:bg-green-900 hover:text-white transition-colors duration-300 mt-4 px-4 py-2"
+                  >
+                    VIEW PRODUCT
+                  </button>
+                </div>
+                <img
+                  src={TigerAloe}
+                  onClick={() => navigate("/product/tiger-aloe")}
+                  alt="tiger aloe"
+                  loading="lazy"
+                  className="w-1/4 hover:scale-110 transition-all duration-300 cursor-pointer"
+                />
+              </div>
+            )}
+
+          {/* if product is peace-lily then show this pick up store available */}
+          {productpage.name.toLowerCase().replace(" ", "-") ===
+            "peace-lily" && (
+            <div className="flex w-ful border border-grey-300 mt-4 px-6 py-4">
+              <Check className="text-green-700" />
+              <div className="flex flex-col ml-4 font-poppins">
+                <p className="text-sm text-gray-500">
+                  Pickup available at{" "}
+                  <strong className="text-black">Akaze store</strong>
+                </p>
+                <p className="text-gray-500 text-xs">
+                  Usually ready in 24 hours
+                </p>
+
+                <p
+                  onClick={() => setViewStore(true)}
+                  className="text-green-900 mt-4 text-xs underline hover:no-underline transition-all duration-700 cursor-pointer"
+                >
+                  View store information
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Guarantee checkout */}
           <div className="flex flex-col w-full bg-gray-100 mt-4 p-6">
@@ -798,24 +997,33 @@ const ProductPageCard = () => {
               <h1 className="text-2xl text-black w-full font-librebaskerville ">
                 Shipping Info
               </h1>
-              <div className="flex flex-col my-4 gap-4 text-md font-poppins w-full ">
+              <div className="flex flex-col mt-8 mb-4 gap-4 text-md font-poppins w-full ">
                 <h1 className="">
-                  <span className="font-semibold">Return Policy :</span><span className="text-gray-500"> We will
-                  gladly accept returns for any reason within 30 days of receipt
-                  of delivery.</span>
+                  <span className="font-semibold">Return Policy :</span>
+                  <span className="text-gray-500">
+                    {" "}
+                    We will gladly accept returns for any reason within 30 days
+                    of receipt of delivery.
+                  </span>
                 </h1>
-                <h1 >
-                  <span className="font-semibold">Availability :</span> <span className="text-gray-500">Ships anywhere in the United States.</span>
+                <h1>
+                  <span className="font-semibold">Availability :</span>{" "}
+                  <span className="text-gray-500">
+                    Ships anywhere in the United States.
+                  </span>
                 </h1>
-                <h1 >
-                  <span className="font-semibold">Processing Time :</span><span className="text-gray-500">Allow 3-4 business days processing time for your order to ship.</span>
+                <h1>
+                  <span className="font-semibold">Processing Time :</span>
+                  <span className="text-gray-500">
+                    Allow 3-4 business days processing time for your order to
+                    ship.
+                  </span>
                 </h1>
               </div>
             </div>
           </div>
         )}
 
-        
         {/* open share pop-up */}
         {isShare && (
           <div
@@ -824,7 +1032,7 @@ const ProductPageCard = () => {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-lg mx-auto p-8 flex flex-col items-center justify-center  "
+              className="bg-white w-full max-w-lg mx-auto p-6 flex flex-col items-center justify-center  "
             >
               <button
                 onClick={() => setIsShare(false)}
@@ -832,14 +1040,229 @@ const ProductPageCard = () => {
               >
                 <X className="text-base font-normal text-gray-500 hover:text-black" />
               </button>
-              <h1 className="text-xl text-black w-full font-librebaskerville ">
-                copy link
+              <h1 className="text-sm text-black w-full font-librebaskerville ">
+                COPY LINK
               </h1>
-              
+              <div className="flex font-poppins w-full mt-4 mb-2">
+                <span className="flex-1 border border-black p-2 text-sm text-wrap items-center justify-center">
+                  {url}
+                </span>
+                <button
+                  onClick={copyToClipboard}
+                  className="bg-black px-3 py-2 text-white hover:bg-green-950 "
+                >
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+              </div>
+              {copied && (
+                <p className="text-sm text-green-700 w-full font-librebaskerville">
+                  Link copied to clipboard 👍.
+                </p>
+              )}
+              <h1 className="text-sm text-black w-full font-librebaskerville mt-8">
+                SHARE
+              </h1>
+              <div className="flex gap-2 w-full my-2">
+                <FaWhatsapp
+                  size={28}
+                  fill="#25D366"
+                  className="cursor-pointer hover:scale-110 transition-transform duration-300"
+                />
+                <FaFacebook
+                  size={28}
+                  fill="#4267B2"
+                  className="cursor-pointer hover:scale-110 transition-transform duration-300"
+                />
+                <FaXTwitter
+                  size={28}
+                  fill="#000000"
+                  className="cursor-pointer hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* open share pop-up */}
+        {viewStore && (
+          <div
+            onClick={() => setViewStore(false)}
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 w-screen"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-lg mx-auto  flex flex-col "
+            >
+              <div className="bg-zinc-100 w-full ">
+                <div className="flex justify-between p-4">
+                  <div className="flex gap-4">
+                    <img src={PeaseLily} className="w-24 h-24" />
+                    <div className="flex flex-col gap-1">
+                      <h1 className="font-librebaskerville">Peace Lily</h1>
+                      <p className="text-sm text-gray-500">Black</p>
+                      <p className="flex gap-1 font-poppins text-sm">
+                        {" "}
+                        <span className="line-through text-gray-500">
+                          $90.00
+                        </span>
+                        <span className=" text-red-600">$60.00</span>
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setViewStore(false)}
+                    className="flex justify-end "
+                  >
+                    <X className="text-base font-normal text-gray-500 hover:text-black hover:rotate-90 hover:scale-75 transition-transform duration-300" />
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-col gap-4  w-full my-6">
+                <h1 className="text-xl font-librebaskerville ml-6 mt-6">
+                  Akaze store
+                </h1>
+                <div className="ml-6 flex  gap-2 items-center text-gray-500">
+                  <Check size={20} />
+                  <p className="text-xs">
+                    Pickup available, Usually ready in 24 hours
+                  </p>
+                </div>
+                <div className="ml-6 flex gap-2  text-gray-500">
+                  <MapPin size={20} />
+                  <p className="text-sm">
+                    548 North Blackstone Avenue <br /> Fresno CA 93701 <br />
+                    United States
+                  </p>
+                </div>
+                <div className="ml-6 flex  gap-2 items-center text-gray-500">
+                  <Phone size={16} />
+                  <p className="text-sm">+ 10123555444</p>
+                </div>
+                <a
+                  href="https://www.google.com/maps?daddr=548+North+Blackstone+Avenue+Fresno+California+United+States"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-6 flex gap-2 items-center text-green-800 underline hover:no-underline cursor-pointer"
+                >
+                  <Map size={20} />
+                  <p className="text-sm">Check this on google map</p>
+                </a>
+              </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* if product Bougth together then show this frequently bougth together  */}
+      {productpage.name.toLowerCase().replace(" ", "-") ===
+        "bought-together" && (
+        <div className="relative flex justify-between m-8 border border-gray-300">
+          <h1 className="absolute -top-4 left-8 text-2xl bg-white px-4 font-librebaskerville">
+            Frequently Bought Together
+          </h1>
+          <div className="flex flex-col m-8">
+            <div className="flex items-center">
+              <img
+                src={boughtTogetherImages[boughtTogetherColor]}
+                alt="bought-together"
+                className="w-40 h-50 cursor-pointer hover:scale-105 transition-transform duration-300"
+              />
+              <Plus className="flex mx-2" />
+              <img
+                src={begginerSetImages[beginnerSetColor]}
+                alt="bought-together"
+                className={`w-40 h-50 cursor-pointer  transition-transform duration-300 ${
+                  !isBegginerInclude
+                    ? "opacity-30  cursor-not-allowed"
+                    : "hover:scale-105"
+                }`}
+              />
+            </div>
+            <div className="flex gap-1 items-center justify-center mt-8">
+              <input
+                type="checkbox"
+                style={{
+                  accentColor: "green",
+                  width: "15px",
+                  height: "15px",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                }}
+                checked
+              />
+
+              <h3 className="text-xs font-librebaskerville text-black ">
+                THIS PRODUCT :
+              </h3>
+              <p className="text-xs font-normal text-gray-500">
+                BOUGHT TOGETHER
+              </p>
+              <select
+                value={boughtTogetherColor}
+                onChange={(e) => setBoughtTogetherColor(e.target.value)}
+                className="text-sm font-poppins border border-gray-500 text-gray-800"
+              >
+                <option value="Red">Red</option>
+                <option value="Grey">Grey</option>
+              </select>
+              <p className="text-sm font-poppins text-gray-900">
+                ${boughtTogetherPrices[boughtTogetherColor].toFixed(2)}
+              </p>
+            </div>
+            <div className="flex gap-1 items-center justify-start mt-4 ">
+              <input
+                type="checkbox"
+                style={{
+                  accentColor: "green",
+                  width: "15px",
+                  height: "15px",
+                  marginRight: "10px",
+                  cursor: "pointer",
+                }}
+                checked={isBegginerInclude}
+                onChange={(e) => setIsBegginerInclude(e.target.checked)}
+              />
+              <p className="text-xs font-normal text-gray-500">
+                THE BEGINNER SET
+              </p>
+              <select
+                value={beginnerSetColor}
+                onChange={(e) => setBegginerSetColor(e.target.value)}
+                className="text-sm font-poppins border border-gray-500 text-gray-800"
+              >
+                <option value="Pink / 30 cm">Pink / 30 cm</option>
+                <option value="Pink / 50 cm">Pink / 50 cm</option>
+                <option value="Pink / 60 cm">Pink / 60 cm</option>
+                <option value="Orange / 30 cm">Orange / 30 cm</option>
+                <option value="Orange / 50 cm">Orange / 50 cm</option>
+                <option value="Orange / 60 cm">Orange / 60 cm</option>
+                <option value="Black / 30 cm">Black / 30 cm</option>
+                <option value="Black / 50 cm">Black / 50 cm</option>
+                <option value="Black / 60 cm">Black / 60 cm</option>
+              </select>
+              <p className="text-sm font-poppins text-gray-900">
+                ${begginerSetPrices[beginnerSetColor].toFixed(2)}
+              </p>
+            </div>
+          </div>
+
+          {/* price is here */}
+          <div className="flex flex-col self-start m-8 mr-8 sm:mr-24 md:mr-36 lg:mr-48">
+            <div className="flex gap-2">
+              <h1 className="text-md font-poppins">TOTAL PRICE : </h1>
+              <p className="text-xl font-semibold font-librebaskerville">
+                {totalPrice.toFixed(2)}
+              </p>
+            </div>
+            <p className="text-sm font-poppins text-gray-500 my-2">
+              For 2 item(s)
+            </p>
+            <button className="bg-zinc-800 text-white hover:bg-green-800  px-4 py-2">
+              ADD SELECTED ITEM (S)
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
