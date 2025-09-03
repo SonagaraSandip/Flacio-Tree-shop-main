@@ -23,6 +23,7 @@ import DragonBack from "../assets/Home/Dragon/Dragon-back_540x.webp";
 import PalmFront from "../assets/Home/palm/Palm_540x.webp";
 import PalmBack from "../assets/Home/palm/Palm_540xBack.webp";
 import PalmVideo from "../assets/Home/palm/PalmVideo.mp4"
+// import PalmVideoPreview from '../assets/product/videoPreviewImage.webp'
 
 import BoughtFront from "../assets/Home/Bought-together/Bought-together-front_540x.webp";
 import BoughtBack from "../assets/Home/Bought-together/Bought-together-back_540x.webp";
@@ -292,8 +293,9 @@ const productsPageData = [
       },
       {
         color: "Palm video",
+        // image: PalmVideoPreview,
         hex: null,
-        image: PalmVideo,
+        video: PalmVideo,
         price: null,
         inStock: true,
       },

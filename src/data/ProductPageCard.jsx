@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
 import ProductPageData from "./productsPageData";
@@ -22,6 +22,8 @@ import {
   X,
   Map,
   MapPin,
+  Play,
+  Pause,
 } from "lucide-react";
 import TigerAloe from "../assets/Home/Tiger-Aloe/tiger-black-360x.png";
 import PeaseLily from "../assets/Home/Pease-lily/Pease-lily-360x.webp";
@@ -36,6 +38,7 @@ import { FaXTwitter } from "react-icons/fa6";
 const ProductPageCard = () => {
   const { productName } = useParams();
   const navigate = useNavigate();
+  const videoRef = useRef(null);
   const productpage = ProductPageData.find(
     (item) =>
       item.name.toLowerCase() === productName.replace(/-/g, " ").toLowerCase()
@@ -61,6 +64,7 @@ const ProductPageCard = () => {
   const [beginnerSetColor, setBegginerSetColor] = useState("Pink / 30 cm");
   const [isBegginerInclude, setIsBegginerInclude] = useState(true);
   const [selectSize, setSelectSize] = useState(30);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const url = window.location.href;
 
@@ -220,6 +224,25 @@ const ProductPageCard = () => {
     boughtTogetherPrices[boughtTogetherColor] +
     (isBegginerInclude ? begginerSetPrices[beginnerSetColor] : 0);
 
+  //handle play pause
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleVideoPlay = () => {
+    setIsPlaying(true);
+  };
+  const handleVideoPause = () => {
+    setIsPlaying(false);
+  };
+
   const isOutOfStock = productpage.variants.every(
     (variant) => !variant.inStock
   );
@@ -247,36 +270,43 @@ const ProductPageCard = () => {
         <div className="w-full lg:w-[60%] flex h-full sticky top-0 self-start">
           <div className="h-full w-full flex">
             <div className="px-4 ">
-              {productpage.variants.map((variant, index) => (
-                <div
-                  key={`${variant.color || "video"} - ${index}`}
-                  onClick={() => handleColorSelect(variant, index)}
-                  className={`hover:border hover:border-gray-700 mb-6 ${
-                    currentImageIndex === index ? "border border-black" : ""
-                  }`}
-                >
-                  {variant.image ? (
-                    <img
-                      key={variant.image}
-                      src={variant.image}
-                      loading="lazy"
-                      alt={`${productpage.name} - ${variant.color}`}
-                      className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
-                        currentImageIndex === index ? "scale-75" : ""
-                      }`}
-                    />
-                  ) : variant.video ? (
-                    <video
-                      src={variant.video}
-                      controls
-                      loading="lazy"
-                      className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
-                        currentImageIndex === index ? "scale-75" : ""
-                      }`}
-                    />
-                  ) : null}
-                </div>
-              ))}
+              {productpage.variants.map((variant, index) => {
+                const hasVideo = variant.video;
+                return (
+                  <div
+                    key={`${variant.color || "video"} - ${index}`}
+                    onClick={() => handleColorSelect(variant, index)}
+                    className={`hover:border hover:border-gray-700 mb-6 ${
+                      currentImageIndex === index ? "border border-black" : ""
+                    }`}
+                  >
+                    {variant.image && (
+                      <img
+                        key={variant.image}
+                        src={variant.image || !hasVideo ? variant.image : ""}
+                        loading="lazy"
+                        alt={`${productpage.name} - ${variant.color}`}
+                        className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                          currentImageIndex === index ? "scale-75" : ""
+                        }`}
+                      />
+                    )}
+
+                    {hasVideo && (
+                      <video
+                        src={variant.video}
+                        muted
+                        loop
+                        className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                          currentImageIndex === index ? "scale-75" : ""
+                        }`}
+                        onMouseOver={(e) => e.target.play()}
+                        onMouseLeave={(e) => e.target.pause()}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Discount Badge */}
@@ -299,16 +329,39 @@ const ProductPageCard = () => {
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
-              <img
-                src={selectedVariant?.image}
-                alt={productpage.name}
-                loading="lazy"
-                onClick={() => setIsOpen(true)}
-                style={{ cursor: hovered ? <Plus /> : "pointer" }}
-                className={`w-full h-auto pr-8 object-cover ${
-                  hovered ? " " : "cursor-pointer"
-                } `}
-              />
+              {selectedVariant?.image ? (
+                <img
+                  src={selectedVariant?.image}
+                  alt={productpage.name}
+                  loading="lazy"
+                  onClick={() => setIsOpen(true)}
+                  style={{ cursor: hovered ? "move " : "default" }}
+                  className={`w-full h-auto pr-8 object-cover ${
+                    hovered ? " " : "cursor-pointer"
+                  } `}
+                />
+              ) : selectedVariant?.video ? (
+                <div className="relative">
+                  <video
+                    src={selectedVariant?.video}
+                    ref={videoRef}
+                    controls
+                    controlsList="nodownload"
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                    onPlay={handleVideoPlay}
+                    onPause={handleVideoPause}
+                  />
+                  {!isPlaying && (
+                    <button
+                      onClick={handlePlayPause}
+                      className="absolute flex items-center justify-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-300 w-12 h-12 rounded-full "
+                    >
+                      {isPlaying ? <Pause /> : <Play />}
+                    </button>
+                  )}
+                </div>
+              ) : null}
 
               {hovered && productpage.variants.length > 1 && (
                 <>
@@ -416,11 +469,13 @@ const ProductPageCard = () => {
 
           {/* instock & out of stock text */}
           {!isOutOfStock ? (
-            <div className="flex items-center mt-2 gap-1">
+            <div className="relative flex items-center mt-2 gap-1">
+              
               <CircleCheck
                 size={20}
-                className="text-green-700 border border-dotted rounded-full border-green-500 shadow-3xl mr-2"
+                className="relative inline-flex text-green-700 border border-dotted rounded-full border-green-500 shadow-3xl mr-2"
               />
+              <span class="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-green-700 opacity-50"></span>
               <p className=" text-md font-poppins text-green-700 font-semibold">
                 In Stock
               </p>

@@ -13,6 +13,9 @@ import Blog from "./pages/Blog";
 import Featured from "./pages/Featured";
 import ScrollToTopAction from "./pages/ScrollToTopAction";
 
+//from other
+import TopBarLoader from "./other/TopBarLoader";
+
 function AppWrapper() {
   const [homeLayout, setHomeLayout] = useState("modern");
   const location = useLocation();
@@ -20,6 +23,7 @@ function AppWrapper() {
   const transparent = location.pathname === "/" && homeLayout === "modern";
   return (
     <>
+      <TopBarLoader />
       <Navbar setLayout={setHomeLayout} transparentUntilScroll={transparent} />
       <ScrollToTopAction />
       <Routes>

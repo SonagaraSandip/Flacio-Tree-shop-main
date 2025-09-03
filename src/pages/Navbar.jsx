@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Whitelogo from "../assets/Home/logo-white.png";
 import BlackLogo from "../assets/Home/logo.avif";
 import { ChevronDown, Search, User, Heart, ShoppingBag } from "lucide-react";
@@ -21,6 +21,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [hoveredMenu, setHoveredMenu] = useState(null);
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (!transparentUntilScroll) {
@@ -203,7 +204,11 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
               to="/"
               className="flex items-center font-poppins gap-1 cursor-pointer"
             >
-              <span className="hover:underline">HOME</span>
+              <span
+                className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]`}
+              >
+                HOME
+              </span>
               <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />{" "}
             </Link>
 
@@ -222,6 +227,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
                       onClick={() => {
                         setLayout(page.layout);
                         navigate("/");
+                        setHoveredMenu(null);
                       }}
                       className="group flex flex-col items-center justify-center hover:border hover:border-gray-400 hover:shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 "
                     >
@@ -250,15 +256,23 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             >
               <Link
                 to="/collections"
-                className="cursor-pointer font-poppins flex items-center  gap-1"
+                className={`cursor-pointer font-poppins flex items-center gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${
+                location.pathname.startsWith("/collections")
+                    ? "border-b-2 border-black"
+                    : ""
+                } `}
               >
-                <span className="hover:underline">SHOP</span>
+                <span>SHOP</span>
                 <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
               </Link>
 
               {/* Hover for shop */}
               {hoveredMenu === "shop" && (
-                <div className="absolute -left-28 top-6 mt-4 z-50  bg-white text-black shadow-xl w-screen h-[65vh] ">
+                <div
+                  className="absolute -left-28 top-6 mt-4 z-50  bg-white text-black shadow-xl w-screen h-[65vh]"
+                  onMouseEnter={() => setHoveredMenu("shop")}
+                  onMouseLeave={() => setHoveredMenu(null)}
+                >
                   <div className="flex ">
                     <div className="gruop relative  pl-12">
                       <img
@@ -371,13 +385,21 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             >
               <Link
                 to="/product/jade-succulent"
-                className="cursor-pointer flex items-center font-poppins gap-1"
+                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${
+                  location.pathname.startsWith("/product")
+                    ? "border-b-2 border-black"
+                    : ""
+                } `}
               >
-                <span className="hover:underline">PRODUCT</span>
+                <span>PRODUCT</span>
                 <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
               </Link>
               {hoveredMenu === "product" && (
-                <div className="absolute top-6 mt-4 -left-[200px] z-50 bg-white shadow-xl p-5 w-screen max-h-[100vh] ">
+                <div
+                  className="absolute top-6 mt-4 -left-[200px] z-50 bg-white shadow-xl p-5 w-screen max-h-[100vh] "
+                  onMouseEnter={() => setHoveredMenu("product")}
+                  onMouseLeave={() => setHoveredMenu(null)}
+                >
                   <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 px-8 ">
                     {productMenu.map((section) => (
                       <div key={section.title}>
@@ -414,14 +436,18 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
 
           <Link to="/blog" className="relative group cursor-pointer">
             <div className="flex items-center font-poppins gap-1">
-              <span className="hover:underline">BLOG</span>
+              <span className="transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]">
+                BLOG
+              </span>
               <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
             </div>
           </Link>
 
           <Link to="/featured" className="relative group cursor-pointer">
             <div className="flex items-center font-poppins gap-1">
-              <span className="hover:underline">FEATURED</span>
+              <span className="transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]">
+                FEATURED
+              </span>
               <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
             </div>
           </Link>
