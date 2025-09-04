@@ -12,6 +12,7 @@ import PeaseLilyBack from "../assets/Home/Pease-lily/Pease-lily-black-360x.webp"
 
 import PhilippineFront from "../assets/Home/Philippine/PhilippineFront.webp";
 import PhilippineBack from "../assets/Home/Philippine/Philippine-Back-540x.webp";
+import PhilippinePreview from "../assets/product/360/360-1.jpg";
 
 import BeginnerFront from "../assets/Home/Beginner/Beginner-front_540x1.webp";
 import BeginnerPink from "../assets/Home/Beginner/Beginner-front_540xpink.webp";
@@ -22,6 +23,8 @@ import DragonBack from "../assets/Home/Dragon/Dragon-back_540x.webp";
 
 import PalmFront from "../assets/Home/palm/Palm_540x.webp";
 import PalmBack from "../assets/Home/palm/Palm_540xBack.webp";
+import PalmVideo from "../assets/Home/palm/PalmVideo.mp4";
+import PalmVideoPreview from "../assets/product/videoPreviewImage.webp";
 
 import BoughtFront from "../assets/Home/Bought-together/Bought-together-front_540x.webp";
 import BoughtBack from "../assets/Home/Bought-together/Bought-together-back_540x.webp";
@@ -40,6 +43,7 @@ const products = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "24 sold in last 09 hours",
     originalPrice: 90,
     discountPercent: 31,
     discountPrice: 51,
@@ -55,7 +59,6 @@ const products = [
     variants: [
       {
         color: "Geometric",
-
         image: UmbrellaFront,
         price: 80,
         inStock: true,
@@ -74,6 +77,7 @@ const products = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "31 sold in last 13 hours",
     originalPrice: 153.0,
     frontImage: TigerGreen,
     backImage: TigerBlack,
@@ -108,13 +112,13 @@ const products = [
       },
     ],
   },
-
   {
     id: 3,
     name: "Ruby Rubber Tree",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "29 sold in last 17 hours",
     originalPrice: 90.0,
     discountPercent: 43,
     discountPrice: 61.0,
@@ -151,13 +155,13 @@ const products = [
       },
     ],
   },
-
   {
     id: 4,
     name: "Peace Lily",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 4,
+    sellOrder: "43 sold in last 24 hours",
     originalPrice: 90,
     discountPercent: 33,
     discountPrice: 64.0,
@@ -194,13 +198,13 @@ const products = [
       },
     ],
   },
-
   {
     id: 5,
     name: "A Philippine Upsell",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "27 sold in last 14 hours",
     originalPrice: 80,
     frontImage: PhilippineFront,
     backImage: PhilippineBack,
@@ -214,17 +218,36 @@ const products = [
     variants: [
       {
         color: "Plaid",
-
         image: PhilippineFront,
         price: 80,
         inStock: true,
       },
       {
         color: "Floral",
-
         image: PhilippineBack,
         price: 85,
         inStock: true,
+      },
+      {
+        type: "360",
+        imagePreview: PhilippinePreview,
+        image: [
+          "../assets/product/360/360-1.jpg",
+          "../assets/product/360/360-2.jpg",
+          "../assets/product/360/360-3.jpg",
+          "../assets/product/360/360-4.jpg",
+          "../assets/product/360/360-5.jpg",
+          "../assets/product/360/360-7.jpg",
+          "../assets/product/360/360-8.jpg",
+          "../assets/product/360/360-9.jpg",
+          "../assets/product/360/360-10.jpg",
+          "../assets/product/360/360-11.jpg",
+          "../assets/product/360/360-12.jpg",
+          "../assets/product/360/360-13.jpg",
+          "../assets/product/360/360-14.jpg",
+          "../assets/product/360/360-15.jpg",
+          "../assets/product/360/360-16.jpg",
+        ],
       },
     ],
   },
@@ -234,6 +257,7 @@ const products = [
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "29 sold in last 15 hours",
     originalPrice: 130,
     frontImage: BeginnerFront,
     backImage: BeginnerBack,
@@ -269,20 +293,20 @@ const products = [
       },
     ],
   },
-
   {
     id: 7,
     name: "Pink Dragon Tree",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "48 sold in last 18 hours",
     originalPrice: 100,
-
+    discountPrice: 80,
     frontImage: DragonFront,
     backImage: DragonBack,
     isTopRated: true,
     isBestSelling: false,
-    inStock: false, // Out of stock
+    inStock: false,
     outOfStock: true,
     AirPurifying: true,
     CeramicPots: false,
@@ -293,23 +317,23 @@ const products = [
         color: "Striped",
         image: DragonFront,
         price: 80,
-        inStock: false, // Out of stock
+        inStock: false,
       },
       {
         color: "Plaid",
         image: DragonFront,
         price: 80,
-        inStock: false, // Out of stock
+        inStock: false,
       },
     ],
   },
-
   {
     id: 8,
     name: "Palm",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "51 sold in last 22 hours",
     originalPrice: 50,
     frontImage: PalmFront,
     backImage: PalmBack,
@@ -335,15 +359,21 @@ const products = [
         price: 54,
         inStock: true,
       },
+      {
+        imagePreview: PalmVideoPreview,
+        video: PalmVideo,
+        price: null,
+        inStock: true,
+      },
     ],
   },
-
   {
     id: 9,
     name: "Bought Together",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
+    sellOrder: "13 sold in last 02 hours",
     originalPrice: 82,
     frontImage: BoughtFront,
     backImage: BoughtBack,
@@ -371,14 +401,15 @@ const products = [
       },
     ],
   },
-
   {
     id: 10,
     name: "Jade Succulent",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
     rating: 0,
-    originalPrice: 82,
+    sellOrder: "35 sold in last 11 hours",
+    originalPrice: 60,
+    priceRange: 153,
     frontImage: JadeSucculentFront,
     backImage: JadeSucculentBack,
     isTopRated: false,

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
-import ProductPageData from "./productsPageData";
+import Product from "../data/products";
+import Tree360Viewer from "../other/Tree360Viewer";
 import { IoIosEye } from "react-icons/io";
 import { FaGripfire } from "react-icons/fa";
 import { FaWhatsapp, FaFacebook } from "react-icons/fa";
@@ -39,7 +40,7 @@ const ProductPageCard = () => {
   const { productName } = useParams();
   const navigate = useNavigate();
   const videoRef = useRef(null);
-  const productpage = ProductPageData.find(
+  const productpage = Product.find(
     (item) =>
       item.name.toLowerCase() === productName.replace(/-/g, " ").toLowerCase()
   );
@@ -272,15 +273,17 @@ const ProductPageCard = () => {
             <div className="px-4 ">
               {productpage.variants.map((variant, index) => {
                 const hasVideo = variant.video;
+                const is360View = variant.type === "360";
+
                 return (
                   <div
-                    key={`${variant.color || "video"} - ${index}`}
+                    key={`${variant.color || "video-360"} - ${index}`}
                     onClick={() => handleColorSelect(variant, index)}
                     className={`hover:border hover:border-gray-700 mb-6 ${
                       currentImageIndex === index ? "border border-black" : ""
                     }`}
                   >
-                    {variant.image && (
+                    {variant.image && !is360View && (
                       <img
                         key={variant.image}
                         src={variant.image || !hasVideo ? variant.image : ""}
@@ -293,16 +296,47 @@ const ProductPageCard = () => {
                     )}
 
                     {hasVideo && (
-                      <video
-                        src={variant.video}
-                        muted
-                        loop
-                        className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
-                          currentImageIndex === index ? "scale-75" : ""
-                        }`}
-                        onMouseOver={(e) => e.target.play()}
-                        onMouseLeave={(e) => e.target.pause()}
-                      />
+                      <div className="relative">
+                        <img
+                          src={variant.imagePreview || variant.image}
+                          loading="lazy"
+                          alt={`${productpage.name} - ${variant.color}`}
+                          className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                            currentImageIndex === index ? "scale-75" : ""
+                          }`}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center ">
+                          <Play
+                            size={40}
+                            className="bg-gray-200 bg-opacity-45 rounded-full p-2"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* if 360 available show this*/}
+                    {is360View && (
+                      <div className="relative ">
+                        <img
+                          src={variant.imagePreview || variant.image}
+                          alt="360"
+                          // style={{cursor: 'pointer'}}
+                          className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                            currentImageIndex === index ? "scale-75" : ""
+                          }`}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center cursor-pointer">
+                          <p
+                            className={`bg-green-900  flex items-center justify-center rounded-full  text-white transition-all duration-500 ${
+                              currentImageIndex === index
+                                ? "h-7 w-7 text-xs opacity-95"
+                                : "h-10 w-10 opacity-80"
+                            }`}
+                          >
+                            360°
+                          </p>
+                        </div>
+                      </div>
                     )}
                   </div>
                 );
@@ -329,7 +363,9 @@ const ProductPageCard = () => {
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
-              {selectedVariant?.image ? (
+              {selectedVariant?.type === "360" ? (
+                <Tree360Viewer image={selectedVariant.image} />
+              ) : selectedVariant?.image ? (
                 <img
                   src={selectedVariant?.image}
                   alt={productpage.name}
@@ -444,11 +480,13 @@ const ProductPageCard = () => {
 
           {/* outofstock text */}
           {isOutOfStock ? (
-            <div className="flex items-center mt-2 gap-2">
+            <div className="relative flex items-center mt-2 gap-2">
+              <span class="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-red-700 opacity-70 "></span>
               <CircleCheck
                 size={20}
-                className="text-red-700 border border-dotted border-red-500 rounded-full shadow-3xl "
+                className="relative inline-flex text-red-700 rounded-full shadow-3xl "
               />
+
               <p className="text-md font-poppins text-red-700 ">
                 Out of Stock{" "}
               </p>
@@ -470,10 +508,9 @@ const ProductPageCard = () => {
           {/* instock & out of stock text */}
           {!isOutOfStock ? (
             <div className="relative flex items-center mt-2 gap-1">
-              
               <CircleCheck
                 size={20}
-                className="relative inline-flex text-green-700 border border-dotted rounded-full border-green-500 shadow-3xl mr-2"
+                className="relative inline-flex text-green-700  rounded-full shadow-3xl mr-2"
               />
               <span class="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-green-700 opacity-50"></span>
               <p className=" text-md font-poppins text-green-700 font-semibold">
@@ -585,40 +622,42 @@ const ProductPageCard = () => {
                 </span>
               </h1>
               <div className="flex gap-2 mt-2">
-                {productpage.variants.map((variant, index) => (
-                  <div key={index} className="relative">
-                    {productpage.id === 1 ||
-                    productpage.id === 5 ||
-                    isOutOfStock ? (
-                      <button
-                        className={`flex w-6 h-6 rounded-full border-2 ${
-                          selectedVariant?.color === variant.color
-                            ? "border-black"
-                            : "border-transparent"
-                        }`}
-                        onClick={() => handleColorSelect(variant)}
-                        style={{
-                          backgroundImage: `url(${variant.image})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      />
-                    ) : (
-                      <button
-                        className={`flex w-6 h-6 rounded-full border-2 ${
-                          selectedVariant?.color === variant.color
-                            ? "border-black"
-                            : "border-zinc-300 shadow-lg"
-                        }`}
-                        onClick={() => handleColorSelect(variant)}
-                        style={{
-                          backgroundColor: variant.hex,
-                        }}
-                      />
-                    )}
-                  </div>
-                ))}
+                {productpage.variants
+                  .filter((variant) => variant.color)
+                  .map((variant, index) => (
+                    <div key={index} className="relative">
+                      {productpage.id === 1 ||
+                      productpage.id === 5 ||
+                      isOutOfStock ? (
+                        <button
+                          className={`flex w-6 h-6 rounded-full border-2 ${
+                            selectedVariant?.color === variant.color
+                              ? "border-black"
+                              : "border-transparent"
+                          }`}
+                          onClick={() => handleColorSelect(variant, index)}
+                          style={{
+                            backgroundImage: `url(${variant.image})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                          }}
+                        />
+                      ) : (
+                        <button
+                          className={`flex w-6 h-6 rounded-full border-2 ${
+                            selectedVariant?.color === variant.color
+                              ? "border-black"
+                              : "border-zinc-300 shadow-lg"
+                          }`}
+                          onClick={() => handleColorSelect(variant, index)}
+                          style={{
+                            backgroundColor: variant.hex,
+                          }}
+                        />
+                      )}
+                    </div>
+                  ))}
               </div>
             </>
           )}
@@ -924,7 +963,6 @@ const ProductPageCard = () => {
             <img src={Visa} alt="visa-checkout" loading="lazy" />
           </div>
         </div>
-
         {/*  image open in full screen*/}
         {isOpen && (
           <div
@@ -966,7 +1004,6 @@ const ProductPageCard = () => {
             </div>
           </div>
         )}
-
         {/* open Question pop-up */}
         {isOpenQuestion && (
           <div
@@ -1032,7 +1069,6 @@ const ProductPageCard = () => {
             </div>
           </div>
         )}
-
         {/* open shipping pop-up */}
         {isShipping && (
           <div
@@ -1078,7 +1114,6 @@ const ProductPageCard = () => {
             </div>
           </div>
         )}
-
         {/* open share pop-up */}
         {isShare && (
           <div
@@ -1137,7 +1172,6 @@ const ProductPageCard = () => {
             </div>
           </div>
         )}
-
         {/* open share pop-up */}
         {viewStore && (
           <div
