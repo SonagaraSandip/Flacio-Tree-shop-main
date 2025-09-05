@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
 import Product from "../data/products";
 import Tree360Viewer from "../other/Tree360Viewer";
+import Tree3DViewer from "../other/Tree3DViewer";
 import { IoIosEye } from "react-icons/io";
 import { FaGripfire } from "react-icons/fa";
 import { FaWhatsapp, FaFacebook } from "react-icons/fa";
@@ -25,6 +26,7 @@ import {
   MapPin,
   Play,
   Pause,
+  Box,
 } from "lucide-react";
 import TigerAloe from "../assets/Home/Tiger-Aloe/tiger-black-360x.png";
 import PeaseLily from "../assets/Home/Pease-lily/Pease-lily-360x.webp";
@@ -274,10 +276,11 @@ const ProductPageCard = () => {
         {/* Product Images */}
         <div className="w-full lg:w-[60%] flex h-full  sticky top-0 self-start">
           <div className="h-full w-full flex">
-            <div className="px-4 ">
+            <div className="px-4">
               {productpage.variants.map((variant, index) => {
                 const hasVideo = variant.video;
                 const is360View = variant.type === "360";
+                const is3DProduct = variant.type === "3D";
 
                 return (
                   <div
@@ -331,7 +334,7 @@ const ProductPageCard = () => {
                         />
                         <div className="absolute inset-0 flex items-center justify-center cursor-pointer">
                           <p
-                            className={`bg-green-900  flex items-center justify-center rounded-full  text-white transition-all duration-500 ${
+                            className={`bg-green-900  flex items-center justify-center rounded-full text-white transition-all duration-500 ${
                               currentImageIndex === index
                                 ? "h-7 w-7 text-xs opacity-95"
                                 : "h-10 w-10 opacity-80"
@@ -339,6 +342,25 @@ const ProductPageCard = () => {
                           >
                             360°
                           </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* if 3D product available show this */}
+                    {is3DProduct && (
+                      <div className="relative">
+                        <img
+                          src={variant.imagePreview || variant.image}
+                          alt="3D image preview"
+                          className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                            currentImageIndex === index ? "scale-75" : ""
+                          }`}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Box
+                            size={40}
+                            className="bg-green-900 text-white bg-opacity-75 rounded-full p-2"
+                          />
                         </div>
                       </div>
                     )}
@@ -363,12 +385,19 @@ const ProductPageCard = () => {
             </div>
 
             <div
-              className="relative h-full w-full"
+              className="relative flex h-full w-full"
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
               {selectedVariant?.type === "360" ? (
                 <Tree360Viewer image={selectedVariant.image} />
+              ) : selectedVariant?.type === "3D" ? (
+                <div
+                  className="h-full w-full "
+                  style={{ height: "700px", minHeight: "700px" }}
+                >
+                  <Tree3DViewer glbFile={selectedVariant.glbFile} />
+                </div>
               ) : selectedVariant?.image ? (
                 <img
                   src={selectedVariant?.image}

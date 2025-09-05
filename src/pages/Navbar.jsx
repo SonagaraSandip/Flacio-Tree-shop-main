@@ -16,6 +16,10 @@ import Home6 from "../assets/Home/HomeNavbar/home-6.webp";
 import Dog from "../assets/Home/ig-2_540x.png";
 import Plant from "../assets/Home/ig-4_540x.png";
 
+//blog navbar
+import BlogNav1 from "../assets/blog/BlogNavbar1.webp";
+import BlogNav2 from "../assets/blog/BlogNavbar2.webp";
+
 export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState(null);
@@ -180,6 +184,17 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
     },
   ];
 
+  const BlogMenu = [
+    { name: "Blog Standard" },
+    { name: "Blog Grid" },
+    { name: "Blog Grid Mix" },
+    { name: "List" },
+    { name: "Post Sidebar" },
+    { name: "Post One Column" },
+    { name: "Post Prallax" },
+    { name: "Post Sticky" },
+    { name: "Post Simple Title" },
+  ];
   return (
     <div
       className={` top-0 left-0 w-full z-50 transition-all duration-1000 ease-in-out ${
@@ -257,7 +272,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
               <Link
                 to="/collections/all"
                 className={`cursor-pointer font-poppins flex items-center gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${
-                location.pathname.startsWith("/collections")
+                  location.pathname.startsWith("/collections")
                     ? "border-b-2 border-black"
                     : ""
                 } `}
@@ -434,14 +449,72 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             </div>
           </div>
 
-          <Link to="/blog" className="relative group cursor-pointer">
-            <div className="flex items-center font-poppins gap-1">
-              <span className="transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]">
-                BLOG
-              </span>
-              <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
+          {/* Blog link hover */}
+          <div className="flex group gap-6 text-sm">
+            <div
+              className="relative group"
+              onMouseEnter={() => setHoveredMenu("blog")}
+              onMouseLeave={() => setHoveredMenu(null)}
+            >
+              <Link
+                to="/blog"
+                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${
+                  location.pathname.startsWith("/bl")
+                    ? "border-b-2 border-black"
+                    : ""
+                } `}
+              >
+                <span>Blog</span>
+                <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
+              </Link>
+
+              {hoveredMenu === "blog" && (
+                <div className="absolute flex gap-6 top-6 mt-2 z-50 bg-white shadow-xl p-5 w-3xl min-w-[600px] max-h-[100vh] ">
+                  <div className="flex flex-col gap-2 w-full ">
+                    <h1 className="text-lg font-librebaskerville  border-b pb-1 mb-6 tracking-widest text-black">
+                      Layout & Post
+                    </h1>
+
+                    {BlogMenu.map((item) => (
+                      <div className="text-sm font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer">
+                        {item.name}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <div className="relative">
+                      <img
+                        src={BlogNav1}
+                        alt="blog navbar 1"
+                        style={{ width: "600px", height: "160px" }}
+                      />
+                      <div className="absolute h-full w-full top-0 bg-black  bg-opacity-25" />
+                      <div className="absolute  bottom-4  flex flex-col items-start ml-4 gap-4 text-xs text-white  font-librebaskerville">
+                        <button className="hover:text-black  ">NEWS</button>
+                        <button className="hover:text-black  ">
+                          Traveling Solo Is Awesome
+                        </button>
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <img
+                        src={BlogNav2}
+                        alt="blog navbar 1"
+                        style={{ width: "600px", height: "150px" }}
+                      />
+                      <div className="absolute h-full w-full top-0 bg-black  bg-opacity-25" />
+                      <div className="absolute  bottom-4  flex flex-col items-start ml-4 gap-4 text-xs text-white  font-librebaskerville">
+                        <button className="hover:text-black  ">NEWS</button>
+                        <button className="hover:text-black  ">
+                          Indoor Plants Are Good For Health
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          </Link>
+          </div>
 
           <Link to="/featured" className="relative group cursor-pointer">
             <div className="flex items-center font-poppins gap-1">

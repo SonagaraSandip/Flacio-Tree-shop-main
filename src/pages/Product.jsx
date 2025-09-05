@@ -201,7 +201,7 @@ const Product = () => {
           <button
             value={"description"}
             onClick={() => setActiveTab("description")}
-            className={`${
+            className={`hover:text-black ${
               activeTab === "description"
                 ? "text-black pb-2 border-b-2 border-black"
                 : "text-gray-500"
@@ -212,10 +212,10 @@ const Product = () => {
           <button
             value={"review"}
             onClick={() => setActiveTab("review")}
-            className={`${
+            className={`hover:text-black ${
               activeTab === "review"
                 ? "text-black pb-2 border-b-2 border-black"
-                : "text-gray-500"
+                : "text-gray-500 "
             }`}
           >
             Review
@@ -223,7 +223,7 @@ const Product = () => {
           <button
             value={"shipping"}
             onClick={() => setActiveTab("shipping")}
-            className={`${
+            className={`hover:text-black ${
               activeTab === "shipping"
                 ? "text-black pb-2 border-b-2 border-black"
                 : "text-gray-500"
@@ -234,7 +234,7 @@ const Product = () => {
           <button
             value={"returns"}
             onClick={() => setActiveTab("returns")}
-            className={`${
+            className={`hover:text-black ${
               activeTab === "returns"
                 ? "text-black pb-2 border-b-2 border-black"
                 : "text-gray-500"

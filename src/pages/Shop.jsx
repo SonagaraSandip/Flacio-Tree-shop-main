@@ -12,7 +12,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  FilterX,
 } from "lucide-react";
 import { IoIosStarOutline } from "react-icons/io";
 import products from "../data/products";

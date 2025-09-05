@@ -9,6 +9,8 @@ import RubbyRubberBack from "../assets/Home/rubby-rubber/Rubby-rubber_540xpink.w
 
 import PeaseLilyFront from "../assets/Home/Pease-lily/Pease-lily-360x.webp";
 import PeaseLilyBack from "../assets/Home/Pease-lily/Pease-lily-black-360x.webp";
+import ThreeDImagePreview from "../assets/product/3D/ThreeDPreview.avif";
+import ThreeDProduct from "../assets/product/3D/3d.glb";
 
 import PhilippineFront from "../assets/Home/Philippine/PhilippineFront.webp";
 import PhilippineBack from "../assets/Home/Philippine/Philippine-Back-540x.webp";
@@ -91,7 +93,7 @@ const products = [
     HerbSeeds: false,
     IndoorPlants: false,
     PlantBundle: false,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "Black",
@@ -136,7 +138,7 @@ const products = [
     HerbSeeds: true,
     IndoorPlants: true,
     PlantBundle: true,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "Black",
@@ -170,7 +172,7 @@ const products = [
     sellOrder: "43 sold in last 24 hours",
     originalPrice: 90,
     discountPercent: 33,
-    discountPrice: 64.0,
+    discountPrice: 60.0,
     frontImage: PeaseLilyFront,
     backImage: PeaseLilyBack,
     isTopRated: true,
@@ -181,7 +183,7 @@ const products = [
     HerbSeeds: false,
     IndoorPlants: false,
     PlantBundle: false,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "Black",
@@ -201,6 +203,13 @@ const products = [
         color: "Pink",
         hex: "#FFC0CB",
         image: JadeSucculentFront,
+        price: 54.0,
+        inStock: true,
+      },
+      {
+        type: "3D",
+        glbFile: ThreeDProduct,
+        imagePreview: ThreeDImagePreview,
         price: 54.0,
         inStock: true,
       },
@@ -224,7 +233,7 @@ const products = [
     HerbSeeds: true,
     IndoorPlants: false,
     PlantBundle: false,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "Plaid",
@@ -278,7 +287,7 @@ const products = [
     CeramicPots: true,
     HerbSeeds: false,
     IndoorPlants: true,
-     LowMaintainance: true,
+    LowMaintainance: true,
     PlantBundle: true,
     size: [30, 50, 60],
     variants: [
@@ -325,7 +334,7 @@ const products = [
     HerbSeeds: true,
     IndoorPlants: true,
     PlantBundle: false,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "Striped",
@@ -341,6 +350,7 @@ const products = [
       },
     ],
   },
+  // id = 8 product have video
   {
     id: 8,
     name: "Palm",
@@ -359,7 +369,7 @@ const products = [
     HerbSeeds: true,
     IndoorPlants: false,
     PlantBundle: false,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "White",
@@ -401,7 +411,7 @@ const products = [
     HerbSeeds: true,
     IndoorPlants: true,
     PlantBundle: false,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "Red",
@@ -438,7 +448,7 @@ const products = [
     HerbSeeds: true,
     IndoorPlants: true,
     PlantBundle: true,
-     LowMaintainance: true,
+    LowMaintainance: true,
     variants: [
       {
         color: "Pink",
