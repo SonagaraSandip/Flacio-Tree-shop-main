@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Navbar from "./pages/Navbar";
 import Home from "./pages/Home";
+import Collections from "./pages/Collections";
 import Shop from "./pages/Shop";
 import Product from "./pages/Product";
 import Blog from "./pages/Blog";
@@ -28,9 +29,10 @@ function AppWrapper() {
       <ScrollToTopAction />
       <Routes>
         <Route path="/" element={<Home layout={homeLayout} />} />
-        <Route path="/collections" element={<Shop />} />
+        <Route path="/collections" element={<Collections />} />
+        <Route path="/products" element={<Collections />} />
         <Route path="/collections/:collectionId" element={<Shop />} />
-        <Route path="/product/:productName" element={<Product />} />
+        <Route path="/products/:productName" element={<Product />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/featured" element={<Featured />} />
       </Routes>

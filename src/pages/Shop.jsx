@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
-import {  useLocation, useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import ShopBG from "../assets/Shop/bg-breadcrumb.webp";
 import {
   ChevronDown,
@@ -15,7 +19,6 @@ import products from "../data/products";
 import ProductListCard from "../data/ProductListCard";
 import ProductCard from "../data/ProductCard";
 import ScrollToTop from "./ScrollToTop";
-import queryString from "query-string";
 
 import Footer from "./Footer";
 
@@ -34,9 +37,9 @@ import { HiOutlineBars3 } from "react-icons/hi2";
 import { TfiLayoutGrid4Alt } from "react-icons/tfi";
 
 const Shop = () => {
-  // const { collection } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { collectionId } = useParams();
+  const navigate = useNavigate(); // navigate function
+  const [searchParams] = useSearchParams(); //hook to manage URL query parameters
 
   const filterSectionStyle = {
     // Subtract the header height
@@ -60,16 +63,6 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState("FeaturedFilter");
 
-
-  useEffect(() => {
-    if (location.pathname === "/collections") {
-      const params = queryString.parse(location.search);
-      const searchString = queryString.stringify(params);
-
-      navigate(`/collections/all?${searchString}`);
-    }
-  }, [location, navigate]);
-
   //right side
   const [layout, setLayout] = useState("grid3");
 
@@ -82,6 +75,124 @@ const Shop = () => {
     min: 0,
     max: 153,
   });
+
+  const collectionMapping = {
+    "air-purifying": "Air Purifying",
+    "ceramic-pots": "Ceramic Pots",
+    "herbs-seeds": "Herb Seeds",
+    "indoor-plants": "Indoor Plants",
+    "low-maintainance": "Low Maintainance",
+    "plant-bundle": "Plant Bundle",
+    all: null, // no collection selected
+  };
+
+  // reverse mapping for generating url from display name
+  const reverseCollectionMapping = Object.fromEntries(
+    Object.entries(collectionMapping).map(([key, value]) => [value, key])
+  );
+
+  //intialize state from URL
+  useEffect(() => {
+    // set collection from URL parameter
+    if (collectionId && collectionMapping[collectionId]) {
+      setSelectedCollection(collectionMapping[collectionId]);
+    } else {
+      setSelectedCollection(null);
+    }
+
+    //Set availability filter from URL query parameters
+    const availabilityParam = searchParams.get("availability");
+    if (availabilityParam) {
+      const availabilityValues = availabilityParam.split(",");
+      setAvailability({
+        inStock: availabilityValues.includes("inStock"), // check if availabilityValue includes "inStock"
+        outOfStock: availabilityValues.includes("outOfStock"),
+      });
+    }
+
+    // set price filter from URL query parameters
+    const minPrice = searchParams.get("min-price");
+    const maxPrice = searchParams.get("max-price");
+    if (minPrice || maxPrice) {
+      setPrice({
+        min: minPrice ? parseFloat(minPrice) : 0,
+        max: maxPrice ? parseFloat(maxPrice) : 153, // convert a string to floating point number
+      });
+    }
+
+    //set size filter from URL query parameters
+    const sizeParam = searchParams.get("size");
+    if (sizeParam) {
+      setSelectedSize(sizeParam.split(","));
+    }
+
+    //set color filter from URL query parameters
+    const colorParam = searchParams.get("color");
+    if (colorParam) {
+      setSelectedColor(colorParam.split(","));
+    }
+
+    // set sort filter from URL query parameters
+    const sortParam = searchParams.get("sort");
+    if (sortParam) {
+      setFilter(sortParam);
+    }
+  }, [collectionId, searchParams]);
+
+  // Update URL when filter is change
+  useEffect(() => {
+    const params = new URLSearchParams(); // create a new URLSearchParams object
+
+    //add availability filter to query parameters
+    const availabilityValues = [];
+    if (availability.inStock) {
+      availabilityValues.push("inStock");
+    }
+    if (availability.outOfStock) {
+      availabilityValues.push("outOfStock");
+    }
+    if (availabilityValues.length > 0) {
+      params.set("availability", availabilityValues.join(","));
+    }
+
+    //add price filter to query parameter
+    if (price.min !== 0 || price.max !== 153) {
+      params.set("min-price", price.min);
+      params.set("max-price", price.max);
+    } // convert number to string
+
+    //add size filter to query parameter
+    if (selectedSize.length > 0) {
+      params.set("size", selectedSize.join(","));
+    }
+
+    if (selectedColor.length > 0) {
+      params.set("color", selectedColor.join(","));
+    }
+
+    if (filter !== "FeaturedFilter") {
+      params.set("sort", filter);
+    }
+
+    //update a URL without causing navigationb
+    const newSearch = params.toString(); // convert the URLSearchParams object to a string
+    const collectionSlug = selectedCollection
+      ? reverseCollectionMapping[selectedCollection] || "all"
+      : "all";
+
+    const newPath = `/collections/${collectionSlug}?${newSearch}`;
+
+    // Use replace instead of navigate to avoid adding to history
+    window.history.replaceState({}, '', newPath);
+
+  }, [
+    selectedCollection,
+    availability,
+    price,
+    selectedSize,
+    selectedColor,
+    filter,
+  ]);
 
   //use refs to measure content height for smooth transition
   const collectionRef = useRef(null);
@@ -141,7 +252,8 @@ const Shop = () => {
   const [activeThumb, setActiveThumb] = useState(null); // min or max
 
   const handleCollectionChange = (collection) => {
-    setSelectedCollection(collection);
+   const collectionSlug = reverseCollectionMapping[collection] || "all";
+    navigate(`/collections/${collectionSlug}`);
   };
 
   const handleAvailabilityChange = (type) => {
@@ -151,13 +263,17 @@ const Shop = () => {
     }));
   };
 
+
+  //filter products is here
   const filteredProducts = products.filter((product) => {
     if (selectedCollection) {
       const collectionMatch =
         (selectedCollection === "Air Purifying" && product.AirPurifying) ||
         (selectedCollection === "Ceramic Pots" && product.CeramicPots) ||
         (selectedCollection === "Herb Seeds" && product.HerbSeeds) ||
-        (selectedCollection === "Indoor Plants" && product.IndoorPlants);
+        (selectedCollection === "Indoor Plants" && product.IndoorPlants) ||
+        (selectedCollection === "Low Maintainance" && product.LowMaintainance) ||
+        (selectedCollection === "Plant Bundle" && product.PlantBundle);
 
       if (!collectionMatch) return false;
     }
@@ -248,6 +364,7 @@ const Shop = () => {
 
   const resetCollection = () => {
     setSelectedCollection(null);
+    navigate('/collections/all');
   };
 
   const resetAvailability = () => {
@@ -373,6 +490,8 @@ const Shop = () => {
     resetPrice();
     resetSize();
     resetColor();
+    setFilter("FeaturedFilter");
+    navigate("/collections/all");
   };
 
   // pagination logic
@@ -1076,17 +1195,17 @@ const Shop = () => {
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-22 h-28  object-cover hover:scale-105 transition-transform duration-300"
+                        className="w-20 h-24 object-cover hover:scale-105 transition-transform duration-300"
                       />
                       <div className="ml-4 flex flex-col gap-2 ">
                         <div className="flex text-gray-400 ">
-                          <IoIosStarOutline />
-                          <IoIosStarOutline />
-                          <IoIosStarOutline />
-                          <IoIosStarOutline />
-                          <IoIosStarOutline />
+                          <IoIosStarOutline size={12}/>
+                          <IoIosStarOutline size={12}/>
+                          <IoIosStarOutline size={12}/>
+                          <IoIosStarOutline size={12}/>
+                          <IoIosStarOutline size={12}/>
                         </div>
-                        <h3 className="text-xl font-librebaskerville cursor-pointer">
+                        <h3 className="text-md font-librebaskerville cursor-pointer">
                           {item.name}
                         </h3>
                         <p className="text-sm text-gray-500 font-librebaskerville">

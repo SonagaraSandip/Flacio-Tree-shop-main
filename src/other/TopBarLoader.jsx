@@ -8,8 +8,15 @@ const TopBarLoader = () => {
 
   useEffect(() => {
     ref.current?.continuousStart();
-    setTimeout(() => ref.current?.complete(), 600);
-  }, [location.pathname]);
+
+    const timer = setTimeout(() => {
+      ref.current?.complete();
+    }, 600);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [location.pathname, location.search]);
 
   return (
     <LoadingBar

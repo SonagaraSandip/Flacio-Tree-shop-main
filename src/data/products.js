@@ -56,6 +56,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: false,
     IndoorPlants: false,
+    PlantBundle: true,
+    LowMaintainance: false,
     variants: [
       {
         color: "Geometric",
@@ -88,6 +90,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: false,
     IndoorPlants: false,
+    PlantBundle: false,
+     LowMaintainance: true,
     variants: [
       {
         color: "Black",
@@ -131,6 +135,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: true,
     IndoorPlants: true,
+    PlantBundle: true,
+     LowMaintainance: true,
     variants: [
       {
         color: "Black",
@@ -174,6 +180,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: false,
     IndoorPlants: false,
+    PlantBundle: false,
+     LowMaintainance: true,
     variants: [
       {
         color: "Black",
@@ -215,6 +223,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: true,
     IndoorPlants: false,
+    PlantBundle: false,
+     LowMaintainance: true,
     variants: [
       {
         color: "Plaid",
@@ -268,6 +278,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: false,
     IndoorPlants: true,
+     LowMaintainance: true,
+    PlantBundle: true,
     size: [30, 50, 60],
     variants: [
       {
@@ -312,6 +324,8 @@ const products = [
     CeramicPots: false,
     HerbSeeds: true,
     IndoorPlants: true,
+    PlantBundle: false,
+     LowMaintainance: true,
     variants: [
       {
         color: "Striped",
@@ -344,6 +358,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: true,
     IndoorPlants: false,
+    PlantBundle: false,
+     LowMaintainance: true,
     variants: [
       {
         color: "White",
@@ -384,6 +400,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: true,
     IndoorPlants: true,
+    PlantBundle: false,
+     LowMaintainance: true,
     variants: [
       {
         color: "Red",
@@ -419,6 +437,8 @@ const products = [
     CeramicPots: true,
     HerbSeeds: true,
     IndoorPlants: true,
+    PlantBundle: true,
+     LowMaintainance: true,
     variants: [
       {
         color: "Pink",

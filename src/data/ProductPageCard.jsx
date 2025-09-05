@@ -265,10 +265,14 @@ const ProductPageCard = () => {
   }
 
   return (
-    <div className="mt-[130px]">
+    <div className="mt-[90px] ">
+      <div className="mx-12 font-librebaskerville text-sm text-black pb-4">
+        <span onClick={() => navigate("/")}>Home</span> / {productpage.name}{" "}
+      </div>
+
       <div key={productpage.id} className="flex gap-4 mx-8 items-stretch">
         {/* Product Images */}
-        <div className="w-full lg:w-[60%] flex h-full sticky top-0 self-start">
+        <div className="w-full lg:w-[60%] flex h-full  sticky top-0 self-start">
           <div className="h-full w-full flex">
             <div className="px-4 ">
               {productpage.variants.map((variant, index) => {
@@ -431,7 +435,7 @@ const ProductPageCard = () => {
           </div>
         </div>
         {/* product details */}
-        <div className="flex flex-col w-full lg:w-[40%] gap-1 h-full sticky top-0 max-h-full ">
+        <div className="flex flex-col w-full lg:w-[40%]  gap-1 h-full sticky top-0 max-h-full ">
           <h2 className="text-3xl font-librebaskerville mb-1">
             {productpage.name}
           </h2>

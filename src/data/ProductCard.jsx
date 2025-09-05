@@ -74,7 +74,7 @@ const ProductCard = ({ product }) => {
       }}
     >
       <Link
-        to={`/product/${product.name.toLowerCase().replace(/\s+/g, "-")}`}
+        to={`/products/${product.name.toLowerCase().replace(/\s+/g, "-")}`}
         className="block"
       >
         {/* Discount badge otherwise out of stock*/}
