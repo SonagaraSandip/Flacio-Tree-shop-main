@@ -11,6 +11,7 @@ import Collections from "./pages/Collections";
 import Shop from "./pages/Shop";
 import Product from "./pages/Product";
 import Blog from "./pages/Blog";
+import BlogPageDetails from "./pages/BlogPageDetails";
 import Featured from "./pages/Featured";
 import ScrollToTopAction from "./pages/ScrollToTopAction";
 
@@ -34,6 +35,8 @@ function AppWrapper() {
         <Route path="/collections/:collectionId" element={<Shop />} />
         <Route path="/products/:productName" element={<Product />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:blogId" element={<Blog />} />
+        <Route path="/blog/:tab/:id" element={<BlogPageDetails />} />
         <Route path="/featured" element={<Featured />} />
       </Routes>
     </>

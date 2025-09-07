@@ -1,18 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
-import {
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ShopBG from "../assets/Shop/bg-breadcrumb.webp";
-import {
-  ChevronDown,
-  Check,
-  X,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronDown, Check, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { IoIosStarOutline } from "react-icons/io";
 import products from "../data/products";
 import ProductListCard from "../data/ProductListCard";
@@ -182,8 +172,7 @@ const Shop = () => {
     const newPath = `/collections/${collectionSlug}?${newSearch}`;
 
     // Use replace instead of navigate to avoid adding to history
-    window.history.replaceState({}, '', newPath);
-
+    window.history.replaceState({}, "", newPath);
   }, [
     selectedCollection,
     availability,
@@ -251,7 +240,7 @@ const Shop = () => {
   const [activeThumb, setActiveThumb] = useState(null); // min or max
 
   const handleCollectionChange = (collection) => {
-   const collectionSlug = reverseCollectionMapping[collection] || "all";
+    const collectionSlug = reverseCollectionMapping[collection] || "all";
     navigate(`/collections/${collectionSlug}`);
   };
 
@@ -262,7 +251,6 @@ const Shop = () => {
     }));
   };
 
-
   //filter products is here
   const filteredProducts = products.filter((product) => {
     if (selectedCollection) {
@@ -271,7 +259,8 @@ const Shop = () => {
         (selectedCollection === "Ceramic Pots" && product.CeramicPots) ||
         (selectedCollection === "Herb Seeds" && product.HerbSeeds) ||
         (selectedCollection === "Indoor Plants" && product.IndoorPlants) ||
-        (selectedCollection === "Low Maintainance" && product.LowMaintainance) ||
+        (selectedCollection === "Low Maintainance" &&
+          product.LowMaintainance) ||
         (selectedCollection === "Plant Bundle" && product.PlantBundle);
 
       if (!collectionMatch) return false;
@@ -363,7 +352,7 @@ const Shop = () => {
 
   const resetCollection = () => {
     setSelectedCollection(null);
-    navigate('/collections/all');
+    navigate("/collections/all");
   };
 
   const resetAvailability = () => {
@@ -1198,11 +1187,11 @@ const Shop = () => {
                       />
                       <div className="ml-4 flex flex-col gap-2 ">
                         <div className="flex text-gray-400 ">
-                          <IoIosStarOutline size={12}/>
-                          <IoIosStarOutline size={12}/>
-                          <IoIosStarOutline size={12}/>
-                          <IoIosStarOutline size={12}/>
-                          <IoIosStarOutline size={12}/>
+                          <IoIosStarOutline size={12} />
+                          <IoIosStarOutline size={12} />
+                          <IoIosStarOutline size={12} />
+                          <IoIosStarOutline size={12} />
+                          <IoIosStarOutline size={12} />
                         </div>
                         <h3 className="text-md font-librebaskerville cursor-pointer">
                           {item.name}

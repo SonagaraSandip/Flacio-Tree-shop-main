@@ -62,9 +62,9 @@ const ProductListCard = ({ product }) => {
         onMouseLeave={() => {
           setIsHovered(false), setShowQuantity(false), setShowToolTip(null);
         }}
-      >
+      > 
         <Link
-          to={`/product/${product.name.replace(/\s+/g, "-").toLowerCase()}`}
+          to={`/products/${product.name.replace(/\s+/g, "-").toLowerCase()}`}
           className="block"
         >
           {/* Discount badge otherwise out of stock*/}
