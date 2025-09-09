@@ -60,9 +60,12 @@ const Collections = () => {
               loading="lazy"
               className="overflow-hidden h-[300px] w-full"
             />
-            {hoveredIndex === index &&  (
+            {hoveredIndex === index && (
               <div className="absolute top-0 left-0 right-0 bottom-16 flex items-center bg-black bg-opacity-25 transition-all duration-500">
-                <Link to={`/collections/${collection.link}`} className=" self-end mb-8 bg-white mx-auto text-xs font-librebaskerville px-4 py-2 text-black hover:bg-green-900 hover:text-white cursor-pointer">
+                <Link
+                  to={`/collections/${collection.link}`}
+                  className=" self-end mb-8 bg-white mx-auto text-xs font-librebaskerville px-4 py-2 text-black hover:bg-green-900 hover:text-white cursor-pointer"
+                >
                   {" "}
                   VIEW ALL
                 </Link>
@@ -80,7 +83,7 @@ const Collections = () => {
           </div>
         ))}
       </div>
-      
+
       <ScrollToTop />
       <Footer />
     </div>

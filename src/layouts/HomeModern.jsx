@@ -6,6 +6,7 @@ import { ChevronRight, ChevronLeft, Star, MoveRight } from "lucide-react";
 import products from "../data/products.js";
 const ProductCard = React.lazy(() => import("../data/ProductCard.jsx"));
 const Footer = React.lazy(() => import("../pages/Footer.jsx"));
+import { toast } from "react-toastify";
 import ScrollToTop from "../pages/ScrollToTop.jsx";
 
 import Slider1 from "../assets/Home/slider-1-1.jpg";
@@ -72,6 +73,7 @@ export default function HomeModern() {
   const [hovered, setHovered] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("top");
+  const [email, setEmail] = useState("");
 
   const nextSlide = () => {
     setFade(false);
@@ -198,6 +200,31 @@ export default function HomeModern() {
     window.location.reload();
   };
 
+  const validateEmail = (email) => {
+    // A simple regex for email validation
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  //handle submit in newslatter
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      toast.warn("Please enter a valid email address");
+      return;
+    }
+
+     toast.success("Thank you for subscribing! You'll now receive our latest updates.");
+
+     setEmail("");
+  };
+
   const Services = [
     {
       icon: Delivery,
@@ -299,7 +326,10 @@ export default function HomeModern() {
               <h3 className="font-librebaskerville text-4xl text-gray-900">
                 New Arrivals
               </h3>
-              <button onClick={() => navigate("/collections/all")} className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300">
+              <button
+                onClick={() => navigate("/collections/all")}
+                className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300"
+              >
                 Shop Now
               </button>
             </div>
@@ -316,7 +346,10 @@ export default function HomeModern() {
               <h3 className="font-librebaskerville text-4xl text-gray-900">
                 Gift Green
               </h3>
-              <button onClick={() => navigate("/collections/all")} className="text-gray-500 text-md font-poppins border-b-2 border-black hover:px-[-2px]  transition-colors duration-300">
+              <button
+                onClick={() => navigate("/collections/all")}
+                className="text-gray-500 text-md font-poppins border-b-2 border-black hover:px-[-2px]  transition-colors duration-300"
+              >
                 Shop Now
               </button>
             </div>
@@ -334,7 +367,10 @@ export default function HomeModern() {
               <h3 className="font-librebaskerville text-4xl text-gray-900">
                 Home Grown
               </h3>
-              <button onClick={() => navigate("/collections/all")} className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300">
+              <button
+                onClick={() => navigate("/collections/all")}
+                className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300"
+              >
                 Shop Now
               </button>
             </div>
@@ -473,7 +509,10 @@ export default function HomeModern() {
         <span className="border border-black p-10 mr-24 rounded-full  group-hover:animate-bounceX cursor-pointer">
           {" "}
         </span>
-        <div onClick={() => navigate("/collections/all")} className="absolute flex  items-center justify-center bg-white group-hover:animate-bounceX cursor-pointer ">
+        <div
+          onClick={() => navigate("/collections/all")}
+          className="absolute flex  items-center justify-center bg-white group-hover:animate-bounceX cursor-pointer "
+        >
           <span className="text-lg">View More</span>
           <MoveRight />
         </div>
@@ -542,7 +581,10 @@ export default function HomeModern() {
             orci. Fusce convallis metus id felis luctus adipiscing. Integer
             tincidunt. Etiam imperdiet imperdiet orc
           </p>
-          <button onClick={() => navigate("/collections/all")} className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3">
+          <button
+            onClick={() => navigate("/collections/all")}
+            className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3"
+          >
             Shop Collection
           </button>
         </div>
@@ -562,7 +604,10 @@ export default function HomeModern() {
             orci. Fusce convallis metus id felis luctus adipiscing. Integer
             tincidunt. Etiam imperdiet imperdiet orci
           </p>
-          <button onClick={() => navigate("/collections/all")} className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3">
+          <button
+            onClick={() => navigate("/collections/all")}
+            className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3"
+          >
             Shop Collection
           </button>
         </div>
@@ -593,16 +638,22 @@ export default function HomeModern() {
           newsletters.
         </p>
 
-        <div className="flex ">
+        <form onSubmit={handleSubmit} className="flex" noValidate>
           <input
             type="email"
             placeholder="Email adress...."
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          
             className="px-4 py-4 w-[600px] font-extralight text-sm rounded-l-md font-poppins border-none"
           />
-          <button className="text-white font-poppins rounded-r-md bg-black hover:bg-green-950 px-6 py-4">
+          <button
+            type="submit"
+            className="text-white font-poppins rounded-r-md bg-black hover:bg-green-950 px-6 py-4"
+          >
             Submit
           </button>
-        </div>
+        </form>
       </div>
 
       {/*Bring life in  */}

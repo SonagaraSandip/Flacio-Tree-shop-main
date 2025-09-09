@@ -11,11 +11,14 @@ import {
   MessageSquare,
   Folder,
 } from "lucide-react";
+import ScrollToTop from "./ScrollToTop";
+import Footer from "./Footer";
 
 const Blog = () => {
   const { blogId } = useParams();
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("news");
+  const [commentCounts, setCommentCounts] = useState({});
 
   useEffect(() => {
     if (blogId && BlogData[blogId]) {
@@ -43,6 +46,26 @@ const Blog = () => {
 
   // check if current tab data is a array
   const isArrayData = Array.isArray(currentTabData);
+
+  // load comment count from local Storage
+  useEffect(() => {
+    const counts = {};
+    Object.keys(BlogData).forEach((tab) => {
+      const tabData = BlogData[tab];
+      if (Array.isArray(tabData)) {
+        tabData.forEach((post) => {
+          const savedComments = localStorage.getItem(`comment-${post.id}`);
+          if (savedComments) {
+            const comments = JSON.parse(savedComments);
+            counts[post.id] = comments.length;
+          } else {
+            counts[post.id] = 0;
+          }
+        });
+      }
+    });
+    setCommentCounts(counts);
+  }, []);
 
   return (
     <Layout className="relative">
@@ -123,6 +146,7 @@ const Blog = () => {
                       data={item}
                       generateSlug={generateSlug}
                       tab={selectedTab}
+                      commentCounts={commentCounts[item.id] || 0}
                     />
                     {index < currentTabData.length - 1 && (
                       <span className="h-px w-full my-2 bg-gray-200" />
@@ -135,19 +159,23 @@ const Blog = () => {
                 data={currentTabData}
                 generateSlug={generateSlug}
                 tab={selectedTab}
+                commentCounts={commentCounts[currentTabData.id] || 0}
               />
             )}
 
-            <h1 className="font-librebaskerville text-lg mt-4 mb-2">Tags</h1>
             {/* Tags */}
+            <h1 className="font-librebaskerville text-lg mt-4 mb-2">Tags</h1>
             <div className="flex flex-wrap gap-3">
-              {currentTabData.map((item) => (
+              {currentTabData.map((item) =>
                 item.tags?.map((tag, index) => (
-                  <span key={`${item.id}-${index}`} className={`px-6 py-3 border border-gray-400 text-gray-500 font-poppins text-xs cursor-pointer hover:text-white hover:bg-gradient-to-r  from-green-500  via-green-950 to-green-500 transition-all duration-800  hover:rounded`} >
+                  <span
+                    key={`${item.id}-${index}`}
+                    className={`px-6 py-3 border border-gray-400 text-gray-500 font-poppins text-xs cursor-pointer hover:text-white hover:bg-gradient-to-r   from-green-500  via-green-950 to-green-500 transition-all duration-800 hover:animate-moveStripes-slow hover:rounded`}
+                  >
                     {tag}
                   </span>
                 ))
-              ))}
+              )}
             </div>
           </div>
 
@@ -158,7 +186,12 @@ const Blog = () => {
               <div className="flex flex-col gap-4">
                 {currentTabData.map((item, index) => (
                   <React.Fragment key={item.id}>
-                    <BlogPost data={item} tab={selectedTab} generateSlug={generateSlug} />
+                    <BlogPost
+                      data={item}
+                      tab={selectedTab}
+                      generateSlug={generateSlug}
+                      commentCounts={commentCounts[item.id] || 0}
+                    />
                     {index < currentTabData.length - 1 && (
                       <span className="h-px w-full my-8 bg-gray-200" />
                     )}
@@ -166,16 +199,24 @@ const Blog = () => {
                 ))}
               </div>
             ) : (
-              <BlogPost data={currentTabData} tab={selectedTab} generateSlug={generateSlug} />
+              <BlogPost
+                data={currentTabData}
+                tab={selectedTab}
+                generateSlug={generateSlug}
+                commentCounts={commentCounts[currentTabData.id] || 0}
+              />
             )}
           </div>
         </div>
       </div>
+
+      <ScrollToTop />
+      <Footer />
     </Layout>
   );
 };
 
-const RelatedPost = ({ data, generateSlug, tab }) => (
+const RelatedPost = ({ data, generateSlug, tab, commentCounts }) => (
   <div className="flex gap-4 ">
     <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
       <img
@@ -190,16 +231,16 @@ const RelatedPost = ({ data, generateSlug, tab }) => (
         {data.category.toUpperCase()}
       </p>
       <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
-      <h1 className="text-sm font-poppins cursor-pointer">{data.title}</h1>
+        <h1 className="text-sm font-poppins cursor-pointer">{data.title}</h1>
       </Link>
       <p className="font-poppins cursor-pointer text-sm text-gray-500 hover:text-black">
-        0 comments
+        {commentCounts} {commentCounts === 1 ? "comment" : "comments"}
       </p>
     </div>
   </div>
 );
 
-const BlogPost = ({ data, generateSlug , tab }) => (
+const BlogPost = ({ data, generateSlug, tab, commentCounts }) => (
   <div>
     {/* Date */}
     <div className="relative">
@@ -211,14 +252,14 @@ const BlogPost = ({ data, generateSlug , tab }) => (
         fill="bg-zinc-800"
         className="absolute group top-12 -left-4 rotate-45"
       />
-      <Link to={`/blog/${tab}/${generateSlug(data.title)}`} >
-      <img
-        src={data.image}
-        alt={data.title}
-        className="cursor-pointer h-full w-full"
-        loading="lazy"
+      <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
+        <img
+          src={data.image}
+          alt={data.title}
+          className="cursor-pointer h-full w-full"
+          loading="lazy"
         />
-        </Link>
+      </Link>
     </div>
     {/* user || comments || fashion */}
     <div className="flex self-start  mt-4 gap-2 font-poppins text-sm">
@@ -229,7 +270,9 @@ const BlogPost = ({ data, generateSlug , tab }) => (
       <span> / </span>
       <div className="flex items-center gap-1">
         <MessageSquare size={16} />
-        <button className="text-gray-500 hover:text-black">0 comments</button>
+        <button className="text-gray-500 hover:text-black">
+          {commentCounts} {commentCounts === 1 ? "comment" : "comments"}
+        </button>
       </div>
       <span> / </span>
       <div className="flex items-center gap-1">
@@ -240,13 +283,13 @@ const BlogPost = ({ data, generateSlug , tab }) => (
       </div>
     </div>
     <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
-    <h1 className="font-librebaskerville text-3xl mt-6 mb-4">{data.title}</h1>
+      <h1 className="font-librebaskerville text-3xl mt-6 mb-4">{data.title}</h1>
     </Link>
     <p className="text-gray-500 text-sm font-poppins">{data.excerpt}</p>
     <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
-    <button className="bg-green-950 px-4 py-2 mt-6 text-sm font-poppins text-white hover:bg-zinc-900">
-      READ MORE
-    </button>
+      <button className="bg-green-950 px-4 py-2 mt-6 text-sm font-poppins text-white hover:bg-zinc-900">
+        READ MORE
+      </button>
     </Link>
   </div>
 );

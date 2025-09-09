@@ -28,6 +28,10 @@ export default {
           "0%": { backgroundPosition: "0 0" },
           "100%": { backgroundPosition: "500px 0" },
         },
+        "moveStripes-slow": {
+          "0%": { backgroundPosition: "0 0" },
+          "100%": { backgroundPosition: "500px 0" },
+        },
         "fade-in-up": {
           "0%": {
             opacity: "0",
@@ -38,9 +42,9 @@ export default {
             transform: "translateY(0)",
           },
         },
-        'fill-pulse': {
-          '0%, 100%': { fill: 'rgb(74 222 128)' }, // green-400
-          '50%': { fill: 'rgb(168 85 247)' }, // purple-500
+        "fill-pulse": {
+          "0%, 100%": { fill: "rgb(74 222 128)" }, // green-400
+          "50%": { fill: "rgb(168 85 247)" }, // purple-500
         },
       },
       animation: {
@@ -48,8 +52,9 @@ export default {
         scalePulse: "scalePulse 4s ease-in-out infinite",
         "spin-slow": "spin 8s linear infinite",
         moveStripes: "moveStripes 2s linear infinite",
+        "moveStripes-slow": "moveStripes 12s linear infinite",
         "fade-in-up": "fade-in-up 0.7s ease-out forwards",
-        'fill-pulse': 'fill-pulse 2s infinite ease-in-out',
+        "fill-pulse": "fill-pulse 2s infinite ease-in-out",
       },
     },
   },
