@@ -1,4 +1,5 @@
 import React, { Suspense, useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "../pages/Layout.jsx";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { ChevronRight, ChevronLeft, Star, MoveRight } from "lucide-react";
@@ -63,6 +64,7 @@ const slides = [
 ];
 
 export default function HomeModern() {
+  const navigate = useNavigate();
   const scrollRef = useRef();
   const [index, setIndex] = useState(0);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
@@ -191,6 +193,11 @@ export default function HomeModern() {
     scrollRight();
   };
 
+  //handle Reload
+  const handleReload = () => {
+    window.location.reload();
+  };
+
   const Services = [
     {
       icon: Delivery,
@@ -244,10 +251,16 @@ export default function HomeModern() {
               them to your door and helps you look after them.
             </p>
             <div className="flex gap-4 mt-12">
-              <button className="bg-white text-xl text-black px-6 py-2   font-librebaskerville hover:bg-green-900 hover:text-white transition-colors duration-500">
+              <button
+                onClick={() => navigate("/collections/all")}
+                className="bg-white text-sm text-black px-6 py-2  font-librebaskerville hover:bg-green-900 hover:text-white transition-colors duration-500"
+              >
                 Shop indoor
               </button>
-              <button className="bg-white text-xl text-black px-6 py-2 font-librebaskerville hover:bg-green-900 hover:text-white transition-colors duration-500">
+              <button
+                onClick={handleReload}
+                className="bg-white text-sm text-black px-6 py-2 font-librebaskerville hover:bg-green-900 hover:text-white transition-colors duration-500"
+              >
                 Shop outdoor
               </button>
             </div>
@@ -286,7 +299,7 @@ export default function HomeModern() {
               <h3 className="font-librebaskerville text-4xl text-gray-900">
                 New Arrivals
               </h3>
-              <button className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300">
+              <button onClick={() => navigate("/collections/all")} className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300">
                 Shop Now
               </button>
             </div>
@@ -303,7 +316,7 @@ export default function HomeModern() {
               <h3 className="font-librebaskerville text-4xl text-gray-900">
                 Gift Green
               </h3>
-              <button className="text-gray-500 text-md font-poppins border-b-2 border-black hover:px-[-2px]  transition-colors duration-300">
+              <button onClick={() => navigate("/collections/all")} className="text-gray-500 text-md font-poppins border-b-2 border-black hover:px-[-2px]  transition-colors duration-300">
                 Shop Now
               </button>
             </div>
@@ -321,7 +334,7 @@ export default function HomeModern() {
               <h3 className="font-librebaskerville text-4xl text-gray-900">
                 Home Grown
               </h3>
-              <button className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300">
+              <button onClick={() => navigate("/collections/all")} className="text-gray-500 text-md font-poppins border-b-2 border-black hover:text-green-800  transition-colors duration-300">
                 Shop Now
               </button>
             </div>
@@ -460,7 +473,7 @@ export default function HomeModern() {
         <span className="border border-black p-10 mr-24 rounded-full  group-hover:animate-bounceX cursor-pointer">
           {" "}
         </span>
-        <div className="absolute flex  items-center justify-center bg-white group-hover:animate-bounceX cursor-pointer ">
+        <div onClick={() => navigate("/collections/all")} className="absolute flex  items-center justify-center bg-white group-hover:animate-bounceX cursor-pointer ">
           <span className="text-lg">View More</span>
           <MoveRight />
         </div>
@@ -529,7 +542,7 @@ export default function HomeModern() {
             orci. Fusce convallis metus id felis luctus adipiscing. Integer
             tincidunt. Etiam imperdiet imperdiet orc
           </p>
-          <button className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3">
+          <button onClick={() => navigate("/collections/all")} className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3">
             Shop Collection
           </button>
         </div>
@@ -549,7 +562,7 @@ export default function HomeModern() {
             orci. Fusce convallis metus id felis luctus adipiscing. Integer
             tincidunt. Etiam imperdiet imperdiet orci
           </p>
-          <button className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3">
+          <button onClick={() => navigate("/collections/all")} className="font-poppins text-center self-start bg-green-900 hover:bg-green-950 text-white px-6 py-3">
             Shop Collection
           </button>
         </div>

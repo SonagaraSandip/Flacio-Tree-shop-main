@@ -464,9 +464,9 @@ const Shop = () => {
   }));
 
   const feature = [
-    { name: "Tiger Aloe", image: Tiger, price: 150 },
-    { name: "The Beginner Set", image: Beginner, price: 130 },
-    { name: "Ruby Rubber Tree", image: Ruby, price: 90, DiscountPrice: 51 },
+    { name: "Tiger Aloe", image: Tiger, price: 150 , link: "/products/tiger-aloe"},
+    { name: "The Beginner Set", image: Beginner, price: 130 , link: "/products/the-beginner-set" },
+    { name: "Ruby Rubber Tree", image: Ruby, price: 90, DiscountPrice: 51 , link: "/products/ruby-rubber-tree" },
   ];
 
   const visibleColors = showAll ? allColors : allColors.slice(0, 5);
@@ -1183,6 +1183,8 @@ const Shop = () => {
                       <img
                         src={item.image}
                         alt={item.name}
+                        loading="lazy"
+                        onClick={() => navigate(item.link)}
                         className="w-20 h-24 object-cover hover:scale-105 transition-transform duration-300"
                       />
                       <div className="ml-4 flex flex-col gap-2 ">
@@ -1193,7 +1195,7 @@ const Shop = () => {
                           <IoIosStarOutline size={12} />
                           <IoIosStarOutline size={12} />
                         </div>
-                        <h3 className="text-md font-librebaskerville cursor-pointer">
+                        <h3 onClick={() => navigate(item.link)} className="text-md font-librebaskerville cursor-pointer">
                           {item.name}
                         </h3>
                         <p className="text-sm text-gray-500 font-librebaskerville">
@@ -1217,7 +1219,7 @@ const Shop = () => {
                       </div>
                     </div>
                     {index !== feature.length - 1 && (
-                      <div className="flex items-center justify-center h-px w-full mt-4 bg-gray-400" />
+                      <div className="flex items-center justify-center h-px w-full mt-4 bg-gray-200" />
                     )}
                   </div>
                 ))}

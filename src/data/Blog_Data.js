@@ -30,6 +30,7 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
+      tags: [ "Baber" , "Baby Needs" , "Cosmetic" , "Organic"]
     },
   ],
   lifeStyle: [
@@ -44,6 +45,7 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
+      tags: ["Baber" , "Baby Needs" ,"Beauty", "Cosmetic", "New" , "Organic" ,"Simple"]
     },
   ],
   news: [
@@ -58,6 +60,7 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
+       tags: ["Baber" , "Baby Needs" ,"Beauty", "Cosmetic","Hot", "New" , "Organic" ,"Simple"]
     },
     {
       id: "news-2",
@@ -96,6 +99,7 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
+      tags: ["Beauty" , "Cosmetic" ,"Simple"]
     },
   ],
 };

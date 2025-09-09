@@ -269,7 +269,7 @@ const ProductPageCard = () => {
   return (
     <div className="mt-[90px] ">
       <div className="mx-12 font-librebaskerville text-sm text-black pb-4">
-        <span onClick={() => navigate("/")}>Home</span> / {productpage.name}{" "}
+        <span onClick={() => navigate("/")} className="hover:border-b-2 hover:border-black hover:text-black cursor-pointer">Home</span> / {productpage.name}{" "}
       </div>
 
       <div key={productpage.id} className="flex gap-4 mx-8 items-stretch">

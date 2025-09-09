@@ -45,7 +45,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const handleMouseLeave = () => {
     const timeout = setTimeout(() => {
       setHoveredMenu(null);
-    }, 3000); //300 ms delay
+    }, 300); //300 ms delay
 
     setHoverTimeout(timeout);
   };
@@ -62,6 +62,14 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const handleDropDownLeave = () => {
     setHoveredMenu(null);
   };
+
+  // Determine hover color based on navbar state
+  const getHoverColor = () => {
+    return scrolled
+      ? "before:bg-gray-800 after:bg-gray-800"
+      : "before:bg-white after:bg-white";
+  };
+
 
   //Homepage navbar
   const HomePages = [
@@ -217,13 +225,12 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
           >
             <Link
               to="/"
-              className="flex items-center font-poppins gap-1 cursor-pointer"
+              className={`cursor-pointer font-poppins flex items-center gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute  before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute  after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
+                location.pathname === "/" ? "border-b-2 " : ""
+              }  ${scrolled ? "border-black" : "border-white"}
+              `}
             >
-              <span
-                className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]`}
-              >
-                HOME
-              </span>
+              <span className={` `}>HOME</span>
               <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />{" "}
             </Link>
 
@@ -271,7 +278,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             >
               <Link
                 to="/collections/all"
-                className={`cursor-pointer font-poppins flex items-center gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${
+                className={`cursor-pointer font-poppins flex items-center gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
                   location.pathname.startsWith("/collections")
                     ? "border-b-2 border-black"
                     : ""
@@ -400,7 +407,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             >
               <Link
                 to="/products/jade-succulent"
-                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${
+                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
                   location.pathname.startsWith("/product")
                     ? "border-b-2 border-black"
                     : ""
@@ -458,8 +465,8 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             >
               <Link
                 to="/blog/news"
-                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${
-                  location.pathname.startsWith("/bl")
+                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
+                  location.pathname.startsWith("/blog")
                     ? "border-b-2 border-black"
                     : ""
                 } `}
@@ -518,7 +525,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
 
           <Link to="/featured" className="relative group cursor-pointer">
             <div className="flex items-center font-poppins gap-1">
-              <span className="transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]">
+              <span className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()}`}>
                 FEATURED
               </span>
               <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />

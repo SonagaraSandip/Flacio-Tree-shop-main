@@ -54,7 +54,7 @@ const Blog = () => {
       />
 
       <div className="flex flex-col items-center justify-end h-[300px] pb-16 text-black">
-        <h1 className="text-6xl  font-librebaskerville">Blogs</h1>
+        <h1 className="text-6xl font-librebaskerville">Blogs</h1>
         <div className="flex items-center justify-center gap-6 text-xl font-poppins text-gray-500 mt-6 transition-colors duration-500">
           {Object.keys(BlogData).map((tab) => (
             <button
@@ -140,6 +140,15 @@ const Blog = () => {
 
             <h1 className="font-librebaskerville text-lg mt-4 mb-2">Tags</h1>
             {/* Tags */}
+            <div className="flex flex-wrap gap-3">
+              {currentTabData.map((item) => (
+                item.tags?.map((tag, index) => (
+                  <span key={`${item.id}-${index}`} className={`px-6 py-3 border border-gray-400 text-gray-500 font-poppins text-xs cursor-pointer hover:text-white hover:bg-gradient-to-r  from-green-500  via-green-950 to-green-500 transition-all duration-800  hover:rounded`} >
+                    {tag}
+                  </span>
+                ))
+              ))}
+            </div>
           </div>
 
           {/* Right side content */}
@@ -149,7 +158,7 @@ const Blog = () => {
               <div className="flex flex-col gap-4">
                 {currentTabData.map((item, index) => (
                   <React.Fragment key={item.id}>
-                    <BlogPost data={item} />
+                    <BlogPost data={item} tab={selectedTab} generateSlug={generateSlug} />
                     {index < currentTabData.length - 1 && (
                       <span className="h-px w-full my-8 bg-gray-200" />
                     )}
@@ -157,7 +166,7 @@ const Blog = () => {
                 ))}
               </div>
             ) : (
-              <BlogPost data={currentTabData} />
+              <BlogPost data={currentTabData} tab={selectedTab} generateSlug={generateSlug} />
             )}
           </div>
         </div>
@@ -180,7 +189,9 @@ const RelatedPost = ({ data, generateSlug, tab }) => (
       <p className="font-poppins text-xs cursor-pointer text-gray-500 hover:text-black">
         {data.category.toUpperCase()}
       </p>
+      <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
       <h1 className="text-sm font-poppins cursor-pointer">{data.title}</h1>
+      </Link>
       <p className="font-poppins cursor-pointer text-sm text-gray-500 hover:text-black">
         0 comments
       </p>
@@ -188,7 +199,7 @@ const RelatedPost = ({ data, generateSlug, tab }) => (
   </div>
 );
 
-const BlogPost = ({ data }) => (
+const BlogPost = ({ data, generateSlug , tab }) => (
   <div>
     {/* Date */}
     <div className="relative">
@@ -200,12 +211,14 @@ const BlogPost = ({ data }) => (
         fill="bg-zinc-800"
         className="absolute group top-12 -left-4 rotate-45"
       />
+      <Link to={`/blog/${tab}/${generateSlug(data.title)}`} >
       <img
         src={data.image}
         alt={data.title}
         className="cursor-pointer h-full w-full"
         loading="lazy"
-      />
+        />
+        </Link>
     </div>
     {/* user || comments || fashion */}
     <div className="flex self-start  mt-4 gap-2 font-poppins text-sm">
@@ -226,12 +239,15 @@ const BlogPost = ({ data }) => (
         </button>
       </div>
     </div>
-
+    <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
     <h1 className="font-librebaskerville text-3xl mt-6 mb-4">{data.title}</h1>
+    </Link>
     <p className="text-gray-500 text-sm font-poppins">{data.excerpt}</p>
+    <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
     <button className="bg-green-950 px-4 py-2 mt-6 text-sm font-poppins text-white hover:bg-zinc-900">
       READ MORE
     </button>
+    </Link>
   </div>
 );
 

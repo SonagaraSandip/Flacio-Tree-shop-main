@@ -182,11 +182,11 @@ const ProductCard = ({ product }) => {
 
       {/* Hovered icons - Placed OUTSIDE the Link to prevent navigation */}
       {isHovered && (
-        <div className=" absolute  top-2 right-2 flex flex-col gap-2 z-20 transition-transform duration-500 ease-out-in">
+        <div className="absolute top-6 right-2 flex flex-col gap-2 z-20 transition-all duration-300 animate-fade-in-up">
           {selectedVariant?.inStock && (
             <div className="relative transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
               {/* Add to Cart tooltip */}
-              <Tooltip text="Add to Cart" show={showTooltip === "cart"}  />
+              <Tooltip text="Add to Cart" show={showTooltip === "cart"} />
 
               {/* Shopping bag button */}
               <div
@@ -202,14 +202,20 @@ const ProductCard = ({ product }) => {
               >
                 <button
                   onClick={(e) => handleActionClick(e, "cart")}
-                  className={`relative z-10 bg-white p-3 hover:bg-green-950 hover:text-white rounded-full shadow-md transition-all duration-300 ease-in-out ${showQuantity ? "translate-x-[-80px]" : "translate-x-0"}`}
+                  className={`relative z-10 bg-white p-3 hover:bg-green-950 hover:text-white rounded-full shadow-md transition-all duration-300 ease-in-out ${
+                    showQuantity ? "translate-x-[-80px]" : "translate-x-0"
+                  }`}
                 >
-                  <ShoppingBag size={24}  />
+                  <ShoppingBag size={24} />
                 </button>
                 {showQuantity && (
                   <div
                     onMouseEnter={() => setShowQuantity(true)}
-                    className={`absolute -left-20 pl-12 flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-300 ease-in-out ${showQuantity ? "opacity-100 w-auto px-2 py-2" : "opacity-0 pointer-events-none"}`}
+                    className={`absolute -left-20 pl-12 flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-300 ease-in-out ${
+                      showQuantity
+                        ? "opacity-100 w-auto px-2 py-2"
+                        : "opacity-0 pointer-events-none"
+                    }`}
                   >
                     <button
                       className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"

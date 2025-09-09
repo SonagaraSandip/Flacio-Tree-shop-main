@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Footer from "../pages/Footer";
+import ScrollToTop from "../pages/ScrollToTop";
 import LowMaintainance from "../assets/collection/Low-maintainance.avif";
 import AirPurifying from "../assets/collection/Air-Purifying.avif";
 import HerbsSeeds from "../assets/collection/Herb-Seeds.avif";
@@ -78,6 +80,9 @@ const Collections = () => {
           </div>
         ))}
       </div>
+      
+      <ScrollToTop />
+      <Footer />
     </div>
   );
 };
