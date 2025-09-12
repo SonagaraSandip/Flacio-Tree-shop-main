@@ -85,6 +85,8 @@ const Footer = () => {
               <FaTiktok size={24} />
             </button>
           </div>
+
+
         </div>
       </div>
 

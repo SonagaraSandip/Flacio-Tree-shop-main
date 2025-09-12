@@ -14,6 +14,7 @@ import Blog from "./pages/Blog";
 import BlogPageDetails from "./pages/BlogPageDetails";
 import Featured from "./pages/Featured";
 import ScrollToTopAction from "./pages/ScrollToTopAction";
+import WishList from "./pages/WishList";
 
 //from other
 import TopBarLoader from "./other/TopBarLoader";
@@ -38,6 +39,7 @@ function AppWrapper() {
         <Route path="/blog/:blogId" element={<Blog />} />
         <Route path="/blog/:tab/:id" element={<BlogPageDetails />} />
         <Route path="/featured" element={<Featured />} />
+        <Route path="/wishlist" element={<WishList />} />
       </Routes>
     </>
   );

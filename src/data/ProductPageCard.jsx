@@ -269,7 +269,13 @@ const ProductPageCard = () => {
   return (
     <div className="mt-[90px] ">
       <div className="mx-12 font-librebaskerville text-sm text-black pb-4">
-        <span onClick={() => navigate("/")} className="hover:border-b-2 hover:border-black hover:text-black cursor-pointer">Home</span> / {productpage.name}{" "}
+        <span
+          onClick={() => navigate("/")}
+          className="hover:border-b-2 hover:border-black hover:text-black cursor-pointer"
+        >
+          Home
+        </span>{" "}
+        / {productpage.name}{" "}
       </div>
 
       <div key={productpage.id} className="flex gap-4 mx-8 items-stretch">
@@ -514,7 +520,7 @@ const ProductPageCard = () => {
           {/* outofstock text */}
           {isOutOfStock ? (
             <div className="relative flex items-center mt-2 gap-2">
-              <span class="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-red-700 opacity-70 "></span>
+              <span className="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-red-700 opacity-70 "></span>
               <CircleCheck
                 size={20}
                 className="relative inline-flex text-red-700 rounded-full shadow-3xl "
@@ -545,7 +551,7 @@ const ProductPageCard = () => {
                 size={20}
                 className="relative inline-flex text-green-700  rounded-full shadow-3xl mr-2"
               />
-              <span class="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-green-700 opacity-50"></span>
+              <span className="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-green-700 opacity-50"></span>
               <p className=" text-md font-poppins text-green-700 font-semibold">
                 In Stock
               </p>

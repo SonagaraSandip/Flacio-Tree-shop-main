@@ -551,12 +551,14 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
         >
           <Search className="w-6 h-6 cursor-pointer hover:scale-110" />
           <User className="w-6 h-6 cursor-pointer hover:scale-110" />
+          <Link to={"/wishlist"}>
           <div className="relative">
             <Heart className="w-6 h-6 cursor-pointer hover:scale-110 " />
             <span className="absolute -top-1 -right-2 text-xs w-4 h-4 bg-green-800 text-white rounded-full flex items-center justify-center">
               0
             </span>
           </div>
+          </Link>
           <div className="relative">
             <ShoppingBag className="w-6 h-6 cursor-pointer hover:scale-110" />
             <span className="absolute -top-1 -right-2 text-xs w-4 h-4 bg-green-800 text-white rounded-full flex items-center justify-center ">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Search, ChevronRight } from "lucide-react";
+import { Search, ChevronRight, Ellipsis } from "lucide-react";
 import Footer from "../pages/Footer";
 import Layout from "../pages/Layout";
 import ScrollToTop from "./ScrollToTop";
@@ -401,6 +401,64 @@ const BlogPageDetails = () => {
                 ))
               )}
             </div>
+
+            {/*if news then show previos and next post*/}
+            {relatedPosts.length > 1 &&
+              (() => {
+                //find current Index
+                const currentIndex = relatedPosts.findIndex(
+                  (post) => post.title === BlogPost.title
+                );
+
+                const PrevPost =
+                  currentIndex > 0 ? relatedPosts[currentIndex - 1] : null;
+                const NextPost =
+                  currentIndex < relatedPosts.length - 1
+                    ? relatedPosts[currentIndex + 1]
+                    : null;
+
+                return (
+                  <div className="relative flex justify-between border-y border-gray-400 transition-colors duration-300 py-4">
+                    {PrevPost ? (
+                      <div className="flex flex-col group text-gray-500 hover:text-black gap-2">
+                        <p className="font-poppins uppercase text-sm">Prev</p>
+                        <Link
+                          to={`/blog/${tab}/${generateSlug(PrevPost.title)}`}
+                          className=" group text-sm font-librebaskerville"
+                        >
+                          {PrevPost.title}
+                        </Link>
+                      </div>
+                    ) : (
+                      <span />
+                    )}
+
+                    <button
+                      onClick={() => navigate(`/blog/${tab}`)}
+                      className="cursor-pointer group/download relative flex  items-center bg-white p-2 rounded-full hover:bg-opacity-70 font-semibold border border-black transition-all duration-300"
+                    >
+                      <Ellipsis size={32} />
+                      <div className="absolute text-xs uppercase font-poppins scale-0 rounded-md py-2 px-12 text-white bg-gray-600 lg:-left-10 mb-3 bottom-full group-hover/download:scale-90 origin-bottom transition-all duration-300 shadow-lg before:content-[''] before:absolute before:top-full before:left-2/4 before:w-3 before:h-3 before:border-solid before:bg-gray-600 before:rotate-45 before:-translate-y-2/4 before:-translate-x-2/4">
+                        Back to News
+                      </div>
+                    </button>
+
+                    {NextPost ? (
+                      <div className="flex flex-col group text-gray-500 hover:text-black gap-2">
+                        <p className="font-poppins uppercase text-sm self-end">NEXT</p>
+                        <Link
+                          to={`/blog/${tab}/${generateSlug(NextPost.title)}`}
+                          className=" group text-sm font-librebaskerville"
+                        >
+                          {NextPost.title}
+                        </Link>
+                      </div>
+                    ) : (
+                      <span />
+                    )}
+                  </div>
+                );
+              })()}
 
             {/* show comments here */}
             {comments.length > 0 && (

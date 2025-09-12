@@ -1,8 +1,9 @@
 //Single product item with logic for image, hover, etc.
 import React, { useState } from "react";
-import { ShoppingBag, Heart, ArrowDownUp, Search } from "lucide-react";
+import { ShoppingBag, Heart, ArrowDownUp, Search} from "lucide-react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
+import QuickViewModal from "../other/QuickViewModal";
 
 const ProductCard = ({ product }) => {
   // state to keep track of selected variant  initial first
@@ -13,9 +14,17 @@ const ProductCard = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [showQuantity, setShowQuantity] = useState(false);
   const [showTooltip, setShowToolTip] = useState(null); // 'cart' | 'wishlist' | 'compare' | 'search' | null
+  const [quickView, setQuickView] = useState(false);
+  const [wishList , setWishList] = useState([])
 
   //color tooltip
   const [hoveredColorIndex, setHoveredColorIndex] = useState(null);
+
+  const AddToWishList = (product) => {
+    if(!wishList.some(item => item.id === product.id)){
+      setWishList([...wishList, product])
+    }
+  }
 
   //logic to decide which image to show
   //if hovered -> show back image if avalable else show front image
@@ -66,218 +75,232 @@ const ProductCard = ({ product }) => {
   );
 
   return (
-    <div
-      className="relative overflow-hidden group transition "
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false), setShowQuantity(false), setShowToolTip(null);
-      }}
-    >
-      <Link
-        to={`/products/${product.name.toLowerCase().replace(/\s+/g, "-")}`}
-        className="block"
+    <>
+      <div
+        className="relative overflow-hidden group transition "
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => {
+          setIsHovered(false), setShowQuantity(false), setShowToolTip(null);
+        }}
       >
-        {/* Discount badge otherwise out of stock*/}
-        <div className="absolute z-10 text-xs top-6 left-2 px-2  text-white ">
-          {isOutOfStock ? (
-            <div className="bg-gray-500 px-3 py-1">Out of Stock</div>
-          ) : product.discountPercent ? (
-            <div className="bg-red-700 px-3 py-1">
-              - {product.discountPercent}%
-            </div>
-          ) : null}
-        </div>
-
-        {/* Product image */}
-        <div className="relative mt-2">
-          <div className="overflow-hidden ">
-            <img
-              src={displayImage}
-              alt={product.name}
-              loading="lazy"
-              className="w-full h-full object-cover max-w-full max-h-full  cursor-pointer transition-transform duration-500  hover:scale-110"
-              style={{
-                transitionDelay: isHovered ? "0.5s" : "0s",
-              }}
-            />
+        <Link
+          to={`/products/${product.name.toLowerCase().replace(/\s+/g, "-")}`}
+          className="block"
+        >
+          {/* Discount badge otherwise out of stock*/}
+          <div className="absolute z-10 text-xs top-6 left-2 px-2  text-white ">
+            {isOutOfStock ? (
+              <div className="bg-gray-500 px-3 py-1">Out of Stock</div>
+            ) : product.discountPercent ? (
+              <div className="bg-red-700 px-3 py-1">
+                - {product.discountPercent}%
+              </div>
+            ) : null}
           </div>
 
-          {/* name + price */}
-          <div className="mt-4 ">
-            <h2 className="text-base font-normal font-librebaskerville ">
-              {product.name}
-            </h2>
-            <div className="flex items-center gap-2">
-              {product.discountPercent ? (
-                <>
-                  <p className="text-gray-500 font-librebaskervilleItalic text-base line-through">
-                    ${product.originalPrice.toFixed(2)}
-                  </p>
-                  <p className="text-red-600 font-librebaskerville text-base">
-                    ${product.discountPrice.toFixed(2)}
-                  </p>
-                </>
-              ) : (
-                <p className="text-gray-500 font-librebaskerville text-md">
-                  $
-                  {selectedVariant
-                    ? selectedVariant.price.toFixed(2)
-                    : product.variants[0].price.toFixed(2)}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Color dots */}
-          {!isOutOfStock && (
-            <div className="flex space-x-2  mt-2 ">
-              {product.variants.map((variant, index) => (
-                <div key={index} className="relative overflow-x-visible">
-                  {product.id === 1 || product.id === 5 ? (
-                    //show image thumbnail if available
-                    <button
-                      className={`w-5 h-5 rounded-full border-2 shadow   ${
-                        selectedVariant?.color === variant.color
-                          ? "border-black"
-                          : "border-transparent"
-                      }`}
-                      onClick={(e) => handleColorSelect(e, variant)}
-                      onMouseEnter={() => setHoveredColorIndex(index)}
-                      onMouseLeave={() => setHoveredColorIndex(null)}
-                      style={{
-                        backgroundImage: `url(${variant.image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                      }}
-                    ></button>
-                  ) : (
-                    <button
-                      className={`w-5 h-5 rounded-full border-2   ${
-                        selectedVariant?.color === variant.color
-                          ? "border-black"
-                          : "border-gray-200"
-                      }`}
-                      onClick={(e) => handleColorSelect(e, variant)}
-                      onMouseEnter={() => setHoveredColorIndex(index)}
-                      onMouseLeave={() => setHoveredColorIndex(null)}
-                      style={{
-                        backgroundColor: variant.hex,
-                      }}
-                      aria-label={`Select ${variant.color} color`}
-                    />
-                  )}
-                  {hoveredColorIndex === index && (
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-700 rounded whitespace-nowrap z-80">
-                      {variant.color || "Variant " + (index + 1)}
-                      <div className="absolute top-5 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-700 transform rotate-45"></div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </Link>
-
-      {/* Hovered icons - Placed OUTSIDE the Link to prevent navigation */}
-      {isHovered && (
-        <div className="absolute top-6 right-2 flex flex-col gap-2 z-20 transition-all duration-300 animate-fade-in-up">
-          {selectedVariant?.inStock && (
-            <div className="relative transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
-              {/* Add to Cart tooltip */}
-              <Tooltip text="Add to Cart" show={showTooltip === "cart"} />
-
-              {/* Shopping bag button */}
-              <div
-                className="relative flex items-center"
-                onMouseEnter={() => {
-                  setShowQuantity(true);
-                  setShowToolTip("cart");
+          {/* Product image */}
+          <div className="relative mt-2">
+            <div className="overflow-hidden ">
+              <img
+                src={displayImage}
+                alt={product.name}
+                loading="lazy"
+                className="w-full h-full object-cover max-w-full max-h-full  cursor-pointer transition-transform duration-500  hover:scale-110"
+                style={{
+                  transitionDelay: isHovered ? "0.5s" : "0s",
                 }}
-                onMouseLeave={() => {
-                  setShowQuantity(false);
-                  setShowToolTip(null);
-                }}
-              >
-                <button
-                  onClick={(e) => handleActionClick(e, "cart")}
-                  className={`relative z-10 bg-white p-3 hover:bg-green-950 hover:text-white rounded-full shadow-md transition-all duration-300 ease-in-out ${
-                    showQuantity ? "translate-x-[-80px]" : "translate-x-0"
-                  }`}
-                >
-                  <ShoppingBag size={24} />
-                </button>
-                {showQuantity && (
-                  <div
-                    onMouseEnter={() => setShowQuantity(true)}
-                    className={`absolute -left-20 pl-12 flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-300 ease-in-out ${
-                      showQuantity
-                        ? "opacity-100 w-auto px-2 py-2"
-                        : "opacity-0 pointer-events-none"
-                    }`}
-                  >
-                    <button
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleQuantityChange(-1);
-                      }}
-                    >
-                      -
-                    </button>{" "}
-                    <span className="mx-2 text-sm">{quantity}</span>
-                    <button
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleQuantityChange(1);
-                      }}
-                    >
-                      +
-                    </button>
-                  </div>
+              />
+            </div>
+
+            {/* name + price */}
+            <div className="mt-4 ">
+              <h2 className="text-base font-normal font-librebaskerville ">
+                {product.name}
+              </h2>
+              <div className="flex items-center gap-2">
+                {product.discountPercent ? (
+                  <>
+                    <p className="text-gray-500 font-librebaskervilleItalic text-base line-through">
+                      ${product.originalPrice.toFixed(2)}
+                    </p>
+                    <p className="text-red-600 font-librebaskerville text-base">
+                      ${product.discountPrice.toFixed(2)}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-gray-500 font-librebaskerville text-md">
+                    $
+                    {selectedVariant
+                      ? selectedVariant.price.toFixed(2)
+                      : product.variants[0].price.toFixed(2)}
+                  </p>
                 )}
               </div>
             </div>
-          )}
 
-          {/* Whishlist */}
-          <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
-            <Tooltip text="add to wishlist" show={showTooltip === "wishlist"} />
-            <button
-              className="bg-white  p-3 rounded-full shadow hover:bg-green-500 transition hover:scale-110 hover:animate-pulse   hover:opacity-100"
-              onMouseEnter={() => setShowToolTip("wishlist")}
-              onMouseLeave={() => setShowToolTip(null)}
-            >
-              <Heart size={24} />
-            </button>
+            {/* Color dots */}
+            {!isOutOfStock && (
+              <div className="flex space-x-2 mt-2 ">
+                {product.variants.map((variant, index) => (
+                  <div key={index} className="relative overflow-x-visible">
+                    {product.id === 1 || product.id === 5 ? (
+                      //show image thumbnail if available
+                      <button
+                        className={`w-5 h-5 rounded-full border-2 shadow   ${
+                          selectedVariant?.color === variant.color
+                            ? "border-black"
+                            : "border-transparent"
+                        }`}
+                        onClick={(e) => handleColorSelect(e, variant)}
+                        onMouseEnter={() => setHoveredColorIndex(index)}
+                        onMouseLeave={() => setHoveredColorIndex(null)}
+                        style={{
+                          backgroundImage: `url(${variant.image})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                        }}
+                      ></button>
+                    ) : (
+                      <button
+                        className={`w-5 h-5 rounded-full border-2   ${
+                          selectedVariant?.color === variant.color
+                            ? "border-black"
+                            : "border-gray-200"
+                        }`}
+                        onClick={(e) => handleColorSelect(e, variant)}
+                        onMouseEnter={() => setHoveredColorIndex(index)}
+                        onMouseLeave={() => setHoveredColorIndex(null)}
+                        style={{
+                          backgroundColor: variant.hex,
+                        }}
+                        aria-label={`Select ${variant.color} color`}
+                      />
+                    )}
+                    {hoveredColorIndex === index && (
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-700 rounded whitespace-nowrap z-80">
+                        {variant.color || "Variant " + (index + 1)}
+                        <div className="absolute top-5 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-700 transform rotate-45"></div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+        </Link>
 
-          <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
-            <Tooltip text="Compare" show={showTooltip === "compare"} />
-            <button
-              className="bg-white  p-3 rounded-full shadow hover:bg-green-500 transition hover:scale-110 hover:animate-pulse  hover:opacity-100 "
-              onMouseEnter={() => setShowToolTip("compare")}
-              onMouseLeave={() => setShowToolTip(null)}
-            >
-              <ArrowDownUp size={24} />
-            </button>
-          </div>
+        {/* Hovered icons - Placed OUTSIDE the Link to prevent navigation */}
+        {isHovered && (
+          <div className="absolute top-6 right-2 flex flex-col gap-2 z-20 transition-all duration-300 animate-fade-in-up">
+            {selectedVariant?.inStock && (
+              <div className="relative transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+                {/* Add to Cart tooltip */}
+                <Tooltip text="Add to Cart" show={showTooltip === "cart"} />
 
-          <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
-            <Tooltip text="Search" show={showTooltip === "search"} />
-            <button
-              className="bg-white  p-3 rounded-full shadow hover:bg-green-500 transition hover:scale-110 hover:animate-pulse  hover:opacity-100"
-              onMouseEnter={() => setShowToolTip("search")}
-              onMouseLeave={() => setShowToolTip(null)}
-            >
-              <Search size={24} />
-            </button>
+                {/* Shopping bag button */}
+                <div
+                  className="relative flex items-center"
+                  onMouseEnter={() => {
+                    setShowQuantity(true);
+                    setShowToolTip("cart");
+                  }}
+                  onMouseLeave={() => {
+                    setShowQuantity(false);
+                    setShowToolTip(null);
+                  }}
+                >
+                  <button
+                    onClick={(e) => handleActionClick(e, "cart")}
+                    className={`relative z-10 bg-white p-3 hover:bg-green-950 hover:text-white rounded-full shadow-md transition-all duration-300 ease-in-out ${
+                      showQuantity ? "translate-x-[-80px]" : "translate-x-0"
+                    }`}
+                  >
+                    <ShoppingBag size={24} />
+                  </button>
+                  {showQuantity && (
+                    <div
+                      onMouseEnter={() => setShowQuantity(true)}
+                      className={`absolute -left-20 pl-12 flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-300 ease-in-out ${
+                        showQuantity
+                          ? "opacity-100 w-auto px-2 py-2"
+                          : "opacity-0 pointer-events-none"
+                      }`}
+                    >
+                      <button
+                        className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQuantityChange(-1);
+                        }}
+                      >
+                        -
+                      </button>{" "}
+                      <span className="mx-2 text-sm">{quantity}</span>
+                      <button
+                        className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQuantityChange(1);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Whishlist */}
+            <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+              <Tooltip
+                text="add to wishlist"
+                show={showTooltip === "wishlist"}
+              />
+              <button
+                className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110 hover:opacity-100"
+                onMouseEnter={() => setShowToolTip("wishlist")}
+                onMouseLeave={() => setShowToolTip(null)}
+              >
+                <Heart size={24} />
+              </button>
+            </div>
+
+            <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+              <Tooltip text="Compare" show={showTooltip === "compare"} />
+              <button
+                className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110  hover:opacity-100 "
+                onMouseEnter={() => setShowToolTip("compare")}
+                onMouseLeave={() => setShowToolTip(null)}
+              >
+                <ArrowDownUp size={24} />
+              </button>
+            </div>
+
+            <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+              <Tooltip text="Quick View" show={showTooltip === "Quick View"} />
+              <button
+                onClick={() => setQuickView(true)}
+                className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110 hover:opacity-100"
+                onMouseEnter={() => setShowToolTip("Quick View")}
+                onMouseLeave={() => setShowToolTip(null)}
+              >
+                <Search size={24} />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
+      </div>
+      {/* if Quick view is open */}
+      {quickView && (
+        <QuickViewModal
+          product={product}
+          intialVariant={selectedVariant}
+          onClose={() => setQuickView(false)}
+        />
       )}
-    </div>
+    </>
   );
 };
 
