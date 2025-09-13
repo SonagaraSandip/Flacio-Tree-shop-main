@@ -46,6 +46,10 @@ export default {
           "0%, 100%": { fill: "rgb(74 222 128)" }, // green-400
           "50%": { fill: "rgb(168 85 247)" }, // purple-500
         },
+        zoomIn: {
+          "0%": { transform: "scale(0.8)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
       },
       animation: {
         bounceX: "bounceX 1s infinite",
@@ -55,6 +59,7 @@ export default {
         "moveStripes-slow": "moveStripes 12s linear infinite",
         "fade-in-up": "fade-in-up 0.7s ease-out forwards",
         "fill-pulse": "fill-pulse 2s infinite ease-in-out",
+        "zoom-in": "zoomIn 0.7s cubic-bezier(0.48,0,0.12,1) forwards",
       },
     },
   },

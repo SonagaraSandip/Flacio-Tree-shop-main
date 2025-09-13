@@ -168,12 +168,20 @@ const Blog = () => {
             <div className="flex flex-wrap gap-3">
               {currentTabData.map((item) =>
                 item.tags?.map((tag, index) => (
-                  <span
-                    key={`${item.id}-${index}`}
-                    className={`px-6 py-3 border border-gray-400 text-gray-500 font-poppins text-xs cursor-pointer hover:text-white hover:bg-gradient-to-r   from-green-500  via-green-950 to-green-500 transition-all duration-800 hover:animate-moveStripes-slow hover:rounded`}
+                  <button
+                    key={index}
+                    class="relative overflow-hidden border border-[#18181a] text-[#18181a] inline-block text-[15px] leading-[15px] px-[18px] py-[15px] cursor-pointer bg-white select-none group"
                   >
-                    {tag}
-                  </span>
+                    <span class="relative z-10 transition-colors duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)]">
+                      {tag}
+                    </span>
+
+                    <span class="text-white block absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[225%] opacity-0 h-[14px] leading-[13px] z-[100] transition-all duration-[900ms] ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:translate-y-[-50%] group-hover:opacity-100">
+                      {tag}
+                    </span>
+
+                    <span class="absolute bottom-[-50%] left-0 w-full h-full bg-green-950 transform origin-bottom transition-transform duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)] skew-y-[9.3deg] scale-y-0 group-hover:scale-y-[2]"></span>
+                  </button>
                 ))
               )}
             </div>

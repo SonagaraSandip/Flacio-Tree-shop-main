@@ -65,19 +65,31 @@ const Shop = () => {
     max: 153,
   });
 
-  const collectionMapping = {
-    "air-purifying": "Air Purifying",
-    "ceramic-pots": "Ceramic Pots",
-    "herbs-seeds": "Herb Seeds",
-    "indoor-plants": "Indoor Plants",
-    "low-maintainance": "Low Maintainance",
-    "plant-bundle": "Plant Bundle",
-    all: null, // no collection selected
-  };
+  const collectionMapping = React.useMemo(
+    () => ({
+      "air-purifying": "Air Purifying",
+      "ceramic-pots": "Ceramic Pots",
+      "herbs-seeds": "Herb Seeds",
+      "indoor-plants": "Indoor Plants",
+      "low-maintainance": "Low Maintainance",
+      "plant-bundle": "Plant Bundle",
+      "wpbingo": "wpbingo",
+      "se-store" : "SE Store",
+      "akatsuki-store" : "Akatsuki Store",
+      "akaza-store" : "Akaza Store",
+      "lulu-store" : "Lulu Store",
+      all: null, // no collection selected
+    }),
+    []
+  );
 
   // reverse mapping for generating url from display name
-  const reverseCollectionMapping = Object.fromEntries(
-    Object.entries(collectionMapping).map(([key, value]) => [value, key])
+  const reverseCollectionMapping = React.useMemo(
+    () =>
+      Object.fromEntries(
+        Object.entries(collectionMapping).map(([key, value]) => [value, key])
+      ),
+    [collectionMapping]
   );
 
   //intialize state from URL
@@ -126,7 +138,7 @@ const Shop = () => {
     if (sortParam) {
       setFilter(sortParam);
     }
-  }, [collectionId, searchParams]);
+  }, [collectionId, searchParams , collectionMapping]);
 
   // Update URL when filter is change
   useEffect(() => {
@@ -180,6 +192,7 @@ const Shop = () => {
     selectedSize,
     selectedColor,
     filter,
+    reverseCollectionMapping,
   ]);
 
   //use refs to measure content height for smooth transition
@@ -261,7 +274,12 @@ const Shop = () => {
         (selectedCollection === "Indoor Plants" && product.IndoorPlants) ||
         (selectedCollection === "Low Maintainance" &&
           product.LowMaintainance) ||
-        (selectedCollection === "Plant Bundle" && product.PlantBundle);
+        (selectedCollection === "Plant Bundle" && product.PlantBundle) ||
+        (selectedCollection === "wpbingo" && product.wpbingo) ||
+        (selectedCollection === "SE Store" && product.SeStore) || 
+        (selectedCollection === "Akatsuki Store" && product.AkatsukiStore) ||
+        (selectedCollection === "Akaza Store" && product.AkazaStore) || 
+        (selectedCollection === "Lulu Store" && product.LuluStore);
 
       if (!collectionMatch) return false;
     }
@@ -464,9 +482,25 @@ const Shop = () => {
   }));
 
   const feature = [
-    { name: "Tiger Aloe", image: Tiger, price: 150 , link: "/products/tiger-aloe"},
-    { name: "The Beginner Set", image: Beginner, price: 130 , link: "/products/the-beginner-set" },
-    { name: "Ruby Rubber Tree", image: Ruby, price: 90, DiscountPrice: 51 , link: "/products/ruby-rubber-tree" },
+    {
+      name: "Tiger Aloe",
+      image: Tiger,
+      price: 150,
+      link: "/products/tiger-aloe",
+    },
+    {
+      name: "The Beginner Set",
+      image: Beginner,
+      price: 130,
+      link: "/products/the-beginner-set",
+    },
+    {
+      name: "Ruby Rubber Tree",
+      image: Ruby,
+      price: 90,
+      DiscountPrice: 51,
+      link: "/products/ruby-rubber-tree",
+    },
   ];
 
   const visibleColors = showAll ? allColors : allColors.slice(0, 5);
@@ -1195,7 +1229,10 @@ const Shop = () => {
                           <IoIosStarOutline size={12} />
                           <IoIosStarOutline size={12} />
                         </div>
-                        <h3 onClick={() => navigate(item.link)} className="text-md font-librebaskerville cursor-pointer">
+                        <h3
+                          onClick={() => navigate(item.link)}
+                          className="text-md font-librebaskerville cursor-pointer"
+                        >
                           {item.name}
                         </h3>
                         <p className="text-sm text-gray-500 font-librebaskerville">

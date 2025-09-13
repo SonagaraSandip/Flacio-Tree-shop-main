@@ -1,11 +1,15 @@
 //Single product item with logic for image, hover, etc.
 import React, { useState } from "react";
-import { ShoppingBag, Heart, ArrowDownUp, Search} from "lucide-react";
+import { ShoppingBag, Heart, ArrowDownUp, Search } from "lucide-react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import QuickViewModal from "../other/QuickViewModal";
+import { useWishlist } from "../contexts/WishlistContext";
+import LoadingEffect from "../components/loadingEffect";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product }) => {
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   // state to keep track of selected variant  initial first
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants.length > 0 ? product.variants[0] : null
@@ -15,16 +19,18 @@ const ProductCard = ({ product }) => {
   const [showQuantity, setShowQuantity] = useState(false);
   const [showTooltip, setShowToolTip] = useState(null); // 'cart' | 'wishlist' | 'compare' | 'search' | null
   const [quickView, setQuickView] = useState(false);
-  const [wishList , setWishList] = useState([])
+  const [loading, setLoading] = useState({
+    quickView: false,
+    addToCart: false,
+    wishlist: false,
+    compare: false,
+  });
 
   //color tooltip
   const [hoveredColorIndex, setHoveredColorIndex] = useState(null);
 
-  const AddToWishList = (product) => {
-    if(!wishList.some(item => item.id === product.id)){
-      setWishList([...wishList, product])
-    }
-  }
+  // check is product is in wishlist
+  const isProductInWishlist = isInWishlist(product, selectedVariant);
 
   //logic to decide which image to show
   //if hovered -> show back image if avalable else show front image
@@ -48,16 +54,56 @@ const ProductCard = ({ product }) => {
     e.stopPropagation();
 
     if (action === "cart") {
-      console.log(`Added ${quantity} ${product.name} to cart`);
+      setLoading((prev) => ({ ...prev, addToCart: true }));
+
+      setTimeout(() => {
+        console.log(`Added ${quantity} ${product.name} to cart`);
+        setLoading((prev) => ({ ...prev, addToCart: false }));
+        toast.success(`Added ${quantity} ${product.name} to cart`);
+      }, 1000); // Simulate loading for 1 second
     }
     //add other action
   };
 
-  //hande color selection
+  //handle color selection
   const handleColorSelect = (e, variant) => {
     e.preventDefault();
     e.stopPropagation();
     setSelectedVariant(variant);
+  };
+
+  //handle wishlist toggle
+  const handleWishlistToggle = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setLoading((prev) => ({ ...prev, wishlist: true }));
+
+    setTimeout(() => {
+      setLoading((prev) => ({ ...prev, wishlist: false }));
+    }, 1000); // Simulate loading for 1 second
+
+    if (isProductInWishlist) {
+      removeFromWishlist(
+        `${product.id}-${selectedVariant?.color || "default"}`,
+        toast.success(`Removed ${product.name} from Wishlist`)
+      );
+    } else {
+      addToWishlist({ product, selectedVariant });
+      toast.success(`Added ${product.name} to wishlist`);
+    }
+  };
+
+  //handle Quick view
+  const handleQuickView = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLoading((prev) => ({ ...prev, quickView: true }));
+
+    setTimeout(() => {
+      setLoading((prev) => ({ ...prev, quickView: false }));
+      setQuickView(true);
+    }, 1000); // Simulate loading for 1 second
   };
 
   //resuable tooltip
@@ -141,50 +187,52 @@ const ProductCard = ({ product }) => {
             {/* Color dots */}
             {!isOutOfStock && (
               <div className="flex space-x-2 mt-2 ">
-                {product.variants.map((variant, index) => (
-                  <div key={index} className="relative overflow-x-visible">
-                    {product.id === 1 || product.id === 5 ? (
-                      //show image thumbnail if available
-                      <button
-                        className={`w-5 h-5 rounded-full border-2 shadow   ${
-                          selectedVariant?.color === variant.color
-                            ? "border-black"
-                            : "border-transparent"
-                        }`}
-                        onClick={(e) => handleColorSelect(e, variant)}
-                        onMouseEnter={() => setHoveredColorIndex(index)}
-                        onMouseLeave={() => setHoveredColorIndex(null)}
-                        style={{
-                          backgroundImage: `url(${variant.image})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          backgroundRepeat: "no-repeat",
-                        }}
-                      ></button>
-                    ) : (
-                      <button
-                        className={`w-5 h-5 rounded-full border-2   ${
-                          selectedVariant?.color === variant.color
-                            ? "border-black"
-                            : "border-gray-200"
-                        }`}
-                        onClick={(e) => handleColorSelect(e, variant)}
-                        onMouseEnter={() => setHoveredColorIndex(index)}
-                        onMouseLeave={() => setHoveredColorIndex(null)}
-                        style={{
-                          backgroundColor: variant.hex,
-                        }}
-                        aria-label={`Select ${variant.color} color`}
-                      />
-                    )}
-                    {hoveredColorIndex === index && (
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-700 rounded whitespace-nowrap z-80">
-                        {variant.color || "Variant " + (index + 1)}
-                        <div className="absolute top-5 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-700 transform rotate-45"></div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                {product.variants
+                  .filter((variant) => variant.color)
+                  .map((variant, index) => (
+                    <div key={index} className="relative overflow-x-visible">
+                      {product.id === 1 || product.id === 5 ? (
+                        //show image thumbnail if available
+                        <button
+                          className={`w-5 h-5 rounded-full border-2 shadow   ${
+                            selectedVariant?.color === variant.color
+                              ? "border-black"
+                              : "border-transparent"
+                          }`}
+                          onClick={(e) => handleColorSelect(e, variant)}
+                          onMouseEnter={() => setHoveredColorIndex(index)}
+                          onMouseLeave={() => setHoveredColorIndex(null)}
+                          style={{
+                            backgroundImage: `url(${variant.image})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                          }}
+                        ></button>
+                      ) : (
+                        <button
+                          className={`w-5 h-5 rounded-full border-2   ${
+                            selectedVariant?.color === variant.color
+                              ? "border-black"
+                              : "border-gray-200"
+                          }`}
+                          onClick={(e) => handleColorSelect(e, variant)}
+                          onMouseEnter={() => setHoveredColorIndex(index)}
+                          onMouseLeave={() => setHoveredColorIndex(null)}
+                          style={{
+                            backgroundColor: variant.hex,
+                          }}
+                          aria-label={`Select ${variant.color} color`}
+                        />
+                      )}
+                      {hoveredColorIndex === index && (
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-700 rounded whitespace-nowrap z-80">
+                          {variant.color || "Variant " + (index + 1)}
+                          <div className="absolute top-5 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-700 transform rotate-45"></div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
               </div>
             )}
           </div>
@@ -215,8 +263,13 @@ const ProductCard = ({ product }) => {
                     className={`relative z-10 bg-white p-3 hover:bg-green-950 hover:text-white rounded-full shadow-md transition-all duration-300 ease-in-out ${
                       showQuantity ? "translate-x-[-80px]" : "translate-x-0"
                     }`}
+                    disabled={loading.addToCart}
                   >
-                    <ShoppingBag size={24} />
+                    {loading.addToCart ? (
+                      <LoadingEffect size="medium" />
+                    ) : (
+                      <ShoppingBag size={24} />
+                    )}
                   </button>
                   {showQuantity && (
                     <div
@@ -255,15 +308,29 @@ const ProductCard = ({ product }) => {
             {/* Whishlist */}
             <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
               <Tooltip
-                text="add to wishlist"
+                text={
+                  isProductInWishlist
+                    ? "Remove from wishlist"
+                    : "Add to wishlist"
+                }
                 show={showTooltip === "wishlist"}
               />
               <button
-                className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110 hover:opacity-100"
+                onClick={handleWishlistToggle}
+                className={`p-3 rounded-full shadow hover:bg-green-950 hover:text-white transition hover:scale-110 hover:opacity-100 ${
+                  isProductInWishlist
+                    ? "bg-green-950 text-white"
+                    : "bg-white text-black"
+                }`}
                 onMouseEnter={() => setShowToolTip("wishlist")}
                 onMouseLeave={() => setShowToolTip(null)}
+                disabled={loading.wishlist}
               >
-                <Heart size={24} />
+                {loading.wishlist ? (
+                  <LoadingEffect size="medium" />
+                ) : (
+                  <Heart size={24} />
+                )}
               </button>
             </div>
 
@@ -273,20 +340,30 @@ const ProductCard = ({ product }) => {
                 className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110  hover:opacity-100 "
                 onMouseEnter={() => setShowToolTip("compare")}
                 onMouseLeave={() => setShowToolTip(null)}
+                disabled={loading.compare}
               >
-                <ArrowDownUp size={24} />
+                {loading.compare ? (
+                  <LoadingEffect size="medium" />
+                ) : (
+                  <ArrowDownUp size={24} />
+                )}
               </button>
             </div>
 
             <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
               <Tooltip text="Quick View" show={showTooltip === "Quick View"} />
               <button
-                onClick={() => setQuickView(true)}
+                onClick={handleQuickView}
                 className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110 hover:opacity-100"
                 onMouseEnter={() => setShowToolTip("Quick View")}
                 onMouseLeave={() => setShowToolTip(null)}
+                disabled={loading.quickView}
               >
-                <Search size={24} />
+                {loading.quickView ? (
+                  <LoadingEffect size="medium" />
+                ) : (
+                  <Search size={24} />
+                )}
               </button>
             </div>
           </div>

@@ -2,10 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
 import Product from "../data/products";
+import { useWishlist } from "../contexts/WishlistContext";
 import Tree360Viewer from "../other/Tree360Viewer";
 import Tree3DViewer from "../other/Tree3DViewer";
 import { IoIosEye } from "react-icons/io";
 import { FaGripfire } from "react-icons/fa";
+import LoadingEffect from "../components/loadingEffect";
+import { toast } from "react-toastify";
 import { FaWhatsapp, FaFacebook } from "react-icons/fa";
 import {
   CircleCheck,
@@ -47,6 +50,7 @@ const ProductPageCard = () => {
       item.name.toLowerCase() === productName.replace(/-/g, " ").toLowerCase()
   );
 
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState({
     tigerAloe: 1,
@@ -68,10 +72,19 @@ const ProductPageCard = () => {
   const [isBegginerInclude, setIsBegginerInclude] = useState(true);
   const [selectSize, setSelectSize] = useState(30);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [loading, setLoading] = useState({
+    quickView: false,
+    addToCart: false,
+    wishlist: false,
+    compare: false,
+  });
 
   const url = window.location.href;
 
   const today = new Date();
+
+  // check is product is in wishlist
+  const isProductInWishlist = isInWishlist(productpage, selectedVariant);
 
   const startDate = new Date(today);
   startDate.setDate(startDate.getDate() + 3);
@@ -153,6 +166,33 @@ const ProductPageCard = () => {
     setCurrentProductQuantity((prevQuantity) =>
       Math.max(0, prevQuantity + amount)
     );
+  };
+
+  //handle wishlist toggle
+  const handleWishlistToggle = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setLoading((prev) => ({ ...prev, wishlist: true }));
+
+    setTimeout(() => {
+      setLoading((prev) => ({ ...prev, wishlist: false }));
+    }, 1000); // Simulate loading for 1 second
+
+    if (!productpage) {
+      console.error("Product page is not defined");
+      return;
+    }
+
+    if (isProductInWishlist) {
+      removeFromWishlist(
+        `${productpage.id}-${selectedVariant?.color || "default"}`,
+        toast.success(`${productpage.name} removed from Wishlist`)
+      );
+    } else {
+      addToWishlist({ product: productpage, selectedVariant });
+      toast.success(`${productpage.name} added to wishlist`);
+    }
   };
 
   //test addtoCart button
@@ -807,8 +847,18 @@ const ProductPageCard = () => {
                 <span className="text-md font-poppins">Out of Stock</span>
               </button>
             )}
-            <button className="flex text-center ml-2 border border-gray-300 px-4 py-3 hover:bg-green-600 hover:text-white hover:border-gray-300 hover:animate-pulse transition-opacity duration-300">
-              <Heart />
+            <button
+              onClick={handleWishlistToggle}
+              className={`flex text-center ml-2 border border-gray-300 px-4 py-3 hover:bg-green-950 hover:text-white hover:border-gray-300 transition-opacity duration-300 ${
+                isProductInWishlist
+                  ? "bg-green-950 text-white"
+                  : "bg-white text-black"
+              }`}
+              disabled={loading.wishlist}
+            >
+              {loading.wishlist ? (
+                <LoadingEffect size="medium"/>
+              ) : (<Heart />)}
             </button>
           </div>
 
@@ -1047,7 +1097,7 @@ const ProductPageCard = () => {
         {isOpenQuestion && (
           <div
             onClick={() => setIsOpenQuestion(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60  w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
           >
             <div
               onClick={(e) => e.stopPropagation()}
@@ -1112,7 +1162,7 @@ const ProductPageCard = () => {
         {isShipping && (
           <div
             onClick={() => setIsShipping(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60  w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
           >
             <div
               onClick={(e) => e.stopPropagation()}
@@ -1157,7 +1207,7 @@ const ProductPageCard = () => {
         {isShare && (
           <div
             onClick={() => setIsShare(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60  w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
           >
             <div
               onClick={(e) => e.stopPropagation()}
@@ -1219,9 +1269,9 @@ const ProductPageCard = () => {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-lg mx-auto  flex flex-col "
+              className="bg-white w-full max-w-lg mx-auto flex flex-col "
             >
-              <div className="bg-zinc-100 w-full ">
+              <div className="bg-zinc-100 w-full animate-zoom-in">
                 <div className="flex justify-between p-4">
                   <div className="flex gap-4">
                     <img src={PeaseLily} className="w-24 h-24" />

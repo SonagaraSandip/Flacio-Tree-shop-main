@@ -16,6 +16,7 @@ import Featured from "./pages/Featured";
 import ScrollToTopAction from "./pages/ScrollToTopAction";
 import WishList from "./pages/WishList";
 
+
 //from other
 import TopBarLoader from "./other/TopBarLoader";
 

@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import Whitelogo from "../assets/Home/logo-white.png";
 import BlackLogo from "../assets/Home/logo.avif";
 import { ChevronDown, Search, User, Heart, ShoppingBag } from "lucide-react";
+import { useWishlist } from "../contexts/WishlistContext";
 
 //homepage navbar
 import Home1 from "../assets/Home/HomeNavbar/home-1.webp";
@@ -19,6 +20,7 @@ import Plant from "../assets/Home/ig-4_540x.png";
 //blog navbar
 import BlogNav1 from "../assets/blog/BlogNavbar1.webp";
 import BlogNav2 from "../assets/blog/BlogNavbar2.webp";
+import WishList from "./WishList";
 
 export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [scrolled, setScrolled] = useState(false);
@@ -26,6 +28,8 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { wishlist } = useWishlist();
 
   useEffect(() => {
     if (!transparentUntilScroll) {
@@ -69,7 +73,6 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
       ? "before:bg-gray-800 after:bg-gray-800"
       : "before:bg-white after:bg-white";
   };
-
 
   //Homepage navbar
   const HomePages = [
@@ -525,7 +528,9 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
 
           <Link to="/featured" className="relative group cursor-pointer">
             <div className="flex items-center font-poppins gap-1">
-              <span className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()}`}>
+              <span
+                className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()}`}
+              >
                 FEATURED
               </span>
               <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
@@ -550,15 +555,32 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
           }`}
         >
           <Search className="w-6 h-6 cursor-pointer hover:scale-110" />
+          {/* user */}
           <User className="w-6 h-6 cursor-pointer hover:scale-110" />
-          <Link to={"/wishlist"}>
+          {/* wishlist */}
           <div className="relative">
-            <Heart className="w-6 h-6 cursor-pointer hover:scale-110 " />
-            <span className="absolute -top-1 -right-2 text-xs w-4 h-4 bg-green-800 text-white rounded-full flex items-center justify-center">
-              0
-            </span>
+            <Link to={"/wishlist"}>
+              <div
+                onMouseEnter={() => setHoveredMenu("wishlist")}
+                onMouseLeave={() => setHoveredMenu(null)}
+              >
+                <Heart className="w-6 h-6 cursor-pointer hover:scale-110 " />
+
+                <span className="absolute -top-1 -right-2 text-xs w-4 h-4 bg-green-800 text-white rounded-full flex items-center justify-center">
+                  {wishlist.length > 0 ? wishlist.length : 0}
+                </span>
+              </div>
+            </Link>
+
+            {wishlist.length === 0 && hoveredMenu === "wishlist" && (
+              <div>
+                <span className="absolute -bottom-9 border border-zinc-300 px-4 py-1 -right-2 whitespace-nowrap font-poppins italic bg-white text-gray-500">
+                Your wishlist is currently empty.
+                </span>
+              </div>
+            )}
           </div>
-          </Link>
+
           <div className="relative">
             <ShoppingBag className="w-6 h-6 cursor-pointer hover:scale-110" />
             <span className="absolute -top-1 -right-2 text-xs w-4 h-4 bg-green-800 text-white rounded-full flex items-center justify-center ">

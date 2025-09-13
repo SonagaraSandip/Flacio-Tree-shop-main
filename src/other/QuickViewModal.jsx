@@ -7,6 +7,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const QuickViewModal = ({ product, onClose }) => {
@@ -56,7 +57,7 @@ const QuickViewModal = ({ product, onClose }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className=" bg-white w-full max-w-3xl mx-auto flex shadow-xl"
+        className=" bg-white w-full max-w-3xl mx-auto flex animate-zoom-in shadow-xl"
       >
         {/*left side image section*/}
         <div className="w-1/2 flex items-center relative transition-all duration-300">
@@ -101,7 +102,12 @@ const QuickViewModal = ({ product, onClose }) => {
           <h1 className="text-2xl font-librebaskerville">{product.name}</h1>
           <p className="text-gray-500 font-poppins">
             By{" "}
-            <button className="font-normal text-black">{product.vendor}</button>
+            <Link
+              to={`/collections/${(product.vendor).toLowerCase().replace(/\s+/g, "-")}`}
+              className="font-normal text-black"
+            >
+              {product.vendor}
+            </Link>
           </p>
           {/* price */}
           <div className="flex items-center gap-2">
@@ -132,53 +138,55 @@ const QuickViewModal = ({ product, onClose }) => {
 
           {/* color dots */}
           <div className="flex space-x-2 mt-2 ">
-            {product.variants.map((variant, index) => (
-              <div key={index} className="relative overflow-x-visible">
-                {product.id === 1 || product.id === 5 || product.id === 7 ? (
-                  //show image thumbnail if available
-                  <button
-                    className={`w-8 h-8 rounded-full border-2 shadow ${
-                      isOutOfStock ? "cursor-not-allowed" : ""
-                    }  ${
-                      selectedVariantQv?.color === variant.color
-                        ? "border-black"
-                        : "border-gray-300"
-                    }`}
-                    disabled={isOutOfStock}
-                    onClick={(e) => handleColorSelectQv(e, variant)}
-                    onMouseEnter={() => setHoveredColorIndexQv(index)}
-                    onMouseLeave={() => setHoveredColorIndexQv(null)}
-                    style={{
-                      backgroundImage: `url(${variant.image})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  ></button>
-                ) : (
-                  <button
-                    className={`w-8 h-8 rounded-full border-2   ${
-                      selectedVariantQv?.color === variant.color
-                        ? "border-black"
-                        : "border-gray-300"
-                    }`}
-                    onClick={(e) => handleColorSelectQv(e, variant)}
-                    onMouseEnter={() => setHoveredColorIndexQv(index)}
-                    onMouseLeave={() => setHoveredColorIndexQv(null)}
-                    style={{
-                      backgroundColor: variant.hex,
-                    }}
-                    aria-label={`Select ${variant.color} color`}
-                  />
-                )}
-                {hoveredColorIndexQv === index && !isOutOfStock && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-700 rounded whitespace-nowrap z-80">
-                    {variant.color || "Variant " + (index + 1)}
-                    <div className="absolute top-5 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-700 transform rotate-45"></div>
-                  </div>
-                )}
-              </div>
-            ))}
+            {product.variants
+              .filter((variant) => variant.color)
+              .map((variant, index) => (
+                <div key={index} className="relative overflow-x-visible">
+                  {product.id === 1 || product.id === 5 || product.id === 7 ? (
+                    //show image thumbnail if available
+                    <button
+                      className={`w-8 h-8 rounded-full border-2 shadow ${
+                        isOutOfStock ? "cursor-not-allowed" : ""
+                      }  ${
+                        selectedVariantQv?.color === variant.color
+                          ? "border-black"
+                          : "border-gray-300"
+                      }`}
+                      disabled={isOutOfStock}
+                      onClick={(e) => handleColorSelectQv(e, variant)}
+                      onMouseEnter={() => setHoveredColorIndexQv(index)}
+                      onMouseLeave={() => setHoveredColorIndexQv(null)}
+                      style={{
+                        backgroundImage: `url(${variant.image})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                      }}
+                    ></button>
+                  ) : (
+                    <button
+                      className={`w-8 h-8 rounded-full border-2   ${
+                        selectedVariantQv?.color === variant.color
+                          ? "border-black"
+                          : "border-gray-300"
+                      }`}
+                      onClick={(e) => handleColorSelectQv(e, variant)}
+                      onMouseEnter={() => setHoveredColorIndexQv(index)}
+                      onMouseLeave={() => setHoveredColorIndexQv(null)}
+                      style={{
+                        backgroundColor: variant.hex,
+                      }}
+                      aria-label={`Select ${variant.color} color`}
+                    />
+                  )}
+                  {hoveredColorIndexQv === index && !isOutOfStock && (
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-700 rounded whitespace-nowrap z-80">
+                      {variant.color || "Variant " + (index + 1)}
+                      <div className="absolute top-5 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-700 transform rotate-45"></div>
+                    </div>
+                  )}
+                </div>
+              ))}
           </div>
 
           {/* In stock status */}
