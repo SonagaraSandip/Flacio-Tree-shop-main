@@ -1,7 +1,7 @@
 import React from "react";
 import WhiteLogo from "../assets/Home/logo-white.png";
 import Payment from "../assets/Home/payment.avif";
-
+import { Mail } from "lucide-react";
 import { FaFacebookF, FaXTwitter } from "react-icons/fa6";
 import { FaWhatsapp, FaTiktok } from "react-icons/fa";
 
@@ -9,7 +9,7 @@ const Footer = () => {
   return (
     <div className="bg-green-950 min-h-[60vh] text-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 align-middle mx-12 pt-12">
-        <div className="flex flex-col gap-2 text-md">
+        {/* <div className="flex flex-col gap-2 text-md">
           <img src={WhiteLogo} alt="Ehite-logo " className=" w-[120px] pb-8 " />
           <p className="text-md font-poppins py-1">8331 Indian Spring Street</p>
           <p className="text-md font-poppins py-1">Ames, IA 30010</p>
@@ -17,11 +17,11 @@ const Footer = () => {
             Email: greenhousematt@gmail.com
           </p>
           <p className="text-md font-poppins py-1">Call Us: 330-239-0506</p>
-        </div>
+        </div> */}
 
         {/* about */}
         <div className="flex flex-col gap-2 text-md">
-          <h1 className="text-xl font-bold font-poppins pb-8 tracking-widest">
+          <h1 className="text-sm font-librebaskerville pb-8 tracking-widest">
             COMPANY
           </h1>
           <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
@@ -46,7 +46,7 @@ const Footer = () => {
 
         {/* Support */}
         <div className="flex flex-col gap-2 text-md">
-          <h1 className="  text-xl font-bold font-poppins pb-8 tracking-widest">
+          <h1 className="text-sm font-librebaskerville pb-8 tracking-widest">
             SUPPORT
           </h1>
           <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
@@ -66,27 +66,65 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Fowllow us */}
-        <div className="flex flex-col gap-2 text-md">
-          <h1 className=" text-xl font-bold font-poppins pb-8 tracking-widest">
-            FOLLOW US
+        {/* Plant quistions */}
+        <div className="flex flex-col font-librebaskerville gap-2 text-md">
+          <h1 className="pb-8 text-sm tracking-widest">
+            PLANT QUESTIONS ?
           </h1>
-          <div className="flex gap-4">
-            <button className="text-3xl cursor-pointer border border-white p-3 rounded-full hover:bg-gray-900 hover:border-blue-600 hover:text-blue-600">
-              <FaFacebookF size={24} />
-            </button>
-            <button className="text-3xl cursor-pointer border border-white p-3 rounded-full hover:bg-gray-900 hover:border-white hover:text-white">
-              <FaXTwitter size={24} />
-            </button>
-            <button className="text-3xl cursor-pointer border border-white p-3 rounded-full hover:bg-gray-900 hover:border-green-500 hover:text-green-500">
-              <FaWhatsapp size={24} />
-            </button>
-            <button className="text-3xl cursor-pointer border border-white p-3 rounded-full hover:bg-gray-900 hover:border-pink-500 hover:text-pink-500">
-              <FaTiktok size={24} />
-            </button>
+          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+            Plant Care Tips
+          </p>
+          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+            Plant Life Blog
+          </p>
+          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+            Vera Plant Care App
+          </p>
+          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+            Meet Plant Mom
+          </p>
+          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+            Conatact the Grow-How Team
+          </p>
+        </div>
+
+        {/* Follow us */}
+        <div className="flex flex-col gap-2 text-md">
+          <h1 className=" text-sm font-librebaskerville pb-8 tracking-widest">
+            STAY IN THE LOOP
+          </h1>
+          <div className="flex flex-col gap-4">
+            <p className="text-sm font-poppins tracking-wide">
+              Stay in the loop with special offers,plant-parenting tips, and
+              more.
+            </p>
+            <div className="flex justify-between border-b-2 border-white">
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="py-2 bg-green-950"
+                style={{ outline: "none" }}
+              />
+              <button className="p-2 rounded-tr-md rounded-br-md hover:scale-110 transition-transform duration-300 ">
+                <Mail color="white" size={20} />
+              </button>
+            </div>
+
+            <div className="flex gap-4 mt-6">
+              <button className="text-3xl cursor-pointer border border-white p-2 rounded-full hover:bg-gray-900 hover:border-blue-600 hover:text-blue-600">
+                <FaFacebookF size={20} />
+              </button>
+              <button className="text-3xl cursor-pointer border border-white p-2 rounded-full hover:bg-gray-900 hover:border-white hover:text-white">
+                <FaXTwitter size={20} />
+              </button>
+              <button className="text-3xl cursor-pointer border border-white p-2 rounded-full hover:bg-gray-900 hover:border-green-500 hover:text-green-500">
+                <FaWhatsapp size={20} />
+              </button>
+              <button className="text-3xl cursor-pointer border border-white p-2 rounded-full hover:bg-gray-900 hover:border-pink-500 hover:text-pink-500">
+                <FaTiktok size={20} />
+              </button>
+            </div>
           </div>
-
-
         </div>
       </div>
 

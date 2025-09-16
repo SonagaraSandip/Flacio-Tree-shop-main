@@ -4,13 +4,16 @@ import { ShoppingBag, Heart, ArrowDownUp, Search } from "lucide-react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import QuickViewModal from "../other/QuickViewModal";
+import CompareModal from "../other/CompareModel";
 import { useWishlist } from "../contexts/WishlistContext";
+import { useCompare } from "../contexts/CompareContext";
 import LoadingEffect from "../components/loadingEffect";
 import { toast } from "react-toastify";
 
 const ProductCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  // state to keep track of selected variant  initial first
+  const { addToCompare, removeFromCompare, isInCompare, compare } = useCompare();
+  // state to keep track of selected variant initial first
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants.length > 0 ? product.variants[0] : null
   );
@@ -19,6 +22,7 @@ const ProductCard = ({ product }) => {
   const [showQuantity, setShowQuantity] = useState(false);
   const [showTooltip, setShowToolTip] = useState(null); // 'cart' | 'wishlist' | 'compare' | 'search' | null
   const [quickView, setQuickView] = useState(false);
+  const [compareView, setCompareView] = useState(false);
   const [loading, setLoading] = useState({
     quickView: false,
     addToCart: false,
@@ -31,6 +35,7 @@ const ProductCard = ({ product }) => {
 
   // check is product is in wishlist
   const isProductInWishlist = isInWishlist(product, selectedVariant);
+  const isProductInCompare = isInCompare(product, selectedVariant);
 
   //logic to decide which image to show
   //if hovered -> show back image if avalable else show front image
@@ -62,7 +67,58 @@ const ProductCard = ({ product }) => {
         toast.success(`Added ${quantity} ${product.name} to cart`);
       }, 1000); // Simulate loading for 1 second
     }
-    //add other action
+
+    // action for Wishlist
+    if (action === "Wishlist") {
+      setLoading((prev) => ({ ...prev, wishlist: true }));
+
+      setTimeout(() => {
+        setLoading((prev) => ({ ...prev, wishlist: false }));
+      }, 1000); // Simulate loading for 1 second
+
+      if (isProductInWishlist) {
+        removeFromWishlist(
+          `${product.id}-${selectedVariant?.color || "default"}`,
+          toast.success(`Removed ${product.name} from Wishlist`)
+        );
+      } else {
+        addToWishlist({ product, selectedVariant });
+        toast.success(`Added ${product.name} to wishlist`);
+      }
+    }
+
+    if (action === "compare") {
+      setLoading((prev) => ({ ...prev, compare: true }));
+
+      setTimeout(() => {
+        setLoading((prev) => ({ ...prev, compare: false }));
+        // setCompareView(true);
+      }, 1000);
+
+      if (isProductInCompare) {
+        removeFromCompare(
+          `${product.id}-${selectedVariant?.color || "default"}`,
+          toast.success(`Removed ${product.name} from CompareList`)
+        );
+      } else {
+        setTimeout(() => {
+          setLoading((prev) => ({ ...prev, compare: false }));
+        })
+        addToCompare({ product, selectedVariant });
+        setCompareView(true);
+        toast.success(`Added ${product.name} to CompareList`);
+      }
+    }
+
+    // action for Quick view
+    if (action === "QuickView") {
+      setLoading((prev) => ({ ...prev, quickView: true }));
+
+      setTimeout(() => {
+        setLoading((prev) => ({ ...prev, quickView: false }));
+        setQuickView(true);
+      }, 1000); // Simulate loading for 1 second
+    }
   };
 
   //handle color selection
@@ -72,44 +128,10 @@ const ProductCard = ({ product }) => {
     setSelectedVariant(variant);
   };
 
-  //handle wishlist toggle
-  const handleWishlistToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    setLoading((prev) => ({ ...prev, wishlist: true }));
-
-    setTimeout(() => {
-      setLoading((prev) => ({ ...prev, wishlist: false }));
-    }, 1000); // Simulate loading for 1 second
-
-    if (isProductInWishlist) {
-      removeFromWishlist(
-        `${product.id}-${selectedVariant?.color || "default"}`,
-        toast.success(`Removed ${product.name} from Wishlist`)
-      );
-    } else {
-      addToWishlist({ product, selectedVariant });
-      toast.success(`Added ${product.name} to wishlist`);
-    }
-  };
-
-  //handle Quick view
-  const handleQuickView = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setLoading((prev) => ({ ...prev, quickView: true }));
-
-    setTimeout(() => {
-      setLoading((prev) => ({ ...prev, quickView: false }));
-      setQuickView(true);
-    }, 1000); // Simulate loading for 1 second
-  };
-
   //resuable tooltip
   const Tooltip = ({ text, show }) => (
     <div
-      className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 flex items-center  transition-all duration-300 pointer-events-none ${
+      className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 flex items-center transition-all duration-300 pointer-events-none ${
         show ? "opacity-100 visible" : "opacity-0 invisible"
       } ${showQuantity ? "translate-x-[-70px]" : "translate-x-0"} `}
     >
@@ -123,7 +145,7 @@ const ProductCard = ({ product }) => {
   return (
     <>
       <div
-        className="relative overflow-hidden group transition "
+        className="relative overflow-hidden group transition"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => {
           setIsHovered(false), setShowQuantity(false), setShowToolTip(null);
@@ -134,7 +156,7 @@ const ProductCard = ({ product }) => {
           className="block"
         >
           {/* Discount badge otherwise out of stock*/}
-          <div className="absolute z-10 text-xs top-6 left-2 px-2  text-white ">
+          <div className="absolute z-10 text-xs top-6 left-2 px-2 text-white ">
             {isOutOfStock ? (
               <div className="bg-gray-500 px-3 py-1">Out of Stock</div>
             ) : product.discountPercent ? (
@@ -164,7 +186,7 @@ const ProductCard = ({ product }) => {
                 {product.name}
               </h2>
               <div className="flex items-center gap-2">
-                {product.discountPercent ? (
+                {product.discountPrice ? (
                   <>
                     <p className="text-gray-500 font-librebaskervilleItalic text-base line-through">
                       ${product.originalPrice.toFixed(2)}
@@ -181,6 +203,12 @@ const ProductCard = ({ product }) => {
                       : product.variants[0].price.toFixed(2)}
                   </p>
                 )}
+
+              {product.PreOrder && (
+                <p className="text-green-500 font-librebaskerville text-md">
+                  ( Pre-order )
+                </p>
+              )}
               </div>
             </div>
 
@@ -261,7 +289,7 @@ const ProductCard = ({ product }) => {
                   <button
                     onClick={(e) => handleActionClick(e, "cart")}
                     className={`relative z-10 bg-white p-3 hover:bg-green-950 hover:text-white rounded-full shadow-md transition-all duration-300 ease-in-out ${
-                      showQuantity ? "translate-x-[-80px]" : "translate-x-0"
+                      showQuantity ? "translate-x-[-100px]" : "translate-x-0"
                     }`}
                     disabled={loading.addToCart}
                   >
@@ -274,7 +302,7 @@ const ProductCard = ({ product }) => {
                   {showQuantity && (
                     <div
                       onMouseEnter={() => setShowQuantity(true)}
-                      className={`absolute -left-20 pl-12 flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-300 ease-in-out ${
+                      className={`absolute -left-24 pl-12 flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-300 ease-in-out ${
                         showQuantity
                           ? "opacity-100 w-auto px-2 py-2"
                           : "opacity-0 pointer-events-none"
@@ -306,7 +334,7 @@ const ProductCard = ({ product }) => {
             )}
 
             {/* Whishlist */}
-            <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+            <div className="translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
               <Tooltip
                 text={
                   isProductInWishlist
@@ -316,7 +344,7 @@ const ProductCard = ({ product }) => {
                 show={showTooltip === "wishlist"}
               />
               <button
-                onClick={handleWishlistToggle}
+                onClick={(e) => handleActionClick(e, "Wishlist")}
                 className={`p-3 rounded-full shadow hover:bg-green-950 hover:text-white transition hover:scale-110 hover:opacity-100 ${
                   isProductInWishlist
                     ? "bg-green-950 text-white"
@@ -334,10 +362,21 @@ const ProductCard = ({ product }) => {
               </button>
             </div>
 
+            {/* compare */}
             <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
-              <Tooltip text="Compare" show={showTooltip === "compare"} />
+              <Tooltip
+                text={
+                  isProductInCompare ? "Remove from compare" : "Add to compare"
+                }
+                show={showTooltip === "compare"}
+              />
               <button
-                className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110  hover:opacity-100 "
+                onClick={(e) => handleActionClick(e, "compare")}
+                className={`p-3 rounded-full shadow hover:bg-green-950 hover:text-white transition-colors duration-300 ${
+                  isProductInCompare
+                    ? "bg-green-950 text-white"
+                    : "bg-white text-black"
+                }`}
                 onMouseEnter={() => setShowToolTip("compare")}
                 onMouseLeave={() => setShowToolTip(null)}
                 disabled={loading.compare}
@@ -349,11 +388,11 @@ const ProductCard = ({ product }) => {
                 )}
               </button>
             </div>
-
+            {/* Quick view */}
             <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
               <Tooltip text="Quick View" show={showTooltip === "Quick View"} />
               <button
-                onClick={handleQuickView}
+                onClick={(e) => handleActionClick(e, "QuickView")}
                 className="bg-white  p-3 rounded-full shadow hover:bg-green-900 hover:text-white transition hover:scale-110 hover:opacity-100"
                 onMouseEnter={() => setShowToolTip("Quick View")}
                 onMouseLeave={() => setShowToolTip(null)}
@@ -376,6 +415,11 @@ const ProductCard = ({ product }) => {
           intialVariant={selectedVariant}
           onClose={() => setQuickView(false)}
         />
+      )}
+
+      {/* if compare view is open */}
+      {compareView && compare.length > 0 && (
+        <CompareModal product={product} onClose={() => setCompareView(false)} />
       )}
     </>
   );

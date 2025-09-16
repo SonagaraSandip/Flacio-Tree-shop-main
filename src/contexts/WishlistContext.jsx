@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState , useEffect } from "react";
 
 const WishlistContext = createContext();
 
@@ -13,6 +13,20 @@ export const useWishlist = () => {
 
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
+
+  //load wishlist data from local storage when component mounts
+  useEffect(() => {
+    const savedWishlist = localStorage.getItem("whishlist");
+    if(savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist));
+    }
+  }, [])
+
+
+  //save whishlist data in local storage whenever its change
+  useEffect(() => {
+    localStorage.setItem("whishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
 
   const addToWishlist = ({ product, selectedVariant }) => {
      // Add a check to ensure product is defined

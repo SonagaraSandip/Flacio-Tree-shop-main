@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
 import Product from "../data/products";
 import { useWishlist } from "../contexts/WishlistContext";
+import { useCompare } from "../contexts/CompareContext";
+import CompareModel from "../other/CompareModel";
 import Tree360Viewer from "../other/Tree360Viewer";
 import Tree3DViewer from "../other/Tree3DViewer";
 import { IoIosEye } from "react-icons/io";
@@ -51,6 +53,8 @@ const ProductPageCard = () => {
   );
 
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCompare, removeFromCompare, isInCompare, compare } =
+    useCompare();
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState({
     tigerAloe: 1,
@@ -71,6 +75,7 @@ const ProductPageCard = () => {
   const [beginnerSetColor, setBegginerSetColor] = useState("Pink / 30 cm");
   const [isBegginerInclude, setIsBegginerInclude] = useState(true);
   const [selectSize, setSelectSize] = useState(30);
+  const [compareView, setCompareView] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState({
     quickView: false,
@@ -85,6 +90,7 @@ const ProductPageCard = () => {
 
   // check is product is in wishlist
   const isProductInWishlist = isInWishlist(productpage, selectedVariant);
+  const isProductInCompare = isInCompare(productpage, selectedVariant);
 
   const startDate = new Date(today);
   startDate.setDate(startDate.getDate() + 3);
@@ -192,6 +198,30 @@ const ProductPageCard = () => {
     } else {
       addToWishlist({ product: productpage, selectedVariant });
       toast.success(`${productpage.name} added to wishlist`);
+    }
+  };
+
+  //handle compare toggle
+  const handleCompareToggle = () => {
+    // setCompareView((prev) => !prev);
+    setLoading((prev) => ({ ...prev, compare: true }));
+
+    setTimeout(() => {
+      setLoading((prev) => ({ ...prev, compare: false }));
+    }, 1000);
+
+    if (isProductInCompare) {
+      removeFromCompare(
+        `${productpage.id}-${selectedVariant?.color || "default"}`,
+        toast.success(`Removed ${productpage.name} from CompareList`)
+      );
+    } else {
+      setTimeout(() => {
+        setLoading((prev) => ({ ...prev, compare: false }));
+      }, 1000);
+      addToCompare({ product: productpage, selectedVariant });
+      setCompareView(true);
+      toast.success(`Added ${productpage.name} to CompareList`);
     }
   };
 
@@ -856,9 +886,7 @@ const ProductPageCard = () => {
               }`}
               disabled={loading.wishlist}
             >
-              {loading.wishlist ? (
-                <LoadingEffect size="medium"/>
-              ) : (<Heart />)}
+              {loading.wishlist ? <LoadingEffect size="medium" /> : <Heart />}
             </button>
           </div>
 
@@ -905,15 +933,33 @@ const ProductPageCard = () => {
 
           {/* compare | shipping | share | icons */}
           <div className="flex  sm:gap-4 md:gap-6 lg:gap-8 items-center mt-4 text-gray-500 ">
-            <div className="group flex items-center cursor-pointer">
-              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
-                <Shuffle
-                  size={20}
-                  className=" flex items-center justify-center"
-                />
+            <button
+              onClick={handleCompareToggle}
+              className="group flex items-center cursor-pointer"
+            >
+              <div
+                className={`w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2`}
+              >
+                {isProductInCompare ? (
+                  loading.compare ? (
+                    <LoadingEffect size="small" />
+                  ) : (
+                    <Check
+                      size={20}
+                      className=" flex items-center justify-center"
+                    />
+                  )
+                ) : loading.compare ? (
+                  <LoadingEffect size="small" />
+                ) : (
+                  <Shuffle
+                    size={20}
+                    className=" flex items-center justify-center"
+                  />
+                )}
               </div>
               <span className="text-sm font-librebaskerville">Compare</span>
-            </div>
+            </button>
             <div
               onClick={() => setIsOpenQuestion(true)}
               className="group flex items-center cursor-pointer"
@@ -1328,6 +1374,10 @@ const ProductPageCard = () => {
               </div>
             </div>
           </div>
+        )}
+        {/* if compare view is open */}
+        {compareView && compare.length > 0 && (
+          <CompareModel onClose={() => setCompareView(false)} />
         )}
       </div>
 
