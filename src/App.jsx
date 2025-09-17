@@ -16,6 +16,9 @@ import Featured from "./pages/Featured";
 import ScrollToTopAction from "./pages/ScrollToTopAction";
 import WishList from "./pages/WishList";
 
+//account
+import Register from "./pages/account/Register";
+import Login from "./pages/account/Login";
 
 //from other
 import TopBarLoader from "./other/TopBarLoader";
@@ -41,6 +44,9 @@ function AppWrapper() {
         <Route path="/blog/:tab/:id" element={<BlogPageDetails />} />
         <Route path="/featured" element={<Featured />} />
         <Route path="/wishlist" element={<WishList />} />
+        <Route path="/account" element={<Register />} />
+        <Route path="/account/register" element={<Register />} />
+        <Route path="/account/login" element={<Login />} />
       </Routes>
     </>
   );

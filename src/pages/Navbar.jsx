@@ -2,8 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Whitelogo from "../assets/Home/logo-white.png";
 import BlackLogo from "../assets/Home/logo.avif";
-import { ChevronDown, Search, User, Heart, ShoppingBag } from "lucide-react";
+import {
+  ChevronDown,
+  Search,
+  User,
+  Heart,
+  ShoppingBag,
+  X,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useWishlist } from "../contexts/WishlistContext";
+import { toast } from "react-toastify";
 
 //homepage navbar
 import Home1 from "../assets/Home/HomeNavbar/home-1.webp";
@@ -26,6 +36,10 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState(null);
   const [hoverTimeout, setHoverTimeout] = useState(null);
+  const [openSignIn, setOpenSignIn] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -72,6 +86,40 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
     return scrolled
       ? "before:bg-gray-800 after:bg-gray-800"
       : "before:bg-white after:bg-white";
+  };
+
+  const validateEmail = (email) => {
+    // A simple regex for email validation
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  //handle submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      toast.warn("Please enter a valid email address");
+      return;
+    }
+
+    if (!password.trim()) {
+      toast.error("Please enter your password");
+      return;
+    }
+
+    toast.success("You have successfully logged in!");
+
+    setEmail("");
+    setPassword("");
+    setTimeout(() => {
+      setOpenSignIn(false);
+    }, 2000);
   };
 
   //Homepage navbar
@@ -556,7 +604,76 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
         >
           <Search className="w-6 h-6 cursor-pointer hover:scale-110" />
           {/* user */}
-          <User className="w-6 h-6 cursor-pointer hover:scale-110" />
+          <User
+            onClick={() => setOpenSignIn(true)}
+            className="w-6 h-6 cursor-pointer hover:scale-110"
+          />
+
+          {openSignIn && (
+            <div className="fixed right-0 top-0 bg-black bg-opacity-50 flex w-[60vh] h-screen animate-fadeInRight z-50">
+              <div className="flex flex-col gap-4 bg-white w-full h-full p-6">
+                <button
+                  className="self-end text-gray-400 bg-white border border-gray-800 hover:bg-black hover:text-white"
+                  onClick={() => setOpenSignIn(false)}
+                >
+                  <X className="hover:rotate-90 transition-transform duration-300 hover:scale-90" />
+                </button>
+                <h2 className="text-xs font-librebaskerville mt-12 text-black">
+                  SIGN IN
+                </h2>
+                <form onSubmit={handleSubmit} noValidate className="text-black">
+                  <input
+                    type="email"
+                    alt="email"
+                    placeholder="Email*"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="border border-gray-400 font-poppins text-sm w-full pl-4 p-2"
+                    style={{ outline: "none" }}
+                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      alt="password"
+                      placeholder="Password*"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="border border-gray-400 font-poppins text-sm w-full pl-4 p-2 mt-4"
+                      style={{ outline: "none" }}
+                    />
+                    <span
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="flex items-center justify-center "
+                    >
+                      {showPassword ? (
+                        <Eye className="absolute right-3 top-7 w-5 h-5 text-gray-400 cursor-pointer hover:text-black" />
+                      ) : (
+                        <EyeOff className="absolute right-3 top-7 w-5 h-5 text-gray-400 cursor-pointer hover:text-black" />
+                      )}
+                    </span>
+                  </div>
+                  <button className="text-xs font-poppins mt-4 text-zinc-700 hover:text-zinc-950 cursor-pointer border-b border-zinc-500">
+                    Lost your password?
+                  </button>
+                  <div className="flex items-center gap-2 mt-4">
+                    <button className="w-full bg-black text-white text-sm font-poppins py-2  hover:bg-green-950">
+                      SIGN IN
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/account/register");
+                        setOpenSignIn(false);
+                      }}
+                      className="w-full border border-zinc-700 text-sm font-poppins py-2  hover:bg-green-950 hover:text-white"
+                    >
+                      CREATE YOUR ACCOUNT
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
           {/* wishlist */}
           <div className="relative">
             <Link to={"/wishlist"}>
@@ -575,7 +692,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             {wishlist.length === 0 && hoveredMenu === "wishlist" && (
               <div>
                 <span className="absolute -bottom-9 border border-zinc-300 px-4 py-1 -right-2 whitespace-nowrap font-poppins italic bg-white text-gray-500">
-                Your wishlist is currently empty.
+                  Your wishlist is currently empty.
                 </span>
               </div>
             )}

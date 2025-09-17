@@ -42,6 +42,16 @@ export default {
             transform: "translateY(0)",
           },
         },
+        fadeInRight: {
+          "0%": {
+            opacity: "0",
+            transform: "translatex(300px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translatex(0)",
+          },
+        },
         "fill-pulse": {
           "0%, 100%": { fill: "rgb(74 222 128)" }, // green-400
           "50%": { fill: "rgb(168 85 247)" }, // purple-500
@@ -58,6 +68,7 @@ export default {
         moveStripes: "moveStripes 2s linear infinite",
         "moveStripes-slow": "moveStripes 12s linear infinite",
         "fade-in-up": "fade-in-up 0.7s ease-out forwards",
+        fadeInRight: "fadeInRight 0.7s ease-out forwards",
         "fill-pulse": "fill-pulse 2s infinite ease-in-out",
         "zoom-in": "zoomIn 0.7s cubic-bezier(0.48,0,0.12,1) forwards",
       },
