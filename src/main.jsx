@@ -6,13 +6,16 @@ import "./fonts.css";
 import { ToastContainer, Bounce } from "react-toastify";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { CompareProvider } from "./contexts/CompareContext.jsx";
+import { AuthProvider } from "./contexts/AuthContext.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <WishlistProvider>
       <CompareProvider>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </CompareProvider>
     </WishlistProvider>
     <ToastContainer

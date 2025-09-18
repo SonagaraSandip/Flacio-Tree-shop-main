@@ -4,23 +4,9 @@ import { X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import ProductCard from "../data/ProductCard";
-import { MdPlayArrow } from "react-icons/md";
 
 const WishList = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
-
-  const Tooltip = ({ text, show }) => (
-    <div
-      className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 flex items-center  transition-all duration-300 pointer-events-none ${
-        show ? "opacity-100 visible" : "opacity-0 invisible"
-      } `}
-    >
-      <span className="flex whitespace-nowrap text-center justify-center items-center h-[28px] bg-gray-700 text-white text-xs px-3 rounded">
-        {text}
-      </span>
-      <MdPlayArrow size={28} className="text-gray-700 -ml-1" />
-    </div>
-  );
 
   const handleRemoveWishlist = (e, itemId) => {
     e.stopPropagation();
@@ -70,13 +56,14 @@ const WishList = () => {
                 className="absolute top-4 right-2 bg-white  rounded-full p-1 shadow transition-all duration-300 z-10"
               >
                 {/* <Tooltip text="Remove from wishlist" onMouseEnter={() => setShowToolTip("wishlist")} /> */}
-              
 
                 <div className="flex flex-col items-center gap-2 rounded-full p-1 transition-all duration-300">
                   <div className="group relative rounded-full">
                     <X />
                     <div className="bg-zinc-700 p-1 rounded-md group-hover:flex hidden absolute top-1/2 -translate-y-1/2 -left-2 -translate-x-full">
-                      <span className="text-gray-200 whitespace-nowrap text-sm">Remove from wishlist</span>
+                      <span className="text-gray-200 whitespace-nowrap text-sm">
+                        Remove from wishlist
+                      </span>
                       <div className="bg-inherit rotate-45 p-1 absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2"></div>
                     </div>
                   </div>

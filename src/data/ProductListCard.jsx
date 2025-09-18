@@ -4,11 +4,15 @@ import { ShoppingBag, Heart, ArrowDownUp, Search } from "lucide-react";
 import { MdPlayArrow } from "react-icons/md";
 import QuickViewModal from "../other/QuickViewModal";
 import { useWishlist } from "../contexts/WishlistContext";
+import CompareModel from "../other/CompareModel";
+import { useCompare } from "../contexts/CompareContext";
 import { toast } from "react-toastify";
 import LoadingEffect from "../components/loadingEffect";
 
 const ProductListCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCompare, removeFromCompare, isInCompare, compare } =
+    useCompare();
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants.length > 0 ? product.variants[0] : null
   );
@@ -16,6 +20,8 @@ const ProductListCard = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
   const [showQuantity, setShowQuantity] = useState(false);
   const [quickView, setQuickView] = useState(false);
+  const [compareView, setCompareView] = useState(false);
+
   const [showTooltip, setShowToolTip] = useState(null); // 'cart' | 'wishlist' | 'compare' | 'search' | null
 
   const [loading, setLoading] = useState({
@@ -30,6 +36,7 @@ const ProductListCard = ({ product }) => {
 
   //chcek is produict already in wishlist
   const isProductInWishlist = isInWishlist(product, selectedVariant);
+  const isProductInCompare = isInCompare(product, selectedVariant);
 
   //logic to decide which image to show
   //if hovered -> show back image if avalable else show front image
@@ -76,6 +83,29 @@ const ProductListCard = ({ product }) => {
       } else {
         addToWishlist({ product, selectedVariant });
         toast.success(`Added ${product.name} to wishlist`);
+      }
+    }
+
+    if (action === "compare") {
+      setLoading((prev) => ({ ...prev, compare: true }));
+
+      setTimeout(() => {
+        setLoading((prev) => ({ ...prev, compare: false }));
+        // setCompareView(true);
+      }, 1000);
+
+      if (isProductInCompare) {
+        removeFromCompare(
+          `${product.id}-${selectedVariant?.color || "default"}`,
+          toast.success(`Removed ${product.name} from CompareList`)
+        );
+      } else {
+        setTimeout(() => {
+          setLoading((prev) => ({ ...prev, compare: false }));
+        });
+        addToCompare({ product, selectedVariant });
+        setCompareView(true);
+        toast.success(`Added ${product.name} to CompareList`);
       }
     }
 
@@ -218,7 +248,11 @@ const ProductListCard = ({ product }) => {
               />
               <button
                 onClick={(e) => handleActionClick(e, "wishlist")}
-                className={` p-3 rounded-full shadow hover:bg-green-950 hover:text-white transition-colors duration-300 ${isProductInWishlist ? "bg-green-950 text-white" : "bg-white text-black"}`}
+                className={` p-3 rounded-full shadow hover:bg-green-950 hover:text-white transition-colors duration-300 ${
+                  isProductInWishlist
+                    ? "bg-green-950 text-white"
+                    : "bg-white text-black"
+                }`}
                 onMouseEnter={() => setShowToolTip("wishlist")}
                 onMouseLeave={() => setShowToolTip(null)}
               >
@@ -230,18 +264,27 @@ const ProductListCard = ({ product }) => {
               </button>
             </div>
 
-            <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
-              <Tooltip text="Compare" show={showTooltip === "compare"} />
+            <div className="translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+              <Tooltip text={isProductInCompare ? "Remove from compare" : "Add to Compare"} show={showTooltip === "compare"} />
               <button
-                className="bg-white  p-3 rounded-full shadow hover:bg-green-500 transition hover:scale-110 hover:animate-pulse  hover:opacity-100 "
+              onClick={(e) => handleActionClick(e, "compare")}
+                className={` p-3 rounded-full shadow hover:bg-green-950 transition hover:scale-110 hover:animate-pulse hover:opacity-100 ${
+                  isProductInCompare
+                    ? "bg-green-950 text-white"
+                    : "bg-white text-black"
+                }`}
                 onMouseEnter={() => setShowToolTip("compare")}
                 onMouseLeave={() => setShowToolTip(null)}
               >
-                <ArrowDownUp size={24} />
+                {loading.compare ? (
+                  <LoadingEffect size="medium" />
+                ) : (
+                  <ArrowDownUp size={24} />
+                )}
               </button>
             </div>
 
-            <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+            <div className="translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
               <Tooltip text="Quick View" show={showTooltip === "quickView"} />
               <button
                 onClick={(e) => handleActionClick(e, "quickView")}
@@ -264,6 +307,10 @@ const ProductListCard = ({ product }) => {
       {/* if quick view is open */}
       {quickView && (
         <QuickViewModal product={product} onClose={() => setQuickView(false)} />
+      )}
+      {/* if compare view is open */}
+      {compareView && compare.length > 0 && (
+        <CompareModel product={product} onClose={() => setCompareView(false)} />
       )}
 
       <div className="w-[60%]">

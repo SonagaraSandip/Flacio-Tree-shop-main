@@ -19,9 +19,11 @@ import WishList from "./pages/WishList";
 //account
 import Register from "./pages/account/Register";
 import Login from "./pages/account/Login";
+import Account from './pages/account/Account';
 
 //from other
 import TopBarLoader from "./other/TopBarLoader";
+import CompareToggle from './other/CompareToggle';
 
 function AppWrapper() {
   const [homeLayout, setHomeLayout] = useState("modern");
@@ -32,6 +34,7 @@ function AppWrapper() {
     <>
       <TopBarLoader />
       <Navbar setLayout={setHomeLayout} transparentUntilScroll={transparent} />
+      <CompareToggle />
       <ScrollToTopAction />
       <Routes>
         <Route path="/" element={<Home layout={homeLayout} />} />
@@ -44,7 +47,7 @@ function AppWrapper() {
         <Route path="/blog/:tab/:id" element={<BlogPageDetails />} />
         <Route path="/featured" element={<Featured />} />
         <Route path="/wishlist" element={<WishList />} />
-        <Route path="/account" element={<Register />} />
+        <Route path="/account" element={<Account />} />
         <Route path="/account/register" element={<Register />} />
         <Route path="/account/login" element={<Login />} />
       </Routes>

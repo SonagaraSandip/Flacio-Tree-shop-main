@@ -3,30 +3,14 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 const CompareContext = createContext();
 
 export const CompareProvider = ({ children }) => {
-  const [compare, setCompare] = useState([]);
-
-  // load data from local storage on initial render
-  useEffect(() => {
+  const [compare, setCompare] = useState(() => {
     const savedCompare = localStorage.getItem("compare");
-    console.log("saved data ", savedCompare);
-    if (savedCompare) {
-      try {
-      const parsed = JSON.parse(savedCompare);
-      if (Array.isArray(parsed)) {
-        setCompare(parsed);
-      }
-      } catch (error) {
-        console.error("Failed to parse compare data from localStorage:", error);
-        localStorage.removeItem("compare"); // Remove corrupted data
-      }
-    }
-  }, []);
+    return savedCompare ? JSON.parse(savedCompare) : [];
+  });
 
   // save compare data in local storage whenever its change
   useEffect(() => {
-   if (Array.isArray(compare)) {
-     localStorage.setItem("compare", JSON.stringify(compare));
-   }
+    localStorage.setItem("compare", JSON.stringify(compare));
   }, [compare]);
 
   const addToCompare = ({ product, selectedVariant }) => {

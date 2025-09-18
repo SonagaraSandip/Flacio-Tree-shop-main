@@ -12,6 +12,8 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { FaCaretDown } from "react-icons/fa";
+import { useAuth } from "../contexts/AuthContext";
 import { useWishlist } from "../contexts/WishlistContext";
 import { toast } from "react-toastify";
 
@@ -38,12 +40,17 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [openSignIn, setOpenSignIn] = useState(false);
   const [email, setEmail] = useState("");
+  const [resetEmail, setResetEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
+  const [submitEmail, setSubmitEmail] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   const { wishlist } = useWishlist();
+  const { user, login, logout } = useAuth();
 
   useEffect(() => {
     if (!transparentUntilScroll) {
@@ -113,13 +120,66 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
       return;
     }
 
-    toast.success("You have successfully logged in!");
+    // validate login
+    const res = login(email, password);
+    if (res.error) {
+      if (res.error === "Create an Account!") {
+        toast.error("Please create an account first!");
+        navigate("/account/register");
+        return;
+      }
+      toast.error(res.error);
+      return;
+    }
+    toast.success("Logged in successfully!");
+    navigate("/");
 
     setEmail("");
     setPassword("");
     setTimeout(() => {
       setOpenSignIn(false);
     }, 2000);
+  };
+
+  //handle reset password
+  const handleResetPassword = (e) => {
+    e.preventDefault();
+
+    if (!resetEmail.trim()) {
+      toast.error("Please enter a email address");
+      return;
+    }
+    if (!validateEmail(resetEmail)) {
+      toast.warn("Please enter a valid email address");
+      return;
+    }
+
+    toast.success(
+      "We've sent you an email with a link to update your password."
+    );
+    setSubmitEmail(true);
+    setTimeout(() => {
+      setSubmitEmail(false);
+      setResetEmail("");
+    }, 3000);
+  };
+
+  // handle drop down and signin both
+  const onUserIconClick = () => {
+    if (user) {
+      // Toggle profile dropdown if signed in
+      setOpenProfile(!openProfile);
+      setOpenSignIn(false); // Make sure sign in is closed
+    } else {
+      setOpenSignIn(true);
+      setOpenProfile(false);
+    }
+  };
+
+  // handle logout
+  const handleLogout = () => {
+    logout();
+    setOpenProfile(false);
   };
 
   //Homepage navbar
@@ -604,72 +664,166 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
         >
           <Search className="w-6 h-6 cursor-pointer hover:scale-110" />
           {/* user */}
-          <User
-            onClick={() => setOpenSignIn(true)}
-            className="w-6 h-6 cursor-pointer hover:scale-110"
-          />
+          <div onClick={onUserIconClick} className="flex group items-center">
+            <User className="w-6 h-6 cursor-pointer group-hover:scale-110" />
+            {user && (
+              <FaCaretDown
+                size={20}
+                className="cursor-pointer group-hover:scale-110"
+              />
+            )}
+          </div>
+
+          {openProfile && user && (
+            <div className="absolute -bottom-28 right-28 mt-2 bg-white shadow-lg text-black border border-zinc-600 rounded p-4 min-w-[160px] z-50">
+              <div className="mb-2 text-gray-700 font-poppins text-sm">
+                Hello{" "}
+                <span onClick={() => {navigate('/account'); setOpenProfile(false)}} className="font-bold font-librebaskerville hover:text-black cursor-pointer">
+                  {user.firstName} <br /> {user.lastName}
+                </span>
+              </div>
+              <div className="h-px w-full my-4 bg-gray-300" />
+              <div
+                className="cursor-pointer text-gray-600 hover:text-black font-poppins"
+                onClick={handleLogout}
+              >
+                Sign out
+              </div>
+            </div>
+          )}
 
           {openSignIn && (
-            <div className="fixed right-0 top-0 bg-black bg-opacity-50 flex w-[60vh] h-screen animate-fadeInRight z-50">
-              <div className="flex flex-col gap-4 bg-white w-full h-full p-6">
-                <button
-                  className="self-end text-gray-400 bg-white border border-gray-800 hover:bg-black hover:text-white"
-                  onClick={() => setOpenSignIn(false)}
-                >
-                  <X className="hover:rotate-90 transition-transform duration-300 hover:scale-90" />
-                </button>
-                <h2 className="text-xs font-librebaskerville mt-12 text-black">
-                  SIGN IN
-                </h2>
-                <form onSubmit={handleSubmit} noValidate className="text-black">
-                  <input
-                    type="email"
-                    alt="email"
-                    placeholder="Email*"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="border border-gray-400 font-poppins text-sm w-full pl-4 p-2"
-                    style={{ outline: "none" }}
-                  />
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      alt="password"
-                      placeholder="Password*"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="border border-gray-400 font-poppins text-sm w-full pl-4 p-2 mt-4"
-                      style={{ outline: "none" }}
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="flex items-center justify-center "
-                    >
-                      {showPassword ? (
-                        <Eye className="absolute right-3 top-7 w-5 h-5 text-gray-400 cursor-pointer hover:text-black" />
-                      ) : (
-                        <EyeOff className="absolute right-3 top-7 w-5 h-5 text-gray-400 cursor-pointer hover:text-black" />
-                      )}
-                    </span>
-                  </div>
-                  <button className="text-xs font-poppins mt-4 text-zinc-700 hover:text-zinc-950 cursor-pointer border-b border-zinc-500">
-                    Lost your password?
+            <div className="fixed inset-0 z-50">
+              <div
+                onClick={() => setOpenSignIn(false)}
+                className="absolute inset-0 bg-black bg-opacity-50"
+              ></div>
+              <div className="absolute right-0 top-0 bg-black bg-opacity-50 flex w-[60vh] h-screen animate-fadeInRight">
+                <div className="flex flex-col gap-4 bg-white w-full h-full p-6">
+                  <button
+                    className="self-end text-gray-400 bg-white border border-gray-800 hover:bg-black hover:text-white"
+                    onClick={() => setOpenSignIn(false)}
+                  >
+                    <X className="hover:rotate-90 transition-transform duration-300 hover:scale-90" />
                   </button>
-                  <div className="flex items-center gap-2 mt-4">
-                    <button className="w-full bg-black text-white text-sm font-poppins py-2  hover:bg-green-950">
-                      SIGN IN
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate("/account/register");
-                        setOpenSignIn(false);
-                      }}
-                      className="w-full border border-zinc-700 text-sm font-poppins py-2  hover:bg-green-950 hover:text-white"
+                  <h2 className="text-xs font-librebaskerville mt-12 text-black">
+                    SIGN IN
+                  </h2>
+                  {resetPassword ? (
+                    <div className="flex flex-col text-center gap-4">
+                      {submitEmail && (
+                        <p className="bg-cyan-50 text-green-700 font-poppins text-sm self-start py-2">
+                          We've sent you an email with a link to update your
+                          password.
+                        </p>
+                      )}
+                      <h1 className="text-sm font-librebaskerville text-zinc-900">
+                        RESET YOUR PASSWORD
+                      </h1>
+                      <p className="text-gray-500 font-poppins text-sm">
+                        We will send you an email to reset your password
+                      </p>
+                      <span className="h-px w-24 bg-gray-500 self-center" />
+
+                      <form
+                        onSubmit={handleResetPassword}
+                        noValidate
+                        className="text-black flex flex-col mt-4"
+                      >
+                        <input
+                          type="email"
+                          alt="email"
+                          placeholder="Email*"
+                          value={resetEmail}
+                          onChange={(e) => setResetEmail(e.target.value)}
+                          className="border border-gray-400 font-poppins text-sm w-full pl-4 p-2"
+                          style={{ outline: "none" }}
+                        />
+
+                        <button
+                          type="submit"
+                          onClick={handleResetPassword}
+                          className="self-start w-1/2 bg-zinc-900 text-white text-sm font-poppins mt-4 py-3 hover:bg-green-950"
+                        >
+                          SUBMIT
+                        </button>
+                      </form>
+
+                      <button
+                        onClick={() => {
+                          setResetPassword(false);
+                          setResetEmail("");
+                        }}
+                        className="hover:underline-offset-1 hover:text-zinc-900 font-poppins text-sm underline"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <form
+                      onSubmit={handleSubmit}
+                      noValidate
+                      className="text-black"
                     >
-                      CREATE YOUR ACCOUNT
-                    </button>
-                  </div>
-                </form>
+                      <input
+                        type="email"
+                        alt="email"
+                        placeholder="Email*"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="border border-gray-400 font-poppins text-sm w-full pl-4 p-2"
+                        style={{ outline: "none" }}
+                      />
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          alt="password"
+                          placeholder="Password*"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="border border-gray-400 font-poppins text-sm w-full pl-4 p-2 mt-4"
+                          style={{ outline: "none" }}
+                        />
+                        <span
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="flex items-center justify-center "
+                        >
+                          {showPassword ? (
+                            <Eye className="absolute right-3 top-7 w-5 h-5 text-gray-400 cursor-pointer hover:text-black" />
+                          ) : (
+                            <EyeOff className="absolute right-3 top-7 w-5 h-5 text-gray-400 cursor-pointer hover:text-black" />
+                          )}
+                        </span>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          setResetPassword(true);
+                          e.preventDefault();
+                        }}
+                        className="text-xs font-poppins mt-4 text-zinc-700 hover:text-zinc-950 cursor-pointer border-b border-zinc-500"
+                      >
+                        Lost your password?
+                      </button>
+                      <div className="flex items-center gap-2 mt-4">
+                        <button
+                          type="submit"
+                          className="w-full bg-black text-white text-sm font-poppins py-2  hover:bg-green-950"
+                        >
+                          SIGN IN
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigate("/account/register");
+                            setOpenSignIn(false);
+                          }}
+                          className="w-full border border-zinc-700 text-sm font-poppins py-2  hover:bg-green-950 hover:text-white"
+                        >
+                          CREATE YOUR ACCOUNT
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
               </div>
             </div>
           )}

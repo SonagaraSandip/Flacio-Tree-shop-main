@@ -4,7 +4,7 @@ import { ShoppingBag, Heart, ArrowDownUp, Search } from "lucide-react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import QuickViewModal from "../other/QuickViewModal";
-import CompareModal from "../other/CompareModel";
+import CompareModel from "../other/CompareModel";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCompare } from "../contexts/CompareContext";
 import LoadingEffect from "../components/loadingEffect";
@@ -12,7 +12,8 @@ import { toast } from "react-toastify";
 
 const ProductCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { addToCompare, removeFromCompare, isInCompare, compare } = useCompare();
+  const { addToCompare, removeFromCompare, isInCompare, compare } =
+    useCompare();
   // state to keep track of selected variant initial first
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants.length > 0 ? product.variants[0] : null
@@ -103,7 +104,7 @@ const ProductCard = ({ product }) => {
       } else {
         setTimeout(() => {
           setLoading((prev) => ({ ...prev, compare: false }));
-        })
+        });
         addToCompare({ product, selectedVariant });
         setCompareView(true);
         toast.success(`Added ${product.name} to CompareList`);
@@ -204,11 +205,11 @@ const ProductCard = ({ product }) => {
                   </p>
                 )}
 
-              {product.PreOrder && (
-                <p className="text-green-500 font-librebaskerville text-md">
-                  ( Pre-order )
-                </p>
-              )}
+                {product.PreOrder && (
+                  <p className="text-green-500 font-librebaskerville text-md">
+                    ( Pre-order )
+                  </p>
+                )}
               </div>
             </div>
 
@@ -389,7 +390,7 @@ const ProductCard = ({ product }) => {
               </button>
             </div>
             {/* Quick view */}
-            <div className=" translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
+            <div className="translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
               <Tooltip text="Quick View" show={showTooltip === "Quick View"} />
               <button
                 onClick={(e) => handleActionClick(e, "QuickView")}
@@ -419,7 +420,7 @@ const ProductCard = ({ product }) => {
 
       {/* if compare view is open */}
       {compareView && compare.length > 0 && (
-        <CompareModal product={product} onClose={() => setCompareView(false)} />
+        <CompareModel product={product} onClose={() => setCompareView(false)} />
       )}
     </>
   );

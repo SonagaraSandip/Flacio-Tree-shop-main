@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 import Footer from "../Footer";
 import ScrollToTop from "../ScrollToTop";
 
 const Register = () => {
-    const navigate = useNavigate();
+  const { register } = useAuth();
+  const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -43,7 +45,15 @@ const Register = () => {
       return;
     }
 
+    // validation login
+    const res = register(firstName, lastName, email, password);
+    if(res.error) {
+      toast.error(res.error);
+      return;
+    }
+
     toast.success("Your account has been created successfully!");
+    navigate("/account/login");
 
     setFirstName("");
     setLastName("");
@@ -114,8 +124,9 @@ const Register = () => {
           <button className="w-full bg-zinc-800 text-white text-sm font-poppins py-2 mt-2 mb-6 hover:bg-green-950">
             REGISTER
           </button>
-          <button 
-            onClick={() => {
+          <button
+            onClick={(e) => {
+              e.preventDefault();
               navigate("/account/login");
             }}
             className="w-full border border-zinc-700 text-sm font-poppins py-2 hover:bg-green-950 hover:text-white"
