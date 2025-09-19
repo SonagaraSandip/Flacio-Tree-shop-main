@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.jsx";
 import "./fonts.css";
 import { ToastContainer, Bounce } from "react-toastify";
+import { CartProvider } from "./contexts/CartContext";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { CompareProvider } from "./contexts/CompareContext.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
@@ -14,7 +15,9 @@ createRoot(document.getElementById("root")).render(
     <WishlistProvider>
       <CompareProvider>
         <AuthProvider>
+          <CartProvider>
           <App />
+          </CartProvider>
         </AuthProvider>
       </CompareProvider>
     </WishlistProvider>

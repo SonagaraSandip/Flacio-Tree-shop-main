@@ -60,6 +60,10 @@ export default {
           "0%": { transform: "scale(0.8)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
       },
       animation: {
         bounceX: "bounceX 1s infinite",
@@ -71,6 +75,7 @@ export default {
         fadeInRight: "fadeInRight 0.7s ease-out forwards",
         "fill-pulse": "fill-pulse 2s infinite ease-in-out",
         "zoom-in": "zoomIn 0.7s cubic-bezier(0.48,0,0.12,1) forwards",
+          marquee: 'marquee 8s linear infinite',
       },
     },
   },

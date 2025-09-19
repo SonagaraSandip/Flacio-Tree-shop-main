@@ -22,6 +22,7 @@ export const WishlistProvider = ({ children }) => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
 
+
   const addToWishlist = ({ product, selectedVariant }) => {
     // Add a check to ensure product is defined
     if (!product) {

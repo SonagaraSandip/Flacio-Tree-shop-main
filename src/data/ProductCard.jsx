@@ -5,8 +5,10 @@ import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import QuickViewModal from "../other/QuickViewModal";
 import CompareModel from "../other/CompareModel";
+import AddToCartModal from "../other/AddToCartModal";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCompare } from "../contexts/CompareContext";
+import { useCart } from "../contexts/CartContext";
 import LoadingEffect from "../components/loadingEffect";
 import { toast } from "react-toastify";
 
@@ -14,6 +16,8 @@ const ProductCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare, compare } =
     useCompare();
+  const { addToCart, } = useCart();
+  useCompare();
   // state to keep track of selected variant initial first
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants.length > 0 ? product.variants[0] : null
@@ -24,6 +28,7 @@ const ProductCard = ({ product }) => {
   const [showTooltip, setShowToolTip] = useState(null); // 'cart' | 'wishlist' | 'compare' | 'search' | null
   const [quickView, setQuickView] = useState(false);
   const [compareView, setCompareView] = useState(false);
+  const [isAddToCart, setIsAddToCart] = useState(false);
   const [loading, setLoading] = useState({
     quickView: false,
     addToCart: false,
@@ -63,10 +68,12 @@ const ProductCard = ({ product }) => {
       setLoading((prev) => ({ ...prev, addToCart: true }));
 
       setTimeout(() => {
-        console.log(`Added ${quantity} ${product.name} to cart`);
         setLoading((prev) => ({ ...prev, addToCart: false }));
-        toast.success(`Added ${quantity} ${product.name} to cart`);
       }, 1000); // Simulate loading for 1 second
+
+      addToCart({ product, selectedVariant, quantity });
+      setIsAddToCart(true);
+      toast.success(`Added ${product.name} to cart`);
     }
 
     // action for Wishlist
@@ -104,7 +111,7 @@ const ProductCard = ({ product }) => {
       } else {
         setTimeout(() => {
           setLoading((prev) => ({ ...prev, compare: false }));
-        });
+        }, 1000);
         addToCompare({ product, selectedVariant });
         setCompareView(true);
         toast.success(`Added ${product.name} to CompareList`);
@@ -421,6 +428,16 @@ const ProductCard = ({ product }) => {
       {/* if compare view is open */}
       {compareView && compare.length > 0 && (
         <CompareModel product={product} onClose={() => setCompareView(false)} />
+      )}
+
+      {/*if Add to cart is open */}
+      {isAddToCart && (
+        <AddToCartModal
+          product={product}
+          quantity={quantity}
+          selectedVariant={selectedVariant}
+          onClose={() => setIsAddToCart(false)}
+        />
       )}
     </>
   );
