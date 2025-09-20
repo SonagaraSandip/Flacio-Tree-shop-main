@@ -18,36 +18,34 @@ export const CartProvider = ({ children }) => {
       console.error("Cannot add to cart: product is undefined");
       return;
     }
-    const item = {
-      id: `${product.id}-${selectedVariant?.color || "default"}`,
-      product,
-      variant: selectedVariant || null,
-    };
+
+    const variantIdentifier =
+      selectedVariant?.color || selectedVariant?.type || "default";
+    const itemId = `${product.id}-${variantIdentifier}`;
 
     setCart((prev) => {
-      const found = prev.find((i) => i.id === item);
+      const found = prev.find((i) => i.id === itemId);
       if (found) {
         return prev.map((i) =>
-          i.id === item ? { ...i, quantity: i.quantity + quantity } : i
+          i.id === itemId ? { ...i, quantity: i.quantity + quantity } : i
         );
       }
       return [
         ...prev,
-        { id: item, product, variant: selectedVariant, quantity },
+        { id: itemId, product, variant: selectedVariant, quantity },
       ];
     });
   };
 
   const updateQuantity = (itemId, newQuantity) => {
-  setCart(prev =>
-    prev.map(item =>
-      item.id === itemId
-        ? { ...item, quantity: Math.max(1, newQuantity) }
-        : item
-    )
-  );
-};
-
+    setCart((prev) =>
+      prev.map((item) =>
+        item.id === itemId
+          ? { ...item, quantity: Math.max(1, newQuantity) }
+          : item
+      )
+    );
+  };
 
   const removeFromCart = (itemId) => {
     setCart((prev) => prev.filter((item) => item.id !== itemId));

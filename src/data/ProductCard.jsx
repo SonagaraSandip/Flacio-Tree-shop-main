@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare, compare } =
     useCompare();
-  const { addToCart, } = useCart();
+  const { addToCart, cart, updateQuantity } = useCart();
   useCompare();
   // state to keep track of selected variant initial first
   const [selectedVariant, setSelectedVariant] = useState(
@@ -150,6 +150,12 @@ const ProductCard = ({ product }) => {
     </div>
   );
 
+  // get total of cart
+  const total = cart.reduce(
+    (sum, item) => sum + item.variant.price * item.quantity,
+    0
+  );
+  
   return (
     <>
       <div
@@ -434,9 +440,11 @@ const ProductCard = ({ product }) => {
       {isAddToCart && (
         <AddToCartModal
           product={product}
-          quantity={quantity}
           selectedVariant={selectedVariant}
           onClose={() => setIsAddToCart(false)}
+          cart={cart}
+          total={total}
+          updateQuantity={updateQuantity}
         />
       )}
     </>

@@ -5,7 +5,9 @@ import { MdPlayArrow } from "react-icons/md";
 import QuickViewModal from "../other/QuickViewModal";
 import { useWishlist } from "../contexts/WishlistContext";
 import CompareModel from "../other/CompareModel";
+import AddToCartModal from "../other/AddToCartModal";
 import { useCompare } from "../contexts/CompareContext";
+import { useCart } from "../contexts/CartContext";
 import { toast } from "react-toastify";
 import LoadingEffect from "../components/loadingEffect";
 
@@ -13,12 +15,14 @@ const ProductListCard = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare, compare } =
     useCompare();
+  const { addToCart, cart, updateQuantity } = useCart();
   const [selectedVariant, setSelectedVariant] = useState(
     product.variants.length > 0 ? product.variants[0] : null
   );
   const [isHovered, setIsHovered] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showQuantity, setShowQuantity] = useState(false);
+  const [isAddToCart, setIsAddToCart] = useState(false);
   const [quickView, setQuickView] = useState(false);
   const [compareView, setCompareView] = useState(false);
 
@@ -53,6 +57,11 @@ const ProductListCard = ({ product }) => {
   const handleQuantityChange = (amount) => {
     setQuantity((prev) => Math.max(1, prev + amount));
   };
+  // get total of cart
+  const total = cart.reduce(
+    (sum, item) => sum + item.variant.price * item.quantity,
+    0
+  );
 
   const handleActionClick = (e, action) => {
     e.preventDefault();
@@ -62,10 +71,12 @@ const ProductListCard = ({ product }) => {
       setLoading((prev) => ({ ...prev, addToCart: true }));
 
       setTimeout(() => {
-        console.log(`Added ${quantity} ${product.name} to cart`);
         setLoading((prev) => ({ ...prev, addToCart: false }));
-        toast.success(`Added ${quantity} ${product.name} to cart`);
-      }, 1000);
+      }, 1000); // Simulate loading for 1 second
+
+      addToCart({ product, selectedVariant, quantity });
+      setIsAddToCart(true);
+      toast.success(`Added ${product.name} to cart`);
     }
 
     if (action === "wishlist") {
@@ -265,9 +276,14 @@ const ProductListCard = ({ product }) => {
             </div>
 
             <div className="translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition duration-300 delay-100">
-              <Tooltip text={isProductInCompare ? "Remove from compare" : "Add to Compare"} show={showTooltip === "compare"} />
+              <Tooltip
+                text={
+                  isProductInCompare ? "Remove from compare" : "Add to Compare"
+                }
+                show={showTooltip === "compare"}
+              />
               <button
-              onClick={(e) => handleActionClick(e, "compare")}
+                onClick={(e) => handleActionClick(e, "compare")}
                 className={` p-3 rounded-full shadow hover:bg-green-950 transition hover:scale-110 hover:animate-pulse hover:opacity-100 ${
                   isProductInCompare
                     ? "bg-green-950 text-white"
@@ -311,6 +327,17 @@ const ProductListCard = ({ product }) => {
       {/* if compare view is open */}
       {compareView && compare.length > 0 && (
         <CompareModel product={product} onClose={() => setCompareView(false)} />
+      )}
+      {/*if Add to cart is open */}
+      {isAddToCart && (
+        <AddToCartModal
+          product={product}
+          selectedVariant={selectedVariant}
+          onClose={() => setIsAddToCart(false)}
+          cart={cart}
+          total={total}
+          updateQuantity={updateQuantity}
+        />
       )}
 
       <div className="w-[60%]">

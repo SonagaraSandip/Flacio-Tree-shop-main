@@ -4,7 +4,9 @@ import AnimatedNumbers from "react-animated-numbers";
 import Product from "../data/products";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCompare } from "../contexts/CompareContext";
+import { useCart } from "../contexts/CartContext";
 import CompareModel from "../other/CompareModel";
+import AddToCartModal from "../other/AddToCartModal";
 import Tree360Viewer from "../other/Tree360Viewer";
 import Tree3DViewer from "../other/Tree3DViewer";
 import { IoIosEye } from "react-icons/io";
@@ -55,6 +57,7 @@ const ProductPageCard = () => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { addToCompare, removeFromCompare, isInCompare, compare } =
     useCompare();
+  const { addToCart, cart, updateQuantity } = useCart();
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState({
     tigerAloe: 1,
@@ -76,6 +79,7 @@ const ProductPageCard = () => {
   const [isBegginerInclude, setIsBegginerInclude] = useState(true);
   const [selectSize, setSelectSize] = useState(30);
   const [compareView, setCompareView] = useState(false);
+  const [isAddToCart, setIsAddToCart] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState({
     quickView: false,
@@ -87,6 +91,12 @@ const ProductPageCard = () => {
   const url = window.location.href;
 
   const today = new Date();
+
+  // get total of cart
+  const total = cart.reduce(
+    (sum, item) => sum + item.variant.price * item.quantity,
+    0
+  );
 
   // check is product is in wishlist
   const isProductInWishlist = isInWishlist(productpage, selectedVariant);
@@ -174,6 +184,118 @@ const ProductPageCard = () => {
     );
   };
 
+  //test addtoCart jade succulent button
+  const handleAddToCartJade = () => {
+    setLoading((prev) => ({ ...prev, addToCart: true }));
+    setTimeout(() => {
+      setLoading((prev) => ({ ...prev, addToCart: false }));
+    }, 1000);
+
+    //1. add jade succulent
+    addToCart({
+      product: productpage,
+      selectedVariant,
+      quantity: currentProductQuantity,
+    });
+
+    // add tiger aloe (find from product list)
+
+    const tigerAloeProduct = Product.find(
+      (p) => p.name.toLowerCase() === "tiger aloe"
+    );
+    if (tigerAloeProduct) {
+      const tigerAloeVariant = tigerAloeProduct.variants.find(
+        (v) => v.color === selectedVariant?.color
+      );
+      addToCart({
+        product: tigerAloeProduct,
+        selectedVariant: tigerAloeVariant,
+        quantity: quantity.tigerAloe,
+      });
+    }
+
+    // 3. Add Peace Lily
+    const peaceLilyProduct = Product.find(
+      (p) => p.name.toLowerCase() === "pease lily"
+    );
+    if (peaceLilyProduct) {
+      const peaceLilyVariant = peaceLilyProduct.variants.find(
+        (v) => v.color === selectedVariant?.color
+      ); // change for selected color/option
+      addToCart(
+        {
+          product: peaceLilyProduct,
+          selectedVariant: peaceLilyVariant,
+          quantity: quantity.peaceLily,
+        },
+        true
+      );
+    }
+
+    setIsAddToCart(true);
+    toast.success(`Bundle added to cart successfully`);
+  };
+
+  // handle bought toogher
+  const handleAddToCartBoughtTogether = () => {
+    setLoading((prev) => ({ ...prev, addToCart: true }));
+    setTimeout(() => {
+      setLoading((prev) => ({ ...prev, addToCart: false }));
+    }, 1000);
+
+    const selectedMainVariant =
+      productpage.variants.find((v) => v.color === boughtTogetherColor) ||
+      productpage.variants[0];
+
+    // Add main "Bought Together" product
+    addToCart({
+      product: productpage,
+      selectedVariant: selectedMainVariant,
+      quantity: 1,
+      selectedColor: selectedMainVariant.color,
+    });
+
+    // Add Beginner Set if included
+    if (isBegginerInclude) {
+      const beginnerSetProduct = Product.find(
+        (p) => p.name.toLowerCase() === "the beginner set"
+      );
+      if (beginnerSetProduct) {
+        // Optionally, select correct color/variant
+        const beginnerSetVariant =
+          beginnerSetProduct.variants.find(
+            (v) => `${v.color} / ${v.size}` === beginnerSetColor
+          ) || beginnerSetProduct.variants[0];
+        addToCart({
+          product: beginnerSetProduct,
+          selectedVariant: beginnerSetVariant,
+          quantity: 1,
+          selectedColor: beginnerSetVariant.color,
+        });
+      }
+    }
+
+    setIsAddToCart(true);
+    toast.success(`Selected items added to cart successfully`);
+  };
+
+  // handle add to cart toggle
+  const handleAddToCart = () => {
+    setLoading((prev) => ({ ...prev, addToCart: true }));
+
+    setTimeout(() => {
+      setLoading((prev) => ({ ...prev, addToCart: false }));
+    }, 1000); // Simulate loading for 1 second
+
+    addToCart({
+      product: productpage,
+      selectedVariant,
+      quantity: currentProductQuantity,
+    });
+    setIsAddToCart(true);
+    toast.success(`Added ${productpage.name} to cart`);
+  };
+
   //handle wishlist toggle
   const handleWishlistToggle = (e) => {
     e.preventDefault();
@@ -222,23 +344,6 @@ const ProductPageCard = () => {
       addToCompare({ product: productpage, selectedVariant });
       setCompareView(true);
       toast.success(`Added ${productpage.name} to CompareList`);
-    }
-  };
-
-  //test addtoCart button
-  const handleAddToCart = () => {
-    if (productpage.name.toLowerCase().replace(" ", "-") == "jade-succulent") {
-      console.log("Adding bundle to cart");
-      console.log("Tiger Aloe:", quantity.tigerAloe, "units");
-      console.log("Pease Liliy:", quantity.peaceLily, "units");
-    } else {
-      console.log("Adding to Cart", productpage.name);
-      console.log("Color: ", selectedVariant?.color);
-      console.log("Quantity: ", currentProductQuantity);
-      console.log(
-        "price: $",
-        selectedVariant?.discountPrice || productpage.originalPrice
-      );
     }
   };
 
@@ -821,11 +926,15 @@ const ProductPageCard = () => {
               productpage.name.toLowerCase().replace(" ", "-") ===
               "jade-succulent" ? (
                 <button
-                  onClick={() => handleAddToCart()}
-                  className="w-full flex items-center justify-center group text-white bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-700 px-4 py-3 hover:bg-gradient-to-r hover:from-green-600 hover:via-green-900 hover:to-green-600 transition-all duration-500"
+                  onClick={() => handleAddToCartJade()}
+                  className="w-full flex items-center justify-center group text-white bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-700 px-4 py-3 hover:bg-gradient-to-r hover:from-green-700 hover:via-green-950 hover:to-green-700 transition-all duration-500"
                 >
                   <span className="text-md font-poppins group-hover:animate-bounceX transition-transform duration-300">
-                    Add to Cart
+                    {loading.addToCart ? (
+                      <LoadingEffect size="small" />
+                    ) : (
+                      "ADD TO CART"
+                    )}
                   </span>
                 </button>
               ) : (
@@ -861,10 +970,14 @@ const ProductPageCard = () => {
                   </div>
                   <button
                     onClick={() => handleAddToCart(productpage.name)}
-                    className="w-full flex items-center justify-center group text-white  px-4 py-3 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-700 hover:bg-gradient-to-r hover:from-green-500 hover:via-green-900 hover:to-green-500 transition-all duration-500 "
+                    className="w-full flex items-center justify-center group text-white  px-4 py-3 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-700 hover:bg-gradient-to-r hover:from-green-700 hover:via-green-950 hover:to-green-700 transition-all duration-500 "
                   >
-                    <span className="text-md font-poppins group-hover:animate-bounceX transition-transform duration-300">
-                      Add to Cart
+                    <span className="text-sm font-poppins group-hover:animate-bounceX transition-transform duration-300">
+                      {loading.addToCart ? (
+                        <LoadingEffect size="small" />
+                      ) : (
+                        "ADD TO CART"
+                      )}
                     </span>
                   </button>
                 </div>
@@ -1379,6 +1492,17 @@ const ProductPageCard = () => {
         {compareView && compare.length > 0 && (
           <CompareModel onClose={() => setCompareView(false)} />
         )}
+        {/*if Add to cart is open */}
+        {isAddToCart && (
+          <AddToCartModal
+            product={productpage}
+            selectedVariant={selectedVariant}
+            onClose={() => setIsAddToCart(false)}
+            cart={cart}
+            total={total}
+            updateQuantity={updateQuantity}
+          />
+        )}
       </div>
 
       {/* if product Bougth together then show this frequently bougth together  */}
@@ -1485,8 +1609,15 @@ const ProductPageCard = () => {
             <p className="text-sm font-poppins text-gray-500 my-2">
               For 2 item(s)
             </p>
-            <button className="bg-zinc-800 text-white hover:bg-green-800  px-4 py-2">
-              ADD SELECTED ITEM (S)
+            <button
+              onClick={handleAddToCartBoughtTogether}
+              className="bg-zinc-800 text-white hover:bg-green-800  px-4 py-2"
+            >
+              {loading.addToCart ? (
+                <LoadingEffect size="small" />
+              ) : (
+                "ADD SELECTED ITEM (S)"
+              )}
             </button>
           </div>
         </div>
