@@ -8,6 +8,7 @@ import {
   Plus,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 import { toast } from "react-toastify";
 
 const QuickViewModal = ({ product, onClose }) => {
@@ -23,6 +24,8 @@ const QuickViewModal = ({ product, onClose }) => {
   );
   const [hoveredColorIndexQv, setHoveredColorIndexQv] = useState(null);
   const [quantityQv, setQuantityQv] = useState(1);
+
+  const { addToCart } = useCart();
 
   useEffect(() => {
     if (selectedVariantQv) {
@@ -46,7 +49,9 @@ const QuickViewModal = ({ product, onClose }) => {
 
   //handle add to cart logic here
   const handleAddToCartQv = () => {
-    toast.success(`Added ${quantityQv} ${product.name} to cart successfully`);
+    addToCart({ product, selectedVariant:selectedVariantQv, quantity: quantityQv });
+    toast.success(`Added ${product.name} to cart`);
+    onClose();
   };
 
   const displayImageQv = images[imageIndex];
@@ -103,7 +108,9 @@ const QuickViewModal = ({ product, onClose }) => {
           <p className="text-gray-500 font-poppins">
             By{" "}
             <Link
-              to={`/collections/${(product.vendor).toLowerCase().replace(/\s+/g, "-")}`}
+              to={`/collections/${product.vendor
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`}
               className="font-normal text-black"
             >
               {product.vendor}

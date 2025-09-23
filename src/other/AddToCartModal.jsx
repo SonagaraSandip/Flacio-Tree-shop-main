@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import products from "../data/products";
 import ProductCard from "../data/ProductCard";
+import { toast } from "react-toastify";
 // import { useAuth } from "../contexts/AuthContext";
 import {
   CircleCheckBig,
@@ -68,6 +69,15 @@ const AddToCartModal = ({
     currentCartItem.product.originalPrice;
 
   const totalPrice = (price * currentCartItem.quantity).toFixed(2);
+
+  const handleBuyNow = () => {
+    if (!acceptTerms) {
+      toast.error("Please accept the terms and conditions to proceed.");
+      return;
+    }
+    navigate("/checkout");
+    onClose();
+  };
 
   return (
     <>
@@ -165,20 +175,19 @@ const AddToCartModal = ({
               {/* add to cart and view cart */}
               <div className="my-6">
                 <div className="flex gap-2 ">
+                  <lable></lable>
                   <input
                     type="checkbox"
                     id="checkbox"
                     onClick={handleTermsChange}
                     className="w-4 h-4 mt-1 cursor-pointer"
                   />{" "}
-                  <p className="text-gray-500 ">
-                    I agree with the{" "}
-                    <span
-                      onClick={() => setIsTermOpen(true)}
-                      className="text-gray-950 border-b font-poppins border-black hover:border-none cursor-pointer hover:font-baseline transition-all duration-300"
-                    >
-                      Terms and conditions
-                    </span>
+                  I agree with the{" "}
+                  <p
+                    onClick={() => setIsTermOpen(true)}
+                    className="text-gray-950 border-b font-poppins border-black hover:border-none cursor-pointer hover:font-baseline transition-all duration-300"
+                  >
+                    Terms and conditions
                   </p>
                 </div>
                 <div className="flex gap-4">
@@ -189,10 +198,11 @@ const AddToCartModal = ({
                     VIEW CART
                   </button>
                   <button
+                    onClick={handleBuyNow}
                     className={`w-full font-poppins uppercase text-sm flex items-center justify-center group px-4 py-3 border mt-2 transition-all duration-300 ${
                       acceptTerms
                         ? "cursor-pointer bg-green-950 text-white "
-                        : "cursor-not-allowed border-gray-400 bg-zinc-700 text-white opacity-70"
+                        : "cursor-not-allowed  border-gray-400 bg-zinc-700 text-white opacity-70"
                     }`}
                     style={{
                       width: "100%",
@@ -267,7 +277,7 @@ const AddToCartModal = ({
         {isTermOpen && (
           <div
             onClick={() => setIsTermOpen(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center  animate-zoom-in w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40 animate-zoom-in w-screen"
           >
             <div
               onClick={(e) => e.stopPropagation()}
@@ -280,30 +290,14 @@ const AddToCartModal = ({
                 <X className="text-base font-normal text-gray-500 hover:text-black" />
               </button>
               <h1 className="text-2xl text-black w-full font-librebaskerville ">
-                Shipping Info
+                Terms & Conditions
               </h1>
-              <div className="flex flex-col mt-8 mb-4 gap-4 text-md font-poppins w-full ">
-                <h1 className="">
-                  <span className="font-semibold">Return Policy :</span>
-                  <span className="text-gray-500">
-                    {" "}
-                    We will gladly accept returns for any reason within 30 days
-                    of receipt of delivery.
-                  </span>
-                </h1>
-                <h1>
-                  <span className="font-semibold">Availability :</span>{" "}
-                  <span className="text-gray-500">
-                    Ships anywhere in the United States.
-                  </span>
-                </h1>
-                <h1>
-                  <span className="font-semibold">Processing Time :</span>
-                  <span className="text-gray-500">
-                    Allow 3-4 business days processing time for your order to
-                    ship.
-                  </span>
-                </h1>
+              <div className="flex flex-col mt-4 mb-4 gap-4 text-md text-sm text-gray-500 font-poppins w-full ">
+                <p>Yodie supplies products listed on the Yodie, and Yodie websites, and in our stores under the following Terms and Conditions. Please read these Terms and Conditions, and our Privacy and Cookie Policies carefully before using any of our websites, or ordering from us.</p>
+                <p>The Terms and Conditions apply to your use of any Yodie website and to any products you purchase from them; regardless of how you access the website, including any technologies or devices where our website is available to you at home, on the move or in store</p>
+                <p>We reserve the right to update these Terms and Conditions at any time, and any updates affecting you or your purchases will be notified to you, by us in writing (via email), and on this page.</p>
+                <p>The headings in these Conditions are for convenience only and shall not affect their interpretation.</p>
+                <p>We recommend that you print and keep a copy of these Terms and Conditions for your future reference...</p>
               </div>
             </div>
           </div>

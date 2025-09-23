@@ -23,6 +23,8 @@ export const CartProvider = ({ children }) => {
       selectedVariant?.color || selectedVariant?.type || "default";
     const itemId = `${product.id}-${variantIdentifier}`;
 
+    
+
     setCart((prev) => {
       const found = prev.find((i) => i.id === itemId);
       if (found) {

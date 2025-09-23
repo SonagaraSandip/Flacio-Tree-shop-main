@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { CircleCheck, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import AddToCartModal from "../other/AddToCartModal";
 import { useCompare } from "../contexts/CompareContext";
+import { toast } from "react-toastify";
 
 const CompareModel = ({ onClose }) => {
   const { compare, removeFromCompare } = useCompare();
 
+  // const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(() => {
     const initial = {};
     compare.forEach((item) => {
@@ -17,6 +20,11 @@ const CompareModel = ({ onClose }) => {
   //handle variant select
   const handleVariantSelect = (productId, variant) => {
     setSelectedVariant((prev) => ({ ...prev, [productId]: variant }));
+  };
+
+  // Handle Add to Cart button click
+  const handleAddToCartClick = (product) => {
+    toast.success(`Added ${product.name} to cart`);
   };
 
   return (
@@ -200,7 +208,7 @@ const CompareModel = ({ onClose }) => {
                             $
                             {variant
                               ? variant.price.toFixed(2)
-                              : currentProduct.variant[0]?.price.toFixed(2)}
+                              : currentProduct.variants[0]?.price.toFixed(2)}
                           </p>
                         )}
                       </div>
@@ -219,6 +227,7 @@ const CompareModel = ({ onClose }) => {
                     <td key={item.id} className="border p-4 text-center">
                       {!currentProduct.outOfStock && (
                         <button
+                          onClick={() => handleAddToCartClick(currentProduct)}
                           disabled={!variant?.inStock}
                           className={`px-16 py-3 text-sm items-center justify-center text-center text-white font-poppins transition-colors duration-300 ${
                             variant?.inStock
@@ -237,6 +246,18 @@ const CompareModel = ({ onClose }) => {
           </table>
         </div>
       </div>
+
+      {/*if Add to cart is open */}
+      {/* {isAddToCart && selectedProduct && (
+        <AddToCartModal
+          product={selectedProduct}
+          selectedVariant={selectedVariant[selectedProduct.id]}
+          onClose={() => setIsAddToCart(false)}
+          cart={cart}
+          total={total}
+          updateQuantity={updateQuantity}
+        />
+      )} */}
     </div>
   );
 };

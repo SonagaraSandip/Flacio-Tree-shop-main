@@ -1,24 +1,31 @@
-import React from "react";
-import WhiteLogo from "../assets/Home/logo-white.png";
+import React, { useEffect, useState } from "react";
 import Payment from "../assets/Home/payment.avif";
 import { Mail } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 import { FaFacebookF, FaXTwitter } from "react-icons/fa6";
 import { FaWhatsapp, FaTiktok } from "react-icons/fa";
 
 const Footer = () => {
+  const { user } = useAuth();
+  const [email, setEmail] = useState("");
+  const [subscribe, setSubscribe] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email);
+    }
+  }, [user]);
+
+  const handleSubscribe = () => {
+    setSubscribe(true);
+    setTimeout(() => {
+      setSubscribe(false);
+    }, 2000);
+  };
+
   return (
     <div className="bg-green-950 min-h-[60vh] text-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 align-middle mx-12 pt-12">
-        {/* <div className="flex flex-col gap-2 text-md">
-          <img src={WhiteLogo} alt="Ehite-logo " className=" w-[120px] pb-8 " />
-          <p className="text-md font-poppins py-1">8331 Indian Spring Street</p>
-          <p className="text-md font-poppins py-1">Ames, IA 30010</p>
-          <p className="text-md font-poppins py-1">
-            Email: greenhousematt@gmail.com
-          </p>
-          <p className="text-md font-poppins py-1">Call Us: 330-239-0506</p>
-        </div> */}
-
         {/* about */}
         <div className="flex flex-col gap-2 text-md">
           <h1 className="text-sm font-librebaskerville pb-8 tracking-widest">
@@ -68,9 +75,7 @@ const Footer = () => {
 
         {/* Plant quistions */}
         <div className="flex flex-col font-librebaskerville gap-2 text-md">
-          <h1 className="pb-8 text-sm tracking-widest">
-            PLANT QUESTIONS ?
-          </h1>
+          <h1 className="pb-8 text-sm tracking-widest">PLANT QUESTIONS ?</h1>
           <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
             Plant Care Tips
           </p>
@@ -98,14 +103,27 @@ const Footer = () => {
               Stay in the loop with special offers,plant-parenting tips, and
               more.
             </p>
+
+            {subscribe && (
+              <div className="bg-gray-50 bg-opacity-85 rounded border border-blue-700  px-4 py-2">
+                <p className="text-sm font-poppins text-blue-600 tracking-wide">
+                  You have successfully subscribed to our newsletter.
+                </p>
+              </div>
+            )}
             <div className="flex justify-between border-b-2 border-white">
               <input
                 type="email"
                 placeholder="Your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="py-2 bg-green-950"
                 style={{ outline: "none" }}
               />
-              <button className="p-2 rounded-tr-md rounded-br-md hover:scale-110 transition-transform duration-300 ">
+              <button
+                onClick={handleSubscribe}
+                className="p-2 rounded-tr-md rounded-br-md hover:scale-110 transition-transform duration-300 "
+              >
                 <Mail color="white" size={20} />
               </button>
             </div>

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { Info, X } from "lucide-react";
 import Footer from "../Footer";
@@ -6,18 +7,105 @@ import ScrollToTop from "../ScrollToTop";
 import { toast } from "react-toastify";
 
 const Account = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [selectedTab, setSelectedTab] = useState("dashboard");
   const [isOpen, setIsOpen] = useState(false);
+  const [addresses, setAddresses] = useState([]);
+  const [editingAddress, setEditingAddress] = useState(null);
+
+  // load saved addresses
+  useEffect(() => {
+    if (user?.email) {
+      const stored = localStorage.getItem(`addresses_${user.email}`);
+
+      if (stored) {
+        try {
+          setAddresses(JSON.parse(stored));
+        } catch (error) {
+          console.error("Error parsing saved addresses:", error);
+          setAddresses([]);
+        }
+      } else {
+        setAddresses([]);
+      }
+    }
+  }, [user?.email]);
+
+  //save when ever addresses change
+  useEffect(() => {
+    if (user?.email) {
+      // prevent saving under wrong key
+      localStorage.setItem(
+        `addresses_${user.email}`,
+        JSON.stringify(addresses)
+      );
+    }
+  }, [addresses, user?.email]);
 
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully!");
+    navigate("/");
+  };
+
+  // add new address
+  const handleAddAddress = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newAddress = {
+      id: editingAddress ? editingAddress.id : Date.now(), // Keep same ID when editing
+      firstName: formData.get("firstName"),
+      lastName: formData.get("lastName"),
+      company: formData.get("company"),
+      address1: formData.get("address1"),
+      address2: formData.get("address2"),
+      city: formData.get("city"),
+      country: formData.get("country"),
+      postal: formData.get("postal"),
+      pincode: formData.get("pincode"),
+      phone: formData.get("phone"),
+      isDefault: formData.get("isDefault") ? true : false,
+    };
+
+    if (editingAddress) {
+      // update
+      setAddresses(
+        addresses.map((a) => (a.id === editingAddress.id ? newAddress : a))
+      );
+      toast.success("Address updated successfully!");
+    } else {
+      // add new
+      let updated = [...addresses];
+      if (newAddress.isDefault) {
+        updated = updated.map((a) => ({ ...a, isDefault: false }));
+      }
+      updated.push(newAddress);
+      setAddresses(updated);
+      toast.success("Address added successfully!");
+    }
+    setIsOpen(false);
+    setEditingAddress(null);
+  };
+
+  const handleDelete = (id) => {
+    setAddresses(addresses.filter((a) => a.id !== id));
+    toast.info("Address deleted successfully!");
+  };
+
+  // Set Default
+  const handleSetDefault = (id) => {
+    setAddresses(
+      addresses.map((a) =>
+        a.id === id ? { ...a, isDefault: true } : { ...a, isDefault: false }
+      )
+    );
   };
   return (
     <div className="container mx-auto mt-[150px]">
       <div className="flex flex-col gap-4 h-full items-center mb-28 max-w-6xl mx-auto ">
         <h1 className="text-6xl font-librebaskerville my-12">My Account</h1>
+        <p>count {addresses.length}</p>
         <div className="flex gap-4 mt-4 w-full">
           {/* left side */}
           <div className="flex flex-col w-[25%] text-sm">
@@ -77,9 +165,12 @@ const Account = () => {
                 <p className="text-xl font-medium">Order History</p>
                 <div className="flex gap-2 cursor-pointer items-center">
                   <Info size={20} color="green" />
-                  <p className="text-green-700 underline text-sm">
+                  <button
+                    onClick={() => navigate("/collections/all")}
+                    className="text-green-700 underline text-sm"
+                  >
                     CREATE YOUR FIRST ORDER
-                  </p>
+                  </button>
                   <p className="font-poppins text-gray-500 cursor-auto">
                     You haven't placed any orders yet.
                   </p>
@@ -91,7 +182,7 @@ const Account = () => {
               <div className="flex flex-col gap-4 font-poppins">
                 <div className="flex gap-2">
                   <p className="text-gray-500">
-                    You want to create a new address?{" "}
+                    You want to create a new address?
                   </p>
                   <p
                     onClick={() => setIsOpen(true)}
@@ -103,6 +194,58 @@ const Account = () => {
                 <h1 className="text-3xl my-2 font-librebaskerville">
                   Your Addresses
                 </h1>
+
+                {addresses.length === 0 ? (
+                  <p className="text-center bg-gray-100 p-4 border">
+                    No saved addresses yet.
+                  </p>
+                ) : (
+                  <div className="grid gap-4">
+                    {addresses.map((addr) => (
+                      <div key={addr.id} className="border p-4 relative">
+                        {addr.isDefault && (
+                          <span className="absolute top-0 right-0 bg-blue-600 text-white px-3 text-xs font-bold">
+                            DEFAULT
+                          </span>
+                        )}
+                        <p>
+                          {addr.firstName} {addr.lastName}
+                        </p>
+                        <p>{addr.company}</p>
+                        <p>{addr.address1}</p>
+                        <p>{addr.address2}</p>
+                        <p>{addr.city}</p>
+                        <p>{addr.country}</p>
+                        <p>{addr.postal}</p>
+                        <p>{addr.phone}</p>
+
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            onClick={() => handleSetDefault(addr.id)}
+                            className="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm"
+                          >
+                            Set Default
+                          </button>
+                          <button
+                            onClick={() => {
+                              setEditingAddress(addr);
+                              setIsOpen(true);
+                            }}
+                            className="px-6 py-1 bg-green-100 text-green-800 rounded text-sm"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDelete(addr.id)}
+                            className="px-3 py-1 bg-red-100 text-red-800 rounded text-sm"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -114,18 +257,21 @@ const Account = () => {
                   {/* Header */}
                   <div className="flex justify-between items-center border-b px-6 py-4">
                     <h2 className="text-2xl font-librebaskerville font-semibold">
-                      Add a New Address
+                      {editingAddress ? "Edit Address" : "Add a New Address"}
                     </h2>
                     <button
-                      className="self-end text-gray-400 bg-white border border-gray-800 hover:bg-black hover:text-white"
                       onClick={() => setIsOpen(false)}
+                      className="flex justify-end "
                     >
-                      <X className="hover:rotate-90 transition-transform duration-300 hover:scale-90" />
+                      <X className="text-base font-normal text-gray-500 hover:text-black hover:rotate-90 hover:scale-75 transition-transform duration-300" />
                     </button>
                   </div>
 
                   {/* Form */}
-                  <form className="p-6 space-y-4">
+                  <form
+                    onSubmit={handleAddAddress}
+                    className="p-6 font-poppins space-y-4"
+                  >
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium mb-1">
@@ -133,6 +279,9 @@ const Account = () => {
                         </label>
                         <input
                           type="text"
+                          name="firstName"
+                          defaultValue={editingAddress?.firstName || ""}
+                          required
                           className="w-full border rounded px-3 py-2"
                         />
                       </div>
@@ -142,6 +291,8 @@ const Account = () => {
                         </label>
                         <input
                           type="text"
+                          name="lastName"
+                          defaultValue={editingAddress?.lastName || ""}
                           className="w-full border rounded px-3 py-2"
                         />
                       </div>
@@ -153,6 +304,8 @@ const Account = () => {
                       </label>
                       <input
                         type="text"
+                        name="company"
+                        defaultValue={editingAddress?.company || ""}
                         className="w-full border rounded px-3 py-2"
                       />
                     </div>
@@ -163,6 +316,9 @@ const Account = () => {
                       </label>
                       <input
                         type="text"
+                        name="address1"
+                        defaultValue={editingAddress?.address1 || ""}
+                        required
                         className="w-full border rounded px-3 py-2"
                       />
                     </div>
@@ -173,6 +329,8 @@ const Account = () => {
                       </label>
                       <input
                         type="text"
+                        name="address2"
+                        defaultValue={editingAddress?.address2 || ""}
                         className="w-full border rounded px-3 py-2"
                       />
                     </div>
@@ -184,6 +342,8 @@ const Account = () => {
                         </label>
                         <input
                           type="text"
+                          name="city"
+                          defaultValue={editingAddress?.city || ""}
                           className="w-full border rounded px-3 py-2"
                         />
                       </div>
@@ -191,7 +351,11 @@ const Account = () => {
                         <label className="block text-sm font-medium mb-1">
                           Country/Region
                         </label>
-                        <select className="w-full border rounded px-3 py-2">
+                        <select
+                          name="country"
+                          defaultValue={editingAddress?.country || ""}
+                          className="w-full border rounded px-3 py-2"
+                        >
                           <option>---</option>
                           <option>India</option>
                           <option>USA</option>
@@ -207,6 +371,8 @@ const Account = () => {
                         </label>
                         <input
                           type="text"
+                          name="postal"
+                          defaultValue={editingAddress?.postal || ""}
                           className="w-full border rounded px-3 py-2"
                         />
                       </div>
@@ -216,23 +382,24 @@ const Account = () => {
                         </label>
                         <input
                           type="text"
+                          name="phone"
+                          defaultValue={editingAddress?.phone || ""}
                           className="w-full border rounded px-3 py-2"
                         />
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <input type="checkbox" id="default" />
-                      <label htmlFor="default" className="text-sm">
-                        Set as default address
-                      </label>
+                      <input type="checkbox" id="default" name="isDefault" />
+                      <label className="text-sm">Set as default address</label>
                     </div>
 
                     <button
                       type="submit"
+                      // onClick={handleAddAddress}
                       className="bg-green-800 text-white px-4 py-2 rounded"
                     >
-                      ADD ADDRESS
+                      {editingAddress ? "UPDATE ADDRESS" : "ADD ADDRESS"}
                     </button>
                   </form>
                 </div>
