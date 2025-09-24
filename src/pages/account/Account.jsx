@@ -13,28 +13,37 @@ const Account = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [addresses, setAddresses] = useState([]);
   const [editingAddress, setEditingAddress] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [isLoading, setIsLoading] = useState(true);
 
   // load saved addresses
   useEffect(() => {
     if (user?.email) {
-      const stored = localStorage.getItem(`addresses_${user.email}`);
+      setIsLoading(true);
+      try {
+        const stored = localStorage.getItem(`addresses_${user.email}`);
 
-      if (stored) {
-        try {
-          setAddresses(JSON.parse(stored));
-        } catch (error) {
-          console.error("Error parsing saved addresses:", error);
+        if (stored) {
+          const parsedAddresses = JSON.parse(stored);
+          setAddresses(Array.isArray(parsedAddresses) ? parsedAddresses : []);
+        } else {
           setAddresses([]);
         }
-      } else {
+      } catch (error) {
+        console.log("Error parsing saved addresses:", error);
         setAddresses([]);
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
+      setAddresses([]);
     }
   }, [user?.email]);
 
   //save when ever addresses change
   useEffect(() => {
-    if (user?.email) {
+    if (user?.email && addresses.length > 0) {
       // prevent saving under wrong key
       localStorage.setItem(
         `addresses_${user.email}`,
@@ -101,11 +110,12 @@ const Account = () => {
       )
     );
   };
+
   return (
     <div className="container mx-auto mt-[150px]">
       <div className="flex flex-col gap-4 h-full items-center mb-28 max-w-6xl mx-auto ">
         <h1 className="text-6xl font-librebaskerville my-12">My Account</h1>
-        <p>count {addresses.length}</p>
+
         <div className="flex gap-4 mt-4 w-full">
           {/* left side */}
           <div className="flex flex-col w-[25%] text-sm">
@@ -127,7 +137,7 @@ const Account = () => {
                   : "bg-gray-200 text-black"
               }`}
             >
-              Addresses
+              Addresses ({addresses.length})
             </button>
             <button
               onClick={handleLogout}
@@ -274,7 +284,10 @@ const Account = () => {
                   >
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">
+                        <label
+                          for="firstName"
+                          className="block text-sm font-medium mb-1"
+                        >
                           First Name
                         </label>
                         <input
@@ -286,7 +299,10 @@ const Account = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">
+                        <label
+                          for="lastName"
+                          className="block text-sm font-medium mb-1"
+                        >
                           Last Name
                         </label>
                         <input
@@ -299,7 +315,10 @@ const Account = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-1">
+                      <label
+                        for="company"
+                        className="block text-sm font-medium mb-1"
+                      >
                         Company
                       </label>
                       <input
@@ -311,7 +330,10 @@ const Account = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-1">
+                      <label
+                        for="address1"
+                        className="block text-sm font-medium mb-1"
+                      >
                         Address1
                       </label>
                       <input
@@ -324,7 +346,10 @@ const Account = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-1">
+                      <label
+                        for="address2"
+                        className="block text-sm font-medium mb-1"
+                      >
                         Address2
                       </label>
                       <input
@@ -337,7 +362,10 @@ const Account = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">
+                        <label
+                          for="city"
+                          className="block text-sm font-medium mb-1"
+                        >
                           City
                         </label>
                         <input
@@ -348,7 +376,10 @@ const Account = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">
+                        <label
+                          for="country"
+                          className="block text-sm font-medium mb-1"
+                        >
                           Country/Region
                         </label>
                         <select
@@ -366,7 +397,10 @@ const Account = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium mb-1">
+                        <label
+                          for="postal"
+                          className="block text-sm font-medium mb-1"
+                        >
                           Postal/Zip Code
                         </label>
                         <input
@@ -377,7 +411,10 @@ const Account = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">
+                        <label
+                          for="phone"
+                          className="block text-sm font-medium mb-1"
+                        >
                           Phone
                         </label>
                         <input
@@ -391,7 +428,9 @@ const Account = () => {
 
                     <div className="flex items-center gap-2">
                       <input type="checkbox" id="default" name="isDefault" />
-                      <label className="text-sm">Set as default address</label>
+                      <label htmlFor="isDefault" className="text-sm">
+                        Set as default address
+                      </label>
                     </div>
 
                     <button

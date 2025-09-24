@@ -23,6 +23,7 @@ import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useWishlist } from "../contexts/WishlistContext";
 import EditItem from "../other/EditItem";
+import SearchModal from "../other/SearchModal";
 import { toast } from "react-toastify";
 
 //homepage navbar
@@ -56,6 +57,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isTermOpen, setIsTermOpen] = useState(false);
   const [isEditItem, setIsEditItem] = useState(null);
+  const [openSearch, setOpenSearch] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -348,6 +350,55 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
     { name: "Post Prallax" },
     { name: "Post Sticky" },
     { name: "Post Simple Title" },
+  ];
+
+  const featureMenu = [
+    {
+      title: "Page",
+      items: [
+        { name: "About Us" },
+        { name: "Contact US" },
+        { name: "Faqs" },
+        { name: "Faqs 2" },
+        { name: "Wishlist" },
+        { name: "404 Error" },
+      ],
+    },
+    {
+      title: "Portfolio",
+      items: [
+        { name: "2 Columns" },
+        { name: "3 Columns" },
+        { name: "4 Columns" },
+        { name: "Mansonry Layout", tag: "New" },
+      ],
+    },
+    {
+      title: "Featured",
+      items: [
+        { name: "Announcement bar" },
+        { name: "Popup Newsletter" },
+        { name: "Popup Compare", tag: "New" },
+        { name: "Cookies law info" },
+        { name: "RTL Layout" },
+      ],
+    },
+    {
+      title: "Lookbook",
+      items: [
+        { name: "Lookbook Single" },
+        { name: "Lookbook in Page" },
+        { name: "Lookbook Simple" },
+      ],
+    },
+    {
+      title: "Instagram Shop",
+      items: [
+        { name: "Instagram Shop Slider" },
+        { name: "Instagram Shop Grid Modern" },
+        { name: "Instagram Shop in Page" },
+      ],
+    },
   ];
   return (
     <div
@@ -677,16 +728,58 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             </div>
           </div>
 
-          <Link to="/featured" className="relative group cursor-pointer">
-            <div className="flex items-center font-poppins gap-1">
-              <span
-                className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()}`}
-              >
-                FEATURED
-              </span>
-              <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
+          {/* featured link hover */}
+          <div
+            onMouseEnter={() => setHoveredMenu("featured")}
+            onMouseLeave={() => setHoveredMenu(null)}
+            className="flex group gap-6 text-sm"
+          >
+            <div className="relative">
+              <Link to="/featured" className="relative group cursor-pointer">
+                <div className="flex items-center font-poppins gap-1">
+                  <span
+                    className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()}`}
+                  >
+                    FEATURED
+                  </span>
+                  <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
+                </div>
+              </Link>
             </div>
-          </Link>
+            {hoveredMenu === "featured" && (
+              <div className="absolute top-6 mt-6 left-1 z-50 bg-white shadow-xl p-5 w-screen max-h-[100vh] ">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 px-8">
+                  {featureMenu.map((section) => (
+                    <div key={section.title}>
+                      <h1 className="text-xl font-librebaskerville font-semibold border-b pb-1 mb-6 tracking-widest text-black">
+                        {section.title}
+                      </h1>
+                      <ui className=" space-y-1">
+                        {section.items.map((item) => (
+                          <li key={item.name} className="flex items-center">
+                            <span className="text-sm mb-2  font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer">
+                              {item.name}
+                            </span>
+                            {item.tag && (
+                              <span
+                                className={` text-xs font-librebaskerville py-0.5 px-1.5 transform -translate-y-2 cursor-pointer ${
+                                  item.tag === "Hot"
+                                    ? "bg-red-100 text-red-600"
+                                    : " bg-gray-200 text-gray-700"
+                                }`}
+                              >
+                                {item.tag}
+                              </span>
+                            )}
+                          </li>
+                        ))}
+                      </ui>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* logo */}
@@ -705,7 +798,16 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             scrolled ? "text-black" : "text-white"
           }`}
         >
-          <Search className="w-6 h-6 cursor-pointer hover:scale-110" />
+          <div>
+            <Search
+              onClick={() => setOpenSearch(true)}
+              className="w-6 h-6 cursor-pointer hover:scale-110"
+            />
+
+            {openSearch && (
+             <SearchModal setOpenSearch={setOpenSearch} />
+            )}
+          </div>
           {/* user */}
           <div onClick={onUserIconClick} className="flex group items-center">
             <User className="w-6 h-6 cursor-pointer group-hover:scale-110" />

@@ -17,6 +17,12 @@ import ScrollToTopAction from "./pages/ScrollToTopAction";
 import WishList from "./pages/WishList";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import About from "./pages/AboutUs";
+import Contact from "./pages/Contact";
+import Faqs from "./pages/Faqs";
+import Faqs2 from "./pages/Faqs2";
+import Error from "./pages/Error";
+import Portfolio from "./pages/Portfolio";
 
 //account
 import Register from "./pages/account/Register";
@@ -53,6 +59,7 @@ function AppWrapper() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:blogId" element={<Blog />} />
         <Route path="/blog/:tab/:id" element={<BlogPageDetails />} />
+        <Route path="/blog/portfolio" element={<Portfolio />} />
         <Route path="/featured" element={<Featured />} />
         <Route path="/wishlist" element={<WishList />} />
         <Route path="/cart" element={<Cart />} />
@@ -60,6 +67,11 @@ function AppWrapper() {
         <Route path="/account" element={<Account />} />
         <Route path="/account/register" element={<Register />} />
         <Route path="/account/login" element={<Login />} />
+        <Route path="/pages/about" element={<About />} />
+        <Route path="/pages/contact" element={<Contact />} />
+        <Route path="/pages/faqs" element={<Faqs />} />
+        <Route path="/pages/faqs2" element={<Faqs2 />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </>
   );
