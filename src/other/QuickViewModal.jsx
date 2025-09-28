@@ -49,7 +49,11 @@ const QuickViewModal = ({ product, onClose }) => {
 
   //handle add to cart logic here
   const handleAddToCartQv = () => {
-    addToCart({ product, selectedVariant:selectedVariantQv, quantity: quantityQv });
+    addToCart({
+      product,
+      selectedVariant: selectedVariantQv,
+      quantity: quantityQv,
+    });
     toast.success(`Added ${product.name} to cart`);
     onClose();
   };
@@ -107,14 +111,19 @@ const QuickViewModal = ({ product, onClose }) => {
           <h1 className="text-2xl font-librebaskerville">{product.name}</h1>
           <p className="text-gray-500 font-poppins">
             By{" "}
-            <Link
-              to={`/collections/${product.vendor
-                .toLowerCase()
-                .replace(/\s+/g, "-")}`}
+            <button
+              onClick={() => {
+                {
+                  `/collections/${product.vendor
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")} ,`;
+                }
+                onClose();
+              }}
               className="font-normal text-black"
             >
               {product.vendor}
-            </Link>
+            </button>
           </p>
           {/* price */}
           <div className="flex items-center gap-2">

@@ -23,6 +23,8 @@ import Faqs from "./pages/Faqs";
 import Faqs2 from "./pages/Faqs2";
 import Error from "./pages/Error";
 import Portfolio from "./pages/Portfolio";
+import PopupAd from "./other/PopupAd";
+import RightBanner from "./other/RightBanner";
 
 //account
 import Register from "./pages/account/Register";
@@ -73,6 +75,12 @@ function AppWrapper() {
         <Route path="/pages/faqs2" element={<Faqs2 />} />
         <Route path="*" element={<Error />} />
       </Routes>
+      {!isCheckoutPage && (
+        <>
+          <PopupAd />
+          <RightBanner />
+        </>
+      )}
     </>
   );
 }

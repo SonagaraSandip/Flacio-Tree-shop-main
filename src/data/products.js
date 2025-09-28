@@ -128,7 +128,7 @@ const products = [
     name: "Ruby Rubber Tree",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 5,
     sellOrder: "29 sold in last 17 hours",
     originalPrice: 90.0,
     discountPercent: 43,
@@ -175,7 +175,7 @@ const products = [
     name: "Peace Lily",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 4,
+    rating: 3,
     sellOrder: "43 sold in last 24 hours",
     originalPrice: 90,
     discountPercent: 33,
@@ -332,7 +332,7 @@ const products = [
     name: "Pink Dragon Tree",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 4,
     sellOrder: "48 sold in last 18 hours",
     originalPrice: 100,
     discountPrice: 80,
