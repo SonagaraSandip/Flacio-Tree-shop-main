@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
 import Product from "../data/products";
+import Layout from "../pages/Layout";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCompare } from "../contexts/CompareContext";
 import { useCart } from "../contexts/CartContext";
@@ -499,7 +500,7 @@ const ProductPageCard = () => {
   };
 
   return (
-    <div className="mt-[90px] ">
+    <div className="pt-[120px] ">
       <div className="mx-12 font-librebaskerville text-sm text-black pb-4">
         <span
           onClick={() => navigate("/")}

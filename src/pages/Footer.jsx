@@ -16,6 +16,13 @@ const Footer = () => {
     }
   }, [user]);
 
+  const handleScrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const handleSubscribe = () => {
     setSubscribe(true);
     setTimeout(() => {
@@ -28,47 +35,86 @@ const Footer = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 align-middle mx-12 pt-12">
         {/* about */}
         <div className="flex flex-col gap-2 text-md">
-          <h1 className="text-sm font-librebaskerville pb-8 tracking-widest">
+          <h1
+            onClick={handleScrollTop}
+            className="text-sm font-librebaskerville pb-8 tracking-widest"
+          >
             COMPANY
           </h1>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             About
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Careers
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Press
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Corporate Orders
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Refer a Friend
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             About
           </p>
         </div>
 
         {/* Support */}
         <div className="flex flex-col gap-2 text-md">
-          <h1 className="text-sm font-librebaskerville pb-8 tracking-widest">
+          <h1
+            onClick={handleScrollTop}
+            className="text-sm font-librebaskerville pb-8 tracking-widest"
+          >
             SUPPORT
           </h1>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Help + FAQs
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Track Your Order
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Shipping
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Returns
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Contact Support
           </p>
         </div>
@@ -76,19 +122,34 @@ const Footer = () => {
         {/* Plant quistions */}
         <div className="flex flex-col font-librebaskerville gap-2 text-md">
           <h1 className="pb-8 text-sm tracking-widest">PLANT QUESTIONS ?</h1>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Plant Care Tips
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Plant Life Blog
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Vera Plant Care App
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Meet Plant Mom
           </p>
-          <p className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 ">
+          <p
+            onClick={handleScrollTop}
+            className="text-md font-poppins py-1 cursor-pointer hover:text-gray-400 "
+          >
             Conatact the Grow-How Team
           </p>
         </div>

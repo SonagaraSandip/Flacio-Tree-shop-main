@@ -22,7 +22,7 @@ import Faqs from "./pages/Faqs";
 import Faqs2 from "./pages/Faqs2";
 import Error from "./pages/Error";
 import Portfolio from "./pages/Portfolio";
-import PopupAd from "./other/PopupAd";
+// import PopupAd from "./other/PopupAd";
 import RightBanner from "./other/RightBanner";
 import TopaddBanner from "./other/TopaddBanner";
 import PortfolioDetails from "./pages/PortfolioDetails";
@@ -38,21 +38,36 @@ import TopBarLoader from "./other/TopBarLoader";
 import CompareToggle from "./other/CompareToggle";
 
 function AppWrapper() {
-  const [homeLayout, setHomeLayout] = useState("modern");
   const location = useLocation();
+  const [homeLayout, setHomeLayout] = useState("modern");
+  const [topBannerActive, setTopBannerActive] = useState(
+    () => !sessionStorage.getItem("topAdShown")
+  );
 
   const transparent = location.pathname === "/" && homeLayout === "modern";
   const isCheckoutPage = location.pathname === "/checkout";
+  const topBannerHeight = topBannerActive
+    ? "pt-8 transition-all duration-300"
+    : "";
   return (
     <>
       <TopBarLoader />
-      {!isCheckoutPage && <TopaddBanner />}
+      {!isCheckoutPage && topBannerActive && (
+        <TopaddBanner
+          onClose={() => {
+            setTopBannerActive(false);
+            sessionStorage.setItem("topAdShown", "true");
+          }}
+        />
+      )}
 
       {!isCheckoutPage && (
-        <Navbar
-          setLayout={setHomeLayout}
-          transparentUntilScroll={transparent}
-        />
+        <div className={topBannerHeight}>
+          <Navbar
+            setLayout={setHomeLayout}
+            transparentUntilScroll={transparent}
+          />
+        </div>
       )}
       {!isCheckoutPage && <CompareToggle />}
       <ScrollToTopAction />
@@ -87,7 +102,7 @@ function AppWrapper() {
       </Routes>
       {!isCheckoutPage && (
         <>
-          <PopupAd />
+          {/* <PopupAd /> */}
           <RightBanner />
         </>
       )}

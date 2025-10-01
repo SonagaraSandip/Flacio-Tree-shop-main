@@ -20,7 +20,7 @@ export const CompareProvider = ({ children }) => {
       return; // Exit the function if product is not defined
     }
     const item = {
-      id: `${product.id}-${selectedVariant?.color || "default"}`,
+      id: `${product.id}`,
       product,
       variant: selectedVariant || null,
     };
@@ -28,7 +28,12 @@ export const CompareProvider = ({ children }) => {
     setCompare((prev) => {
       // check if item is already in compare
       const exists = prev.find((i) => i.id === item.id);
-      if (exists) return prev;
+      if (exists)
+        return prev.map((item) =>
+          item.id === item.id
+            ? { ...item, variant: selectedVariant || null }
+            : item
+        );
       return [...prev, item];
     });
   };
@@ -38,8 +43,8 @@ export const CompareProvider = ({ children }) => {
     setCompare((prev) => prev.filter((item) => item.id !== itemId));
   };
 
-  const isInCompare = (product, selectedVariant) => {
-    const itemId = `${product.id}-${selectedVariant?.color || "default"}`;
+  const isInCompare = (product) => {
+    const itemId = `${product.id}`;
     return compare.some((item) => item.id === itemId);
   };
 

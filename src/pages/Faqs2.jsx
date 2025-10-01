@@ -41,7 +41,7 @@ export default function Faqs2() {
 
   return (
     <>
-      <div className="max-w-2xl mx-auto mb-16 mt-[130px]">
+      <div className="max-w-2xl mx-auto mb-16 pt-[130px]">
         <h2 className="text-4xl font-serif font-bold mb-10">
           Frequently Asked Questions.
         </h2>

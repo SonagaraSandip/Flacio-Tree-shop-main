@@ -57,6 +57,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [isTermOpen, setIsTermOpen] = useState(false);
   const [isEditItem, setIsEditItem] = useState(null);
   const [openSearch, setOpenSearch] = useState(false);
+  
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -380,7 +381,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
   ];
   return (
     <div
-      className={` top-0 left-0 w-full z-50 transition-all duration-1000 ease-in-out ${
+      className={`fixed left-0 w-full z-50 transition-all duration-1000 ease-in-out ${
         scrolled
           ? "bg-white text-black fixed border-b border-gray-300 shadow-sm"
           : "bg-transparent text-white absolute"
@@ -562,7 +563,6 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
           </div>
 
           {/* Product link hover */}
-
           <div
             className="relative group"
             onMouseEnter={() => setHoveredMenu("product")}
@@ -615,7 +615,6 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
           </div>
 
           {/* Blog link hover */}
-
           <div
             className="relative group"
             onMouseEnter={() => setHoveredMenu("blog")}
@@ -624,7 +623,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             <Link
               to="/blog/news"
               className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
-                location.pathname.startsWith("/blog")
+                location.pathname.startsWith("/blog") && !location.pathname.startsWith("/blog/portfolio")
                   ? "border-b-2 border-black"
                   : ""
               } `}
@@ -681,7 +680,6 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
           </div>
 
           {/* featured link hover */}
-
           <div
             onMouseEnter={() => setHoveredMenu("featured")}
             onMouseLeave={() => setHoveredMenu(null)}
@@ -747,7 +745,6 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
         </Link>
 
         {/* Right icons */}
-
         <div
           className={`flex items-center md:gap-6 ${
             scrolled ? "text-black" : "text-white"

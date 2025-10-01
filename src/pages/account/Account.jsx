@@ -112,7 +112,7 @@ const Account = () => {
   };
 
   return (
-    <div className="container mx-auto mt-[150px]">
+    <div className="container mx-auto pt-[150px]">
       <div className="flex flex-col gap-4 h-full items-center mb-28 max-w-6xl mx-auto ">
         <h1 className="text-6xl font-librebaskerville my-12">My Account</h1>
 

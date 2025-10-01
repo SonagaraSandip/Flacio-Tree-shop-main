@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import ProductPageCard from "../data/ProductPageCard";
 import products from "../data/products";
+import Layout from "./Layout";
 import ProductCard from "../data/ProductCard";
 import Footer from "../pages/Footer";
 import ScrollToTop from "../pages/ScrollToTop";
@@ -195,7 +196,7 @@ const Product = () => {
   };
 
   return (
-    <div>
+    <Layout className="">
       <ProductPageCard productpageCard={ProductPageCard} />
 
       <div className="flex flex-col mx-8">
@@ -686,7 +687,7 @@ const Product = () => {
 
       <Footer />
       <ScrollToTop />
-    </div>
+    </Layout>
   );
 };
 

@@ -2,6 +2,8 @@ import React from "react";
 import { useWishlist } from "../contexts/WishlistContext";
 import { X } from "lucide-react";
 import { Link } from "react-router-dom";
+import Footer from "./Footer";
+import ScrollToTop from "./ScrollToTop";
 import { toast } from "react-toastify";
 import ProductCard from "../data/ProductCard";
 
@@ -20,7 +22,7 @@ const WishList = () => {
   };
 
   return (
-    <div className="container mx-auto mt-[150px] my-8 px-1">
+    <div className="container mx-auto pt-[120px]">
       <div className="flex flex-col gap-2 pb-8 px-14 border-b border-gray-300">
         <h1 className="text-6xl font-librebaskerville ">wishlist</h1>
         <div className="flex gap-2 font-poppins text-md">
@@ -47,7 +49,7 @@ const WishList = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-8 px-4 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-8 mb-20 px-4 ">
           {wishlist.map((item) => (
             <div key={item.id} className="relative ">
               <ProductCard product={item.product} />
@@ -73,6 +75,8 @@ const WishList = () => {
           ))}
         </div>
       )}
+      <Footer />
+      <ScrollToTop />
     </div>
   );
 };

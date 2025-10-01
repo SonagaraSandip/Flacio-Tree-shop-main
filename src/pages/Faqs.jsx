@@ -46,7 +46,7 @@ const Faqs = () => {
   ];
 
   return (
-    <div className="container mt-[150px]">
+    <div className="container pt-[150px]">
       <div className="flex flex-col gap-2 pb-8 px-14 border-b border-gray-300">
         <h1 className="text-6xl font-librebaskerville ">FAQs</h1>
         <div className="flex gap-2 font-poppins text-md">

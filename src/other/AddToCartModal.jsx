@@ -244,7 +244,7 @@ const AddToCartModal = ({
               onMouseLeave={() => setHovered(false)}
               ref={carouselRef}
             >
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center transition-all duration-500 mt-6">
                 {products
                   .slice(currentIndex, currentIndex + 4)
                   .map((product) => (
@@ -256,9 +256,7 @@ const AddToCartModal = ({
                 <>
                   <button
                     onClick={prevSlide}
-                    className={`absolute z-10 top-1/2 -left-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2 
-                              
-                            `}
+                    className={`absolute z-10 top-1/2 -left-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2`}
                   >
                     <ChevronLeft size={32} />
                   </button>
@@ -293,11 +291,34 @@ const AddToCartModal = ({
                 Terms & Conditions
               </h1>
               <div className="flex flex-col mt-4 mb-4 gap-4 text-md text-sm text-gray-500 font-poppins w-full ">
-                <p>Yodie supplies products listed on the Yodie, and Yodie websites, and in our stores under the following Terms and Conditions. Please read these Terms and Conditions, and our Privacy and Cookie Policies carefully before using any of our websites, or ordering from us.</p>
-                <p>The Terms and Conditions apply to your use of any Yodie website and to any products you purchase from them; regardless of how you access the website, including any technologies or devices where our website is available to you at home, on the move or in store</p>
-                <p>We reserve the right to update these Terms and Conditions at any time, and any updates affecting you or your purchases will be notified to you, by us in writing (via email), and on this page.</p>
-                <p>The headings in these Conditions are for convenience only and shall not affect their interpretation.</p>
-                <p>We recommend that you print and keep a copy of these Terms and Conditions for your future reference...</p>
+                <p>
+                  Yodie supplies products listed on the Yodie, and Yodie
+                  websites, and in our stores under the following Terms and
+                  Conditions. Please read these Terms and Conditions, and our
+                  Privacy and Cookie Policies carefully before using any of our
+                  websites, or ordering from us.
+                </p>
+                <p>
+                  The Terms and Conditions apply to your use of any Yodie
+                  website and to any products you purchase from them; regardless
+                  of how you access the website, including any technologies or
+                  devices where our website is available to you at home, on the
+                  move or in store
+                </p>
+                <p>
+                  We reserve the right to update these Terms and Conditions at
+                  any time, and any updates affecting you or your purchases will
+                  be notified to you, by us in writing (via email), and on this
+                  page.
+                </p>
+                <p>
+                  The headings in these Conditions are for convenience only and
+                  shall not affect their interpretation.
+                </p>
+                <p>
+                  We recommend that you print and keep a copy of these Terms and
+                  Conditions for your future reference...
+                </p>
               </div>
             </div>
           </div>

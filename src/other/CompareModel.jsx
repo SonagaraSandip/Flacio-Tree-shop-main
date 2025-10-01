@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { CircleCheck, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import AddToCartModal from "../other/AddToCartModal";
+import { useCart } from "../contexts/CartContext";
 import { useCompare } from "../contexts/CompareContext";
 import { toast } from "react-toastify";
 
 const CompareModel = ({ onClose }) => {
   const { compare, removeFromCompare } = useCompare();
+  const { addToCart } = useCart();
 
   // const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedVariant, setSelectedVariant] = useState(() => {
@@ -24,6 +26,15 @@ const CompareModel = ({ onClose }) => {
 
   // Handle Add to Cart button click
   const handleAddToCartClick = (product) => {
+    const selectedVariant =
+      product.variants && product.variants.length > 0
+        ? product.variants[0]
+        : null;
+    addToCart({
+      product,
+      selectedVariant,
+      quantity: 1
+    })
     toast.success(`Added ${product.name} to cart`);
   };
 

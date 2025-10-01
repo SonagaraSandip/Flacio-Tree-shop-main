@@ -142,7 +142,7 @@ const PortfolioDetails = () => {
   };
 
   return (
-    <div className="mt-[110px] ">
+    <div className="pt-[110px] ">
       <div className="flex flex-col gap-4 mx-12">
         {/* url link */}
         <div className="flex items-center gap-2">

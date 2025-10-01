@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Data from '../data/Portfolio_Data';
+import Footer from "./Footer";
+import ScrollToTop from "./ScrollToTop";
+import Layout from "./Layout";
+import Data from "../data/Portfolio_Data";
 
 const Portfolio = () => {
   const [selected, setSelected] = useState("All");
-  
 
   const AllTags = [
     "All",
@@ -18,11 +20,11 @@ const Portfolio = () => {
 
   const generateSlug = (title) => {
     return title.toLowerCase().replace(/\?/g, "").replace(/\s+/g, "-");
-  }
+  };
 
   return (
-    <div className="container mt-[150px]">
-      <div className="flex flex-col gap-2 pb-2 px-14 border-b border-gray-300">
+    <Layout className="">
+      <div className="flex flex-col pt-[150px] gap-2 pb-2 px-14 border-b border-gray-300">
         <h1 className="text-6xl font-librebaskerville ">Portfolio</h1>
         <div className="flex gap-6 my-4 pb-2">
           {AllTags.map((tag) => (
@@ -44,12 +46,12 @@ const Portfolio = () => {
           {filtered.map((item, index) => (
             <div key={index} className="flex flex-col items-center">
               <Link to={`/blog/portfolio/${generateSlug(item.title)}`}>
-              <img
-                src={item.img}
-                alt={item.title}
-                className="rounded-lg w-full mb-4"
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className="rounded-lg w-full mb-4"
                 />
-                </Link>
+              </Link>
               <h2 className="text-2xl font-librebaskerville text-gray-800 text-center">
                 {item.title}
               </h2>
@@ -57,7 +59,7 @@ const Portfolio = () => {
                 {item.tags.map((tag) => (
                   <button
                     key={tag}
-                  onClick={() => setSelected(tag)}
+                    onClick={() => setSelected(tag)}
                     className="text-sm text-gray-400 font-poppins border border-gray-400 px-2 py-1 hover:bg-green-950 hover:text-white transition-colors duration-300 tracking-wider uppercase"
                   >
                     {tag}
@@ -68,7 +70,9 @@ const Portfolio = () => {
           ))}
         </div>
       </div>
-    </div>
+      <Footer />
+      <ScrollToTop />
+    </Layout>
   );
 };
 

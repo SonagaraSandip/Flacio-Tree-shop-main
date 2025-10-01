@@ -51,7 +51,7 @@ const Cart = () => {
 
   const progressWidth = Math.min(100, (total / 100) * 100);
   return (
-    <div className="container mx-auto mt-[180px] ">
+    <div className="container mx-auto pt-[180px] ">
       {cart.length === 0 ? (
         <div className="flex flex-col gap-4 max-w-xl mx-auto items-center justify-center mt-32 lg:mt-72">
           <h1 className="text-xl font-librebaskerville uppercase ">

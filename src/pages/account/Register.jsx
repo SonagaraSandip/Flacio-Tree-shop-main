@@ -61,7 +61,7 @@ const Register = () => {
     setPassword("");
   };
   return (
-    <div className="container mx-auto mt-[150px]">
+    <div className="container mx-auto pt-[150px]">
       <div className="flex flex-col gap-4 h-full items-center mb-28 max-w-lg mx-auto">
         <h1 className="text-6xl font-librebaskerville my-12">Create Account</h1>
         <form onSubmit={handleSubmit} noValidate className="text-black w-full">

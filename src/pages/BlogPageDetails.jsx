@@ -212,7 +212,7 @@ const BlogPageDetails = () => {
 
   return (
     <Layout>
-      <div className="mx-12 mt-[100px]">
+      <div className="mx-12 pt-[100px]">
         <div className="flex gap-2 font-poppins text-sm text-gray-500">
           <Link to={`/`} className="border-b border-gray-500 hover:text-black">
             Home

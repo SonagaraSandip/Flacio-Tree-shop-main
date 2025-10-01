@@ -14,18 +14,52 @@ const SearchModal = ({ setOpenSearch }) => {
 
   // fake blog/journal results (replace with API or data)
   const journal = [
-    "The Best Plant For You?",
-    "The Best Tree Care Tips For You",
-    "What Is The Best Plant For You?",
-    "Tips On How To Select The Right Tree",
-    "Books that open knowledge",
-    "Redesign Concept",
-    "Web Design Development",
-    "Organic drinking water for you",
+    {
+      title: "The Best Plant For You?",
+      link: "/blog/lifeStyle/the-best-tree-care-tips-for-you",
+    },
+    {
+      title: "The Best Tree Care Tips For You",
+      link: "/blog/shorts/the-best-plant-for-you",
+    },
+    {
+      title: "What Is The Best Plant For You?",
+      link: "/blog/news/what-is-the-best-plant-for-you",
+    },
+    {
+      title: "Traveling solo is awesome",
+      link: "/blog/news/traveling-solo-is-awesome",
+    },
+    {
+      title: "Indoor Plants Are Good For Health",
+      link: "/blog/news/indoor-plants-are-good-for-health",
+    },
+    {
+      title: "Tips On How To Select The Right Tree",
+      link: "/blog/fashion/tips-on-how-to-select-the-right-tree",
+    },
+    {
+      title: "Books that open knowledge",
+      link: "/blog/portfolio/books-that-open-knowledge",
+    },
+    {
+      title: "Web Design Development",
+      link: "/blog/portfolio/web-design-development",
+    },
+    { title: "Redesign Concept", link: "/blog/portfolio/redesign-concept" },
+    {
+      title: "Organic drinking water for you",
+      link: "/blog/portfolio/organic-drinking-water-for-you",
+    },
+    { title: "Music event 2022", link: "/blog/portfolio/music-event-2022" },
+    {
+      title: "Wine gift box every day",
+      link: "/blog/portfolio/wine-gift-box-every-day",
+    },
   ];
 
   const filteredJournal = journal.filter((j) =>
-    j.toLowerCase().includes(query.toLowerCase())
+    j.title.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
@@ -125,7 +159,7 @@ const SearchModal = ({ setOpenSearch }) => {
             <div className="w-1/3">
               <div className="text-md flex justify-between text-gray-500 border-b border-gray-300 pb-2 mt-10 mb-4">
                 <p>Journals</p>
-               <button
+                <button
                   onClick={() => {
                     navigate("/collections/all");
                     setOpenSearch(false);
@@ -140,9 +174,13 @@ const SearchModal = ({ setOpenSearch }) => {
                   {filteredJournal.map((j, idx) => (
                     <li
                       key={idx}
+                      onClick={() => {
+                        navigate(j.link);
+                        setOpenSearch(false);
+                      }}
                       className="hover:text-green-700 cursor-pointer"
                     >
-                      {j}
+                      {j.title}
                     </li>
                   ))}
                 </ul>

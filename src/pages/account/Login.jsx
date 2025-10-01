@@ -82,7 +82,7 @@ const Login = () => {
     }, 3000);
   };
   return (
-    <div className="container mx-auto mt-[150px]">
+    <div className="container mx-auto pt-[150px]">
       <div className="flex flex-col gap-4 h-full items-center mb-28 max-w-5xl mx-auto ">
         <h1 className="text-6xl font-librebaskerville my-12">Account</h1>
         <div className="flex justify-between items-center w-full gap-12">
