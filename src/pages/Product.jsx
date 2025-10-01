@@ -55,21 +55,23 @@ const Product = () => {
 
   const visibleProducts = getVisibleProducts();
 
-  // get random 4 id for recently view products
-  const randomIds = new Set();
-  //generate random interger form 1 t 10
-  while (randomIds.size < 4) {
-    const randomNumber = Math.floor(Math.random() * 10) + 1;
-    randomIds.add(randomNumber);
-  }
+  const randomProducts = useMemo(() => {
+    const randomIds = new Set();
 
-  //convert set to arry format
-  const randomIdsArray = Array.from(randomIds);
+    // get random 4 id for recently view products
+    //generate random interger form 1 t 10
+    while (randomIds.size < 4) {
+      const randomNumber = Math.floor(Math.random() * 10) + 1;
+      randomIds.add(randomNumber);
+    }
 
-  //random 4 products ids
-  const randomProducts = randomIdsArray.map((id) =>
-    products.find((product) => product.id === id)
-  );
+    //convert set to arry format
+    const randomIdsArray = Array.from(randomIds);
+
+    return randomIdsArray.map((id) =>
+      products.find((product) => product.id === id)
+    );
+  }, []);
 
   //update title char count
   useEffect(() => {

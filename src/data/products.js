@@ -44,7 +44,7 @@ const products = [
     name: "Umbrella Tree",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 2,
     sellOrder: "24 sold in last 09 hours",
     originalPrice: 90,
     discountPercent: 31,
@@ -83,7 +83,7 @@ const products = [
     name: "Tiger Aloe",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 4,
     sellOrder: "31 sold in last 13 hours",
     originalPrice: 153.0,
     vendor: "wpbingo",
@@ -229,7 +229,7 @@ const products = [
     name: "A Philippine Upsell",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 5,
     sellOrder: "27 sold in last 14 hours",
     originalPrice: 80,
     vendor: "wpbingo",
@@ -286,7 +286,7 @@ const products = [
     name: "The Beginner Set",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 4,
     sellOrder: "29 sold in last 15 hours",
     originalPrice: 130,
     vendor: "Akaza Store",
@@ -371,7 +371,7 @@ const products = [
     name: "Palm",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 5,
     sellOrder: "51 sold in last 22 hours",
     originalPrice: 50,
     vendor: "Akatsuki Store",
@@ -415,7 +415,7 @@ const products = [
     name: "Bought Together",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 1,
     sellOrder: "13 sold in last 02 hours",
     originalPrice: 82,
     vendor: "Lulu Store",
@@ -453,7 +453,7 @@ const products = [
     name: "Jade Succulent",
     description:
       "Curabitur egestas malesuada volutpat. Nunc vel vestibulum odio, ac pellentesque lacus. Pellentesque dapibus nunc nec est imperdiet, a malesuada sem rutrum",
-    rating: 0,
+    rating: 2,
     sellOrder: "35 sold in last 11 hours",
     originalPrice: 60,
     priceRange: 153,

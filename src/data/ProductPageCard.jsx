@@ -42,6 +42,7 @@ import BoughtGrey from "../assets/Home/Bought-together/Bought-together-front_540
 import BegginerPink from "../assets/Home/Beginner/Beginner-front_540xpink.webp";
 import BegginerOrange from "../assets/Home/Beginner/Beginner-back_540x.webp";
 import BegginerBlack from "../assets/Home/Beginner/Beginner-front_540x1.webp";
+import Dragon from "../assets/Home/Dragon/Dragon-front_540x.webp";
 import Visa from "../assets/product/visa.avif";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -81,6 +82,12 @@ const ProductPageCard = () => {
   const [compareView, setCompareView] = useState(false);
   const [isAddToCart, setIsAddToCart] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [notifyMe, setNotifyMe] = useState(false);
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState({
     quickView: false,
     addToCart: false,
@@ -440,6 +447,56 @@ const ProductPageCard = () => {
       </div>
     );
   }
+
+  //validation for email address
+  const validateEmail = (email) => {
+    // A simple regex for email validation
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (submitted) return;
+
+    if (!name.trim()) {
+      toast.error("Please enter your name");
+      return;
+    }
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      toast.warn("Please enter a valid email address");
+      return;
+    }
+
+    if (!number.trim()) {
+      toast.error("Please enter your phone number");
+      return;
+    }
+
+    if (!message.trim()) {
+      toast.error("Please enter your comment");
+      return;
+    }
+
+    toast.success("Submitted successfully");
+    setSubmitted(true);
+    setName("");
+    setEmail("");
+    setNumber("");
+    setMessage("");
+
+    //reset subbimition after 3 second
+    setTimeout(() => {
+      setSubmitted(false);
+    }, 5000);
+  };
 
   return (
     <div className="mt-[90px] ">
@@ -1005,7 +1062,10 @@ const ProductPageCard = () => {
 
           {/* Notify me if out of stock */}
           {isOutOfStock && (
-            <button className="text-sm font-librebaskerville border border-black text-gray-800 hover:bg-gray-800 hover:text-white hover:border-white px-4 py-2 my-2 transition-colors duration-300">
+            <button
+              onClick={() => setNotifyMe(true)}
+              className="text-sm font-librebaskerville border border-black text-gray-800 hover:bg-gray-800 hover:text-white hover:border-white px-4 py-2 my-2 transition-colors duration-300"
+            >
               NOTIFY ME WHEN AVAILABLE
             </button>
           )}
@@ -1358,6 +1418,100 @@ const ProductPageCard = () => {
                     ship.
                   </span>
                 </h1>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* NOTIFY ME WHEN AVAILABLE */}
+        {notifyMe && (
+          <div
+            onClick={() => setNotifyMe(false)}
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-3xl mx-auto p-6 flex flex-col items-center justify-center  "
+            >
+              <button
+                onClick={() => setNotifyMe(false)}
+                className="w-full flex items-center justify-end"
+              >
+                <X className="text-base font-normal text-gray-500 hover:text-black" />
+              </button>
+              <div className="flex  gap-6">
+                {/* left side image */}
+                <div className="flex flex-col w-full gap-4">
+                  <img src={Dragon} alt="dragon image" className="w-76 h-96" />
+                  <div className="gap-1 mt-4">
+                    <p className="uppercase font-librebaskerville text-sm ">
+                      Pink Dragon Tree
+                    </p>
+                    <p className="font-poppins  text-gray-500">$80.00</p>
+                  </div>
+                </div>
+                {/* right side form  */}
+                <div className="flex flex-col w-full gap-2">
+                  <h1 className="text-2xl font-librebaskerville">
+                    Back in stock alert
+                  </h1>
+                  <p className="font-poppins text-sm text-gray-500">
+                    We will send you a notification as soon as this product is
+                    available again.
+                  </p>
+                  <form
+                    noValidate
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-4 mt-4"
+                  >
+                    <div className="flex gap-4">
+                      <input
+                        type="text"
+                        name="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Your name"
+                        required
+                        style={{ outline: "none" }}
+                        className="bg-zinc-100 text-black p-3 w-full"
+                      />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        style={{ outline: "none" }}
+                        className="bg-zinc-100 text-black p-3 w-full"
+                      />
+                    </div>
+                    <input
+                      type="number"
+                      name="phone"
+                      placeholder="Your phone"
+                      value={number}
+                      onChange={(e) => setNumber(e.target.value)}
+                      required
+                      style={{ outline: "none" }}
+                      className="bg-zinc-100 text-black p-3 w-full"
+                    />
+                    <textarea
+                      type="text"
+                      placeholder="Your message"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      style={{ outline: "none" }}
+                      rows="6"
+                      className="bg-zinc-100 text-gray-500 p-3 w-full"
+                    />
+                    <button
+                      type="submit"
+                      className="border-2 border-zinc-800 mt-2  hover:bg-green-950 uppercase hover:text-white px-6 py-4 transition-colors duration-300 font-poppins"
+                    >
+                      submit
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

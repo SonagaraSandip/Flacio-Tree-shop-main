@@ -45,7 +45,6 @@ import BlogNav2 from "../assets/blog/BlogNavbar2.webp";
 export default function Navbar({ setLayout, transparentUntilScroll }) {
   const [scrolled, setScrolled] = useState(false);
   const [hoveredMenu, setHoveredMenu] = useState(null);
-  const [hoverTimeout, setHoverTimeout] = useState(null);
   const [openSignIn, setOpenSignIn] = useState(false);
   const [email, setEmail] = useState("");
   const [resetEmail, setResetEmail] = useState("");
@@ -86,27 +85,6 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [transparentUntilScroll]);
-
-  const handleMouseLeave = () => {
-    const timeout = setTimeout(() => {
-      setHoveredMenu(null);
-    }, 300); //300 ms delay
-
-    setHoverTimeout(timeout);
-  };
-
-  //when entring the drop down
-  const handleDropDownEnter = () => {
-    //clear closing timeout
-    if (hoverTimeout) {
-      setHoverTimeout(null);
-    }
-  };
-
-  //when leaving the dropdown
-  const handleDropDownLeave = () => {
-    setHoveredMenu(null);
-  };
 
   // Determine hover color based on navbar state
   const getHoverColor = () => {
@@ -356,20 +334,20 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
     {
       title: "Page",
       items: [
-        { name: "About Us" },
-        { name: "Contact US" },
-        { name: "Faqs" },
-        { name: "Faqs 2" },
-        { name: "Wishlist" },
-        { name: "404 Error" },
+        { name: "About Us", link: "/pages/about" },
+        { name: "Contact US", link: "/pages/contact" },
+        { name: "Faqs", link: "/pages/faqs" },
+        { name: "Faqs 2", link: "/pages/faqs2" },
+        { name: "Wishlist", link: "/wishlist" },
+        { name: "404 Error", link: "/error" },
       ],
     },
     {
       title: "Portfolio",
       items: [
-        { name: "2 Columns" },
-        { name: "3 Columns" },
-        { name: "4 Columns" },
+        { name: "2 Columns", link: "/blog/portfolio" },
+        { name: "3 Columns", link: "/blog/portfolio" },
+        { name: "4 Columns", link: "/blog/portfolio" },
         { name: "Mansonry Layout", tag: "New" },
       ],
     },
@@ -414,11 +392,10 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
         {/*left menu icons */}
         <div className="flex group gap-6 text-sm font-light">
           {/* Home link hover */}
-
           <div
             className="relative group"
             onMouseEnter={() => setHoveredMenu("home")}
-            onMouseLeave={handleMouseLeave}
+            onMouseLeave={() => setHoveredMenu(null)}
           >
             <Link
               to="/"
@@ -432,13 +409,8 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             </Link>
 
             {/* Hovered indicator for home page */}
-
             {hoveredMenu === "home" && (
-              <div
-                onMouseEnter={handleDropDownEnter}
-                onMouseLeave={handleDropDownLeave}
-                className="absolute -left-6 top-4 mt-4 z-50 bg-white shadow-xl p-5 w-[750px] max-h-[90vh] overflow-y-auto "
-              >
+              <div className="absolute -left-6 top-4 mt-4 z-50 bg-white shadow-xl p-5 w-[750px] max-h-[90vh] overflow-y-auto ">
                 <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {HomePages.map((page) => (
                     <div
@@ -446,9 +418,9 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
                       onClick={() => {
                         setLayout(page.layout);
                         navigate("/");
-                        setHoveredMenu(null);
+                        // setHoveredMenu(null);
                       }}
-                      className="group flex flex-col items-center justify-center hover:border hover:border-gray-400 hover:shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 "
+                      className="group flex flex-col items-center justify-center cursor-pointer hover:border hover:border-gray-400 hover:shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 "
                     >
                       <img
                         src={page.img}
@@ -468,121 +440,55 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
 
           {/* Shop link hover */}
           <div
+            className="relative group"
             onMouseEnter={() => setHoveredMenu("shop")}
             onMouseLeave={() => setHoveredMenu(null)}
-            className="flex group gap-6 text-sm font-light"
           >
-            <div
-              className="relative group"
-              onMouseEnter={() => setHoveredMenu("shop")}
-              onMouseLeave={() => setHoveredMenu(null)}
+            <Link
+              to="/collections/all"
+              className={`cursor-pointer font-poppins flex items-center gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
+                location.pathname.startsWith("/collections")
+                  ? "border-b-2 border-black"
+                  : ""
+              } `}
             >
-              <Link
-                to="/collections/all"
-                className={`cursor-pointer font-poppins flex items-center gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
-                  location.pathname.startsWith("/collections")
-                    ? "border-b-2 border-black"
-                    : ""
-                } `}
-              >
-                <span>SHOP</span>
-                <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
-              </Link>
+              <span>SHOP</span>
+              <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
+            </Link>
 
-              {/* Hover for shop */}
-              {hoveredMenu === "shop" && (
-                <div
-                  className="absolute -left-28 top-6 mt-4 z-50  bg-white text-black shadow-xl w-screen h-[65vh]"
-                  onMouseEnter={() => setHoveredMenu("shop")}
-                  onMouseLeave={() => setHoveredMenu(null)}
-                >
-                  <div className="flex ">
-                    <div className="gruop relative  pl-12">
-                      <img
-                        src={Dog}
-                        alt="Dog images"
-                        className="p-6 w-[350px] h-[350px] transition-transform duration-300 ease-in-out  hover:-translate-y-4"
-                      />
-                      <button className=" px-8 py-2 text-xs bg-white text-black hover:bg-green-700 absolute top-[270px] lg:left-[220px] transform -translate-x-1/2 -translate-y-1/2 font-librebaskerville tracking-widest  ">
-                        NEW ARRIVAL
-                      </button>
-                    </div>
+            {/* Hover for shop */}
+            {hoveredMenu === "shop" && (
+              <div className="absolute -left-28 top-6 mt-2 z-50  bg-white text-black shadow-xl w-screen h-[65vh]">
+                <div className="flex ">
+                  <div className="gruop relative  pl-12">
                     <img
-                      src={Plant}
+                      src={Dog}
                       alt="Dog images"
-                      className="p-6 w-[350px] h-[350px] transition-transform duration-300 ease-in-out  hover:-translate-y-4 "
+                      className="p-6 w-[350px] h-[350px] transition-transform duration-300 ease-in-out  hover:-translate-y-4"
                     />
-                    <button className=" px-8 py-2 text-xs bg-white text-black hover:bg-green-700 absolute top-[270px] lg:left-[565px] transform -translate-x-1/2 -translate-y-1/2 font-librebaskerville tracking-widest  ">
-                      BEST SELLERS
+                    <button className=" px-8 py-2 text-xs bg-white text-black hover:bg-green-700 absolute top-[270px] lg:left-[220px] transform -translate-x-1/2 -translate-y-1/2 font-librebaskerville tracking-widest  ">
+                      NEW ARRIVAL
                     </button>
+                  </div>
+                  <img
+                    src={Plant}
+                    alt="Dog images"
+                    className="p-6 w-[350px] h-[350px] transition-transform duration-300 ease-in-out  hover:-translate-y-4 "
+                  />
+                  <button className=" px-8 py-2 text-xs bg-white text-black hover:bg-green-700 absolute top-[270px] lg:left-[565px] transform -translate-x-1/2 -translate-y-1/2 font-librebaskerville tracking-widest  ">
+                    BEST SELLERS
+                  </button>
 
-                    {/* text links */}
-                    <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 px-8 ">
-                      {/* Layout */}
-                      <div className="flex flex-col gap-3 my-6 ">
-                        <h1 className="text-xl font-librebaskerville tracking-widest font-semibold">
-                          Layout
-                        </h1>
-                        <div className="h-px w-full bg-gray-800 mb-4"></div>
-                        {ShopLayout.map((layout) => (
-                          <div key={layout.name} className="flex items-center">
-                            <Link
-                              key={layout.name}
-                              to={layout.link}
-                              className="text-md font-librebaskerville text-gray-500 hover:text-gray-800"
-                            >
-                              {layout.name}
-                            </Link>
-                            {layout.tag && (
-                              <span
-                                className={` text-xs font-librebaskerville py-0.5 px-1.5 transform -translate-y-2 cursor-pointer ${
-                                  layout.tag === "Hot"
-                                    ? "bg-red-100 text-red-600"
-                                    : " bg-gray-200 text-grey-600"
-                                }`}
-                              >
-                                {layout.tag}
-                              </span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      {/* Filter */}
-                      <div className="flex flex-col gap-3 my-6 ">
-                        <h1 className="text-xl font-librebaskerville tracking-widest font-semibold">
-                          Filter
-                        </h1>
-                        <div className="h-px w-full bg-gray-800 mb-4"></div>
-                        {ShopFilter.map((layout) => (
-                          <div key={layout.name} className="flex items-center">
-                            <Link
-                              key={layout.name}
-                              to={layout.link}
-                              className="text-md font-librebaskerville text-gray-500 hover:text-gray-800"
-                            >
-                              {layout.name}
-                            </Link>
-                            {layout.tag && (
-                              <span
-                                className={` text-xs font-librebaskerville py-0.5 px-1.5 transform -translate-y-2 cursor-pointer ${
-                                  layout.tag === "Hot"
-                                    ? "bg-red-100 text-red-600"
-                                    : " bg-gray-200 text-grey-600"
-                                }`}
-                              >
-                                {layout.tag}
-                              </span>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      {/* Loader & Cart */}
-                      <div className="flex flex-col gap-3 my-6 ">
-                        <h1 className="text-xl font-librebaskerville tracking-widest font-semibold">
-                          Loader & Cart
-                        </h1>
-                        <div className="h-px w-full bg-gray-800 mb-4"></div>
-                        {ShopLoader.map((layout) => (
+                  {/* text links */}
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 px-8 ">
+                    {/* Layout */}
+                    <div className="flex flex-col gap-3 my-6 ">
+                      <h1 className="text-xl font-librebaskerville tracking-widest font-semibold">
+                        Layout
+                      </h1>
+                      <div className="h-px w-full bg-gray-800 mb-4"></div>
+                      {ShopLayout.map((layout) => (
+                        <div key={layout.name} className="flex items-center">
                           <Link
                             key={layout.name}
                             to={layout.link}
@@ -590,164 +496,207 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
                           >
                             {layout.name}
                           </Link>
-                        ))}
-                      </div>
+                          {layout.tag && (
+                            <span
+                              className={` text-xs font-librebaskerville py-0.5 px-1.5 transform -translate-y-2 cursor-pointer ${
+                                layout.tag === "Hot"
+                                  ? "bg-red-100 text-red-600"
+                                  : " bg-gray-200 text-grey-600"
+                              }`}
+                            >
+                              {layout.tag}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {/* Filter */}
+                    <div className="flex flex-col gap-3 my-6 ">
+                      <h1 className="text-xl font-librebaskerville tracking-widest font-semibold">
+                        Filter
+                      </h1>
+                      <div className="h-px w-full bg-gray-800 mb-4"></div>
+                      {ShopFilter.map((layout) => (
+                        <div key={layout.name} className="flex items-center">
+                          <Link
+                            key={layout.name}
+                            to={layout.link}
+                            className="text-md font-librebaskerville text-gray-500 hover:text-gray-800"
+                          >
+                            {layout.name}
+                          </Link>
+                          {layout.tag && (
+                            <span
+                              className={` text-xs font-librebaskerville py-0.5 px-1.5 transform -translate-y-2 cursor-pointer ${
+                                layout.tag === "Hot"
+                                  ? "bg-red-100 text-red-600"
+                                  : " bg-gray-200 text-grey-600"
+                              }`}
+                            >
+                              {layout.tag}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {/* Loader & Cart */}
+                    <div className="flex flex-col gap-3 my-6 ">
+                      <h1 className="text-xl font-librebaskerville tracking-widest font-semibold">
+                        Loader & Cart
+                      </h1>
+                      <div className="h-px w-full bg-gray-800 mb-4"></div>
+                      {ShopLoader.map((layout) => (
+                        <Link
+                          key={layout.name}
+                          to={layout.link}
+                          className="text-md font-librebaskerville text-gray-500 hover:text-gray-800"
+                        >
+                          {layout.name}
+                        </Link>
+                      ))}
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Product link hover */}
+
           <div
+            className="relative group"
             onMouseEnter={() => setHoveredMenu("product")}
             onMouseLeave={() => setHoveredMenu(null)}
-            className="flex group gap-6 text-sm"
           >
-            <div
-              className="relative group"
-              // onMouseEnter={() => setHoveredMenu("product")}
-              // onMouseLeave={() => setHoveredMenu(null)}
+            <Link
+              to="/products/jade-succulent"
+              className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
+                location.pathname.startsWith("/product")
+                  ? "border-b-2 border-black"
+                  : ""
+              } `}
             >
-              <Link
-                to="/products/jade-succulent"
-                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
-                  location.pathname.startsWith("/product")
-                    ? "border-b-2 border-black"
-                    : ""
-                } `}
-              >
-                <span>PRODUCT</span>
-                <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
-              </Link>
-              {hoveredMenu === "product" && (
-                <div
-                  className="absolute top-6 mt-4 -left-[200px] z-50 bg-white shadow-xl p-5 w-screen max-h-[100vh] "
-                  onMouseEnter={() => setHoveredMenu("product")}
-                  onMouseLeave={() => setHoveredMenu(null)}
-                >
-                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 px-8 ">
-                    {productMenu.map((section) => (
-                      <div key={section.title}>
-                        <h1 className="text-xl font-librebaskerville font-semibold border-b pb-1 mb-6 tracking-widest text-black">
-                          {section.title}
-                        </h1>
-                        <ul className="mt-2 space-y-1">
-                          {section.items.map((item) => (
-                            <li key={item.name} className="flex  items-center ">
-                              <span className="text-sm mb-2  font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer ">
-                                {item.name}
+              <span>PRODUCT</span>
+              <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
+            </Link>
+            {hoveredMenu === "product" && (
+              <div className="absolute top-6 mt-2 -left-[200px] z-50 bg-white shadow-xl p-5 w-screen max-h-[100vh] ">
+                <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 px-8 ">
+                  {productMenu.map((section) => (
+                    <div key={section.title}>
+                      <h1 className="text-xl font-librebaskerville font-semibold border-b pb-1 mb-6 tracking-widest text-black">
+                        {section.title}
+                      </h1>
+                      <ul className="mt-2 space-y-1">
+                        {section.items.map((item) => (
+                          <li key={item.name} className="flex  items-center ">
+                            <span className="text-sm mb-2  font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer ">
+                              {item.name}
+                            </span>
+                            {item.tag && (
+                              <span
+                                className={` text-xs font-librebaskerville py-0.5 px-1.5 transform -translate-y-2 cursor-pointer ${
+                                  item.tag === "Hot"
+                                    ? "bg-red-100 text-red-600"
+                                    : " bg-gray-200 text-gray-700"
+                                }`}
+                              >
+                                {item.tag}
                               </span>
-                              {item.tag && (
-                                <span
-                                  className={` text-xs font-librebaskerville py-0.5 px-1.5 transform -translate-y-2 cursor-pointer ${
-                                    item.tag === "Hot"
-                                      ? "bg-red-100 text-red-600"
-                                      : " bg-gray-200 text-gray-700"
-                                  }`}
-                                >
-                                  {item.tag}
-                                </span>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Blog link hover */}
-          <div className="flex group gap-6 text-sm">
-            <div
-              className="relative group"
-              onMouseEnter={() => setHoveredMenu("blog")}
-              onMouseLeave={() => setHoveredMenu(null)}
+
+          <div
+            className="relative group"
+            onMouseEnter={() => setHoveredMenu("blog")}
+            onMouseLeave={() => setHoveredMenu(null)}
+          >
+            <Link
+              to="/blog/news"
+              className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
+                location.pathname.startsWith("/blog")
+                  ? "border-b-2 border-black"
+                  : ""
+              } `}
             >
-              <Link
-                to="/blog/news"
-                className={`cursor-pointer flex items-center font-poppins gap-1 transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()} ${
-                  location.pathname.startsWith("/blog")
-                    ? "border-b-2 border-black"
-                    : ""
-                } `}
-              >
-                <span>Blog</span>
-                <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
-              </Link>
+              <span>Blog</span>
+              <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
+            </Link>
 
-              {hoveredMenu === "blog" && (
-                <div className="absolute flex gap-6 top-6 mt-2 z-50 bg-white shadow-xl p-5 w-3xl min-w-[600px] max-h-[100vh] ">
-                  <div className="flex flex-col gap-2 w-full ">
-                    <h1 className="text-lg font-librebaskerville  border-b pb-1 mb-6 tracking-widest text-black">
-                      Layout & Post
-                    </h1>
+            {hoveredMenu === "blog" && (
+              <div className="absolute flex gap-6 top-6 mt-2 z-50 bg-white shadow-xl p-5 w-3xl min-w-[600px] max-h-[100vh] ">
+                <div className="flex flex-col gap-2 w-full ">
+                  <h1 className="text-lg font-librebaskerville  border-b pb-1 mb-6 tracking-widest text-black">
+                    Layout & Post
+                  </h1>
 
-                    {BlogMenu.map((item) => (
-                      <div className="text-sm font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer">
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    <div className="relative">
-                      <img
-                        src={BlogNav1}
-                        alt="blog navbar 1"
-                        style={{ width: "600px", height: "160px" }}
-                      />
-                      <div className="absolute h-full w-full top-0 bg-black  bg-opacity-25" />
-                      <div className="absolute  bottom-4  flex flex-col items-start ml-4 gap-4 text-xs text-white  font-librebaskerville">
-                        <button className="hover:text-black  ">NEWS</button>
-                        <button className="hover:text-black  ">
-                          Traveling Solo Is Awesome
-                        </button>
-                      </div>
+                  {BlogMenu.map((item) => (
+                    <div className="text-sm font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer">
+                      {item.name}
                     </div>
-                    <div className="relative">
-                      <img
-                        src={BlogNav2}
-                        alt="blog navbar 1"
-                        style={{ width: "600px", height: "150px" }}
-                      />
-                      <div className="absolute h-full w-full top-0 bg-black  bg-opacity-25" />
-                      <div className="absolute  bottom-4  flex flex-col items-start ml-4 gap-4 text-xs text-white  font-librebaskerville">
-                        <button className="hover:text-black  ">NEWS</button>
-                        <button className="hover:text-black  ">
-                          Indoor Plants Are Good For Health
-                        </button>
-                      </div>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-4">
+                  <div className="relative">
+                    <img
+                      src={BlogNav1}
+                      alt="blog navbar 1"
+                      style={{ width: "600px", height: "160px" }}
+                    />
+                    <div className="absolute h-full w-full top-0 bg-black  bg-opacity-25" />
+                    <div className="absolute  bottom-4  flex flex-col items-start ml-4 gap-4 text-xs text-white  font-librebaskerville">
+                      <button className="hover:text-black  ">NEWS</button>
+                      <button className="hover:text-black  ">
+                        Traveling Solo Is Awesome
+                      </button>
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <img
+                      src={BlogNav2}
+                      alt="blog navbar 1"
+                      style={{ width: "600px", height: "150px" }}
+                    />
+                    <div className="absolute h-full w-full top-0 bg-black  bg-opacity-25" />
+                    <div className="absolute  bottom-4  flex flex-col items-start ml-4 gap-4 text-xs text-white  font-librebaskerville">
+                      <button className="hover:text-black  ">NEWS</button>
+                      <button className="hover:text-black  ">
+                        Indoor Plants Are Good For Health
+                      </button>
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* featured link hover */}
+
           <div
             onMouseEnter={() => setHoveredMenu("featured")}
             onMouseLeave={() => setHoveredMenu(null)}
-            className="flex group gap-6 text-sm"
+            className="relative"
           >
-            <div className="relative">
-              <Link to="/featured" className="relative group cursor-pointer">
-                <div className="flex items-center font-poppins gap-1">
-                  <span
-                    className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()}`}
-                  >
-                    FEATURED
-                  </span>
-                  <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
-                </div>
-              </Link>
+            <div className="flex items-center font-poppins gap-1">
+              <span
+                className={`transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-gray-800 before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-gray-800 after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] ${getHoverColor()}`}
+              >
+                FEATURED
+              </span>
+              <ChevronDown size={15} className="w-4 h-4 mt-[2px]" />
             </div>
             {hoveredMenu === "featured" && (
-              <div className="absolute top-6 mt-6 left-1 z-50 bg-white shadow-xl p-5 w-screen max-h-[100vh] ">
+              <div className="absolute mt-2 -left-96 z-50 bg-white shadow-xl p-5 w-screen max-h-[100vh] ">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 px-8">
                   {featureMenu.map((section) => (
                     <div key={section.title}>
@@ -757,7 +706,13 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
                       <ui className=" space-y-1">
                         {section.items.map((item) => (
                           <li key={item.name} className="flex items-center">
-                            <span className="text-sm mb-2  font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer">
+                            <span
+                              onClick={() => {
+                                navigate(item.link);
+                                setHoveredMenu(null);
+                              }}
+                              className="text-sm mb-2  font-librebaskerville text-gray-500 hover:text-gray-800 cursor-pointer"
+                            >
                               {item.name}
                             </span>
                             {item.tag && (
@@ -804,9 +759,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
               className="w-6 h-6 cursor-pointer hover:scale-110"
             />
 
-            {openSearch && (
-             <SearchModal setOpenSearch={setOpenSearch} />
-            )}
+            {openSearch && <SearchModal setOpenSearch={setOpenSearch} />}
           </div>
           {/* user */}
           <div onClick={onUserIconClick} className="flex group items-center">
@@ -905,7 +858,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
                           setResetPassword(false);
                           setResetEmail("");
                         }}
-                        className="hover:underline-offset-1 hover:text-zinc-900 font-poppins text-sm underline"
+                        className="hover:underline-offset-1 text-black hover:text-zinc-900 font-poppins text-md underline"
                       >
                         Cancel
                       </button>
@@ -1198,7 +1151,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
       </div>
 
       <div
-        className={`h-px w-full transition-all duration-1000 ${
+        className={`h-px w-full transition-all duration-500 ${
           scrolled ? " shadow-md " : "bg-white opacity-20"
         }`}
       ></div>
@@ -1206,7 +1159,7 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
       {isTermOpen && (
         <div
           onClick={() => setIsTermOpen(false)}
-          className="fixed inset-0 z-40 flex items-center justify-center  animate-zoom-in w-screen"
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40 animate-zoom-in w-screen"
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -1221,28 +1174,34 @@ export default function Navbar({ setLayout, transparentUntilScroll }) {
             <h1 className="text-2xl text-black w-full font-librebaskerville ">
               Terms & Conditions
             </h1>
-            <div className="flex flex-col mt-8 mb-4 gap-4 text-md font-poppins w-full ">
-              <h1 className="">
-                <span className="font-semibold">Return Policy :</span>
-                <span className="text-gray-500">
-                  {" "}
-                  We will gladly accept returns for any reason within 30 days of
-                  receipt of delivery.
-                </span>
-              </h1>
-              <h1>
-                <span className="font-semibold">Availability :</span>{" "}
-                <span className="text-gray-500">
-                  Ships anywhere in the United States.
-                </span>
-              </h1>
-              <h1>
-                <span className="font-semibold">Processing Time :</span>
-                <span className="text-gray-500">
-                  Allow 3-4 business days processing time for your order to
-                  ship.
-                </span>
-              </h1>
+            <div className="flex flex-col mt-4 mb-4 gap-4 text-md text-sm text-gray-500 font-poppins w-full ">
+              <p>
+                Yodie supplies products listed on the Yodie, and Yodie websites,
+                and in our stores under the following Terms and Conditions.
+                Please read these Terms and Conditions, and our Privacy and
+                Cookie Policies carefully before using any of our websites, or
+                ordering from us.
+              </p>
+              <p>
+                The Terms and Conditions apply to your use of any Yodie website
+                and to any products you purchase from them; regardless of how
+                you access the website, including any technologies or devices
+                where our website is available to you at home, on the move or in
+                store
+              </p>
+              <p>
+                We reserve the right to update these Terms and Conditions at any
+                time, and any updates affecting you or your purchases will be
+                notified to you, by us in writing (via email), and on this page.
+              </p>
+              <p>
+                The headings in these Conditions are for convenience only and
+                shall not affect their interpretation.
+              </p>
+              <p>
+                We recommend that you print and keep a copy of these Terms and
+                Conditions for your future reference...
+              </p>
             </div>
           </div>
         </div>

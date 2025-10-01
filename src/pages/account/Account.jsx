@@ -116,6 +116,8 @@ const Account = () => {
       <div className="flex flex-col gap-4 h-full items-center mb-28 max-w-6xl mx-auto ">
         <h1 className="text-6xl font-librebaskerville my-12">My Account</h1>
 
+        {/* {user } */}
+
         <div className="flex gap-4 mt-4 w-full">
           {/* left side */}
           <div className="flex flex-col w-[25%] text-sm">

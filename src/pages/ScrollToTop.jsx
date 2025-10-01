@@ -27,7 +27,7 @@ const ScrollToTop = () => {
     >
       <MdKeyboardDoubleArrowUp
         size={20}
-        className="w-8 h-8 text-white group-hover:animate-fade-in-up hover:text-white "
+        className="w-6 h-6 text-white group-hover:animate-fade-in-up hover:text-white "
       />
     </button>
   );

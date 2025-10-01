@@ -21,7 +21,7 @@ export default function RightBanner() {
       setTimeout(() => {
         setShow(true);
         sessionStorage.setItem("rightAdShown", "true");
-      }, 7000); // show after 7s
+      }, 9000); // show after 9s
     }
   }, []);
 

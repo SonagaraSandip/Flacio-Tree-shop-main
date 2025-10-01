@@ -12,7 +12,6 @@ import Shop from "./pages/Shop";
 import Product from "./pages/Product";
 import Blog from "./pages/Blog";
 import BlogPageDetails from "./pages/BlogPageDetails";
-import Featured from "./pages/Featured";
 import ScrollToTopAction from "./pages/ScrollToTopAction";
 import WishList from "./pages/WishList";
 import Cart from "./pages/Cart";
@@ -25,6 +24,9 @@ import Error from "./pages/Error";
 import Portfolio from "./pages/Portfolio";
 import PopupAd from "./other/PopupAd";
 import RightBanner from "./other/RightBanner";
+import TopaddBanner from "./other/TopaddBanner";
+import PortfolioDetails from "./pages/PortfolioDetails";
+import Portfolio_Data from "./data/Portfolio_Data";
 
 //account
 import Register from "./pages/account/Register";
@@ -44,6 +46,8 @@ function AppWrapper() {
   return (
     <>
       <TopBarLoader />
+      {!isCheckoutPage && <TopaddBanner />}
+
       {!isCheckoutPage && (
         <Navbar
           setLayout={setHomeLayout}
@@ -61,8 +65,14 @@ function AppWrapper() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:blogId" element={<Blog />} />
         <Route path="/blog/:tab/:id" element={<BlogPageDetails />} />
-        <Route path="/blog/portfolio" element={<Portfolio />} />
-        <Route path="/featured" element={<Featured />} />
+        <Route
+          path="/blog/portfolio"
+          element={<Portfolio data={Portfolio_Data} />}
+        />
+        <Route
+          path="/blog/portfolio/:id"
+          element={<PortfolioDetails Data={Portfolio_Data} />}
+        />
         <Route path="/wishlist" element={<WishList />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
