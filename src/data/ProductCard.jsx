@@ -1,6 +1,6 @@
 //Single product item with logic for image, hover, etc.
 import React, { useState } from "react";
-import { ShoppingBag, Heart, ArrowDownUp, Search , Star } from "lucide-react";
+import { ShoppingBag, Heart, ArrowDownUp, Search, Star } from "lucide-react";
 import { MdPlayArrow } from "react-icons/md";
 import { Link } from "react-router-dom";
 import QuickViewModal from "../other/QuickViewModal";
@@ -156,14 +156,13 @@ const ProductCard = ({ product }) => {
     0
   );
 
-// star calculation
-const renderStar = (rating) => {
-  return Array.from({length: 5}, (_, index) => (
-    <Star key={index} size={12} fill={index < rating ? "black" : "none"} />
-  ))
-}
+  // star calculation
+  const renderStar = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <Star key={index} size={12} fill={index < rating ? "black" : "none"} />
+    ));
+  };
 
-  
   return (
     <>
       <div
@@ -201,7 +200,7 @@ const renderStar = (rating) => {
                 }}
               />
             </div>
-            
+
             {/* name + price */}
             <div className="mt-4 ">
               <div className="flex gap-1 my-1 opacity-70">

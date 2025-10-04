@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { Info, X } from "lucide-react";
+import { Info, X, Menu } from "lucide-react";
 import Footer from "../Footer";
 import ScrollToTop from "../ScrollToTop";
 import { toast } from "react-toastify";
@@ -15,6 +15,8 @@ const Account = () => {
   const [editingAddress, setEditingAddress] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // load saved addresses
   useEffect(() => {
@@ -111,48 +113,109 @@ const Account = () => {
     );
   };
 
+  if (!user) {
+    navigate("/account/login");
+    return;
+  }
+
   return (
-    <div className="container mx-auto pt-[150px]">
-      <div className="flex flex-col gap-4 h-full items-center mb-28 max-w-6xl mx-auto ">
-        <h1 className="text-6xl font-librebaskerville my-12">My Account</h1>
+    <div className="mx-auto pt-20 sm:pt-32 lg:pt-[150px] ">
+      <div className="flex flex-col gap-4 h-full items-center mb-16 lg:mb-28 max-w-6xl mx-auto px-4 sm:px-6">
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-librebaskerville my-6 lg:my-12 text-center">
+          My Account
+        </h1>
 
-        {/* {user } */}
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 mt-4 w-full">
+          {/* LEFT SIDE - Navigation */}
 
-        <div className="flex gap-4 mt-4 w-full">
-          {/* left side */}
-          <div className="flex flex-col w-[25%] text-sm">
-            <button
-              onClick={() => setSelectedTab("dashboard")}
-              className={`px-4 py-3 text-start border-b border-gray-200 ${
-                selectedTab === "dashboard"
-                  ? "bg-green-950 text-white"
-                  : "bg-gray-200 text-black"
-              }`}
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => setSelectedTab("addresses")}
-              className={`px-4 py-3 font-poppins text-start border-y border-gray-200 ${
-                selectedTab === "addresses"
-                  ? "bg-green-950 text-white"
-                  : "bg-gray-200 text-black"
-              }`}
-            >
-              Addresses ({addresses.length})
-            </button>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-3 bg-gray-200 text-start"
-            >
-              Logout
-            </button>
+          <div className="w-full lg:w-[25%]">
+            <div className="lg:hidden border border-gray-300 mb-4">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="w-full px-4 py-3 bg-gray-200 text-black flex items-center justify-between"
+              >
+                <span className="font-poppins">
+                  {selectedTab === "dashboard" ? "Dashboard" : "Addresses"}
+                </span>
+                <Menu className="w-5 h-5" />
+              </button>
+
+              {/* Mobile Menu Dropdown */}
+              {isMobileMenuOpen && (
+                <div className="bg-white border border-gray-300 border-t-0">
+                  <button
+                    onClick={() => {
+                      setSelectedTab("dashboard");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-3 text-start border-b border-gray-200 ${
+                      selectedTab === "dashboard"
+                        ? "bg-green-950 text-white"
+                        : "bg-gray-100 text-black"
+                    }`}
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedTab("addresses");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className={`w-full px-4 py-3 font-poppins text-start border-b border-gray-200 ${
+                      selectedTab === "addresses"
+                        ? "bg-green-950 text-white"
+                        : "bg-gray-100 text-black"
+                    }`}
+                  >
+                    Addresses ({addresses.length})
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full px-4 py-3 bg-gray-100 text-start border-b border-gray-200"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex flex-col text-sm">
+              <button
+                onClick={() => setSelectedTab("dashboard")}
+                className={`px-4 py-3 text-start border-b border-gray-200 ${
+                  selectedTab === "dashboard"
+                    ? "bg-green-950 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={() => setSelectedTab("addresses")}
+                className={`px-4 py-3 font-poppins text-start border-y border-gray-200 ${
+                  selectedTab === "addresses"
+                    ? "bg-green-950 text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+              >
+                Addresses ({addresses.length})
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-3 bg-gray-200 text-start"
+              >
+                Logout
+              </button>
+            </div>
           </div>
-          {/* Right side */}
-          <div className="w-[75%] ml-8">
+
+          {/* RIGHT SIDE - Content */}
+
+          <div className="w-full lg:w-[75%] lg:ml-8">
             {selectedTab === "dashboard" && (
-              <div className="flex flex-col gap-4 font-poppins text-sm ">
-                <p>
+              <div className="flex flex-col gap-4 font-poppins text-sm">
+                <p className="text-sm sm:text-base">
                   <span className="text-gray-500">Hello</span>{" "}
                   <strong className="font-bold font-librebaskerville">
                     {user.firstName} {user.lastName}
@@ -164,26 +227,29 @@ const Account = () => {
                   ?{" "}
                   <span
                     onClick={handleLogout}
-                    className="text-red-600 hover:text-green-800 cursor-pointer"
+                    className="text-red-600 hover:text-green-800 cursor-pointer text-sm"
                   >
                     Log Out
                   </span>{" "}
                   )
                 </p>
-                <p>
+                <p className="text-sm sm:text-base">
                   <span className="text-gray-500">Email</span> :{" "}
                   <strong className="font-bold">{user.email}</strong>
                 </p>
-                <p className="text-xl font-medium">Order History</p>
-                <div className="flex gap-2 cursor-pointer items-center">
-                  <Info size={20} color="green" />
-                  <button
-                    onClick={() => navigate("/collections/all")}
-                    className="text-green-700 underline text-sm"
-                  >
-                    CREATE YOUR FIRST ORDER
-                  </button>
-                  <p className="font-poppins text-gray-500 cursor-auto">
+                <p className="text-lg sm:text-xl font-medium">Order History</p>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <Info size={18} color="green" />
+                    <button
+                      onClick={() => navigate("/collections/all")}
+                      className="text-green-700 underline text-xs sm:text-sm"
+                    >
+                      CREATE YOUR FIRST ORDER
+                    </button>
+                  </div>
+                  <p className="font-poppins text-gray-500 cursor-auto text-xs sm:text-sm">
                     You haven't placed any orders yet.
                   </p>
                 </div>
@@ -192,23 +258,24 @@ const Account = () => {
 
             {selectedTab === "addresses" && (
               <div className="flex flex-col gap-4 font-poppins">
-                <div className="flex gap-2">
-                  <p className="text-gray-500">
+                <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                  <p className="text-gray-500 text-sm sm:text-base">
                     You want to create a new address?
                   </p>
                   <p
                     onClick={() => setIsOpen(true)}
-                    className="text-green-700 cursor-pointer underline"
+                    className="text-green-700 cursor-pointer underline text-sm sm:text-base"
                   >
                     Add a New Address
                   </p>
                 </div>
-                <h1 className="text-3xl my-2 font-librebaskerville">
+
+                <h1 className="text-xl sm:text-2xl lg:text-3xl my-2 font-librebaskerville">
                   Your Addresses
                 </h1>
 
                 {addresses.length === 0 ? (
-                  <p className="text-center bg-gray-100 p-4 border">
+                  <p className="text-center bg-gray-100 p-4 border text-sm sm:text-base">
                     No saved addresses yet.
                   </p>
                 ) : (
@@ -216,25 +283,27 @@ const Account = () => {
                     {addresses.map((addr) => (
                       <div key={addr.id} className="border p-4 relative">
                         {addr.isDefault && (
-                          <span className="absolute top-0 right-0 bg-blue-600 text-white px-3 text-xs font-bold">
+                          <span className="absolute top-0 right-0 bg-blue-600 text-white px-2 sm:px-3 text-xs font-bold">
                             DEFAULT
                           </span>
                         )}
-                        <p>
-                          {addr.firstName} {addr.lastName}
-                        </p>
-                        <p>{addr.company}</p>
-                        <p>{addr.address1}</p>
-                        <p>{addr.address2}</p>
-                        <p>{addr.city}</p>
-                        <p>{addr.country}</p>
-                        <p>{addr.postal}</p>
-                        <p>{addr.phone}</p>
+                        <div className="text-sm sm:text-base">
+                          <p>
+                            {addr.firstName} {addr.lastName}
+                          </p>
+                          <p>{addr.company}</p>
+                          <p>{addr.address1}</p>
+                          <p>{addr.address2}</p>
+                          <p>{addr.city}</p>
+                          <p>{addr.country}</p>
+                          <p>{addr.postal}</p>
+                          <p>{addr.phone}</p>
+                        </div>
 
-                        <div className="flex gap-2 mt-2">
+                        <div className="flex flex-col sm:flex-row gap-2 mt-3">
                           <button
                             onClick={() => handleSetDefault(addr.id)}
-                            className="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm"
+                            className="px-3 py-2 sm:py-1 bg-blue-100 text-blue-800 rounded text-xs sm:text-sm"
                           >
                             Set Default
                           </button>
@@ -243,13 +312,13 @@ const Account = () => {
                               setEditingAddress(addr);
                               setIsOpen(true);
                             }}
-                            className="px-6 py-1 bg-green-100 text-green-800 rounded text-sm"
+                            className="px-3 py-2 sm:py-1 bg-green-100 text-green-800 rounded text-xs sm:text-sm"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDelete(addr.id)}
-                            className="px-3 py-1 bg-red-100 text-red-800 rounded text-sm"
+                            className="px-3 py-2 sm:py-1 bg-red-100 text-red-800 rounded text-xs sm:text-sm"
                           >
                             Delete
                           </button>
@@ -260,195 +329,193 @@ const Account = () => {
                 )}
               </div>
             )}
-
-            {/* Modal Overlay */}
-            {isOpen && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-                {/* Modal Content */}
-                <div className="bg-white w-full max-w-2xl rounded shadow-lg relative ">
-                  {/* Header */}
-                  <div className="flex justify-between items-center border-b px-6 py-4">
-                    <h2 className="text-2xl font-librebaskerville font-semibold">
-                      {editingAddress ? "Edit Address" : "Add a New Address"}
-                    </h2>
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="flex justify-end "
-                    >
-                      <X className="text-base font-normal text-gray-500 hover:text-black hover:rotate-90 hover:scale-75 transition-transform duration-300" />
-                    </button>
-                  </div>
-
-                  {/* Form */}
-                  <form
-                    onSubmit={handleAddAddress}
-                    className="p-6 font-poppins space-y-4"
-                  >
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          for="firstName"
-                          className="block text-sm font-medium mb-1"
-                        >
-                          First Name
-                        </label>
-                        <input
-                          type="text"
-                          name="firstName"
-                          defaultValue={editingAddress?.firstName || ""}
-                          required
-                          className="w-full border rounded px-3 py-2"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          for="lastName"
-                          className="block text-sm font-medium mb-1"
-                        >
-                          Last Name
-                        </label>
-                        <input
-                          type="text"
-                          name="lastName"
-                          defaultValue={editingAddress?.lastName || ""}
-                          className="w-full border rounded px-3 py-2"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        for="company"
-                        className="block text-sm font-medium mb-1"
-                      >
-                        Company
-                      </label>
-                      <input
-                        type="text"
-                        name="company"
-                        defaultValue={editingAddress?.company || ""}
-                        className="w-full border rounded px-3 py-2"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        for="address1"
-                        className="block text-sm font-medium mb-1"
-                      >
-                        Address1
-                      </label>
-                      <input
-                        type="text"
-                        name="address1"
-                        defaultValue={editingAddress?.address1 || ""}
-                        required
-                        className="w-full border rounded px-3 py-2"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        for="address2"
-                        className="block text-sm font-medium mb-1"
-                      >
-                        Address2
-                      </label>
-                      <input
-                        type="text"
-                        name="address2"
-                        defaultValue={editingAddress?.address2 || ""}
-                        className="w-full border rounded px-3 py-2"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          for="city"
-                          className="block text-sm font-medium mb-1"
-                        >
-                          City
-                        </label>
-                        <input
-                          type="text"
-                          name="city"
-                          defaultValue={editingAddress?.city || ""}
-                          className="w-full border rounded px-3 py-2"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          for="country"
-                          className="block text-sm font-medium mb-1"
-                        >
-                          Country/Region
-                        </label>
-                        <select
-                          name="country"
-                          defaultValue={editingAddress?.country || ""}
-                          className="w-full border rounded px-3 py-2"
-                        >
-                          <option>---</option>
-                          <option>India</option>
-                          <option>USA</option>
-                          <option>UK</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          for="postal"
-                          className="block text-sm font-medium mb-1"
-                        >
-                          Postal/Zip Code
-                        </label>
-                        <input
-                          type="text"
-                          name="postal"
-                          defaultValue={editingAddress?.postal || ""}
-                          className="w-full border rounded px-3 py-2"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          for="phone"
-                          className="block text-sm font-medium mb-1"
-                        >
-                          Phone
-                        </label>
-                        <input
-                          type="text"
-                          name="phone"
-                          defaultValue={editingAddress?.phone || ""}
-                          className="w-full border rounded px-3 py-2"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" id="default" name="isDefault" />
-                      <label htmlFor="isDefault" className="text-sm">
-                        Set as default address
-                      </label>
-                    </div>
-
-                    <button
-                      type="submit"
-                      // onClick={handleAddAddress}
-                      className="bg-green-800 text-white px-4 py-2 rounded"
-                    >
-                      {editingAddress ? "UPDATE ADDRESS" : "ADD ADDRESS"}
-                    </button>
-                  </form>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
+
+      {/* Modal Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+          <div className="bg-white w-full max-w-2xl rounded shadow-lg relative max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex justify-between items-center border-b px-4 sm:px-6 py-4 sticky top-0 bg-white">
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-librebaskerville font-semibold">
+                {editingAddress ? "Edit Address" : "Add a New Address"}
+              </h2>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="flex justify-end"
+              >
+                <X className="text-base font-normal text-gray-500 hover:text-black hover:rotate-90 hover:scale-75 transition-transform duration-300" />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form
+              onSubmit={handleAddAddress}
+              className="p-4 sm:p-6 font-poppins space-y-4"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="firstName"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    defaultValue={editingAddress?.firstName || ""}
+                    required
+                    className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="lastName"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    defaultValue={editingAddress?.lastName || ""}
+                    className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="company"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Company
+                </label>
+                <input
+                  type="text"
+                  name="company"
+                  defaultValue={editingAddress?.company || ""}
+                  className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="address1"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Address1
+                </label>
+                <input
+                  type="text"
+                  name="address1"
+                  defaultValue={editingAddress?.address1 || ""}
+                  required
+                  className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="address2"
+                  className="block text-sm font-medium mb-1"
+                >
+                  Address2
+                </label>
+                <input
+                  type="text"
+                  name="address2"
+                  defaultValue={editingAddress?.address2 || ""}
+                  className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="city"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    name="city"
+                    defaultValue={editingAddress?.city || ""}
+                    className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="country"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    Country/Region
+                  </label>
+                  <select
+                    name="country"
+                    defaultValue={editingAddress?.country || ""}
+                    className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                  >
+                    <option>---</option>
+                    <option>India</option>
+                    <option>USA</option>
+                    <option>UK</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    htmlFor="postal"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    Postal/Zip Code
+                  </label>
+                  <input
+                    type="text"
+                    name="postal"
+                    defaultValue={editingAddress?.postal || ""}
+                    className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium mb-1"
+                  >
+                    Phone
+                  </label>
+                  <input
+                    type="text"
+                    name="phone"
+                    defaultValue={editingAddress?.phone || ""}
+                    className="w-full border rounded px-3 py-2 text-sm sm:text-base"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="default" name="isDefault" />
+                <label htmlFor="isDefault" className="text-sm">
+                  Set as default address
+                </label>
+              </div>
+
+              <button
+                type="submit"
+                className="bg-green-800 text-white px-4 py-3 sm:py-2 rounded w-full sm:w-auto text-sm sm:text-base"
+              >
+                {editingAddress ? "UPDATE ADDRESS" : "ADD ADDRESS"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       <ScrollToTop />
       <Footer />

@@ -21,13 +21,13 @@ const ScrollToTop = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed group bottom-8 right-8 z-50 p-3 bg-gray-600 hover:bg-green-700 text-white rounded-full transition-all duration-300 hover:scale-110 hover:ring-2 hover:ring-white ${
+      className={`fixed group bottom-20 sm:bottom-8 right-4 sm:right-8 z-50 p-2 sm:p-3 bg-gray-600 hover:bg-green-700 text-white transition-all duration-300 hover:scale-110 shadow-lg hover:ring-2 hover:ring-white ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
       <MdKeyboardDoubleArrowUp
         size={20}
-        className="w-6 h-6 text-white group-hover:animate-fade-in-up hover:text-white "
+        className="w-5 sm:w-6 h-5 sm:h-6 text-white group-hover:animate-fade-in-up hover:text-white "
       />
     </button>
   );
