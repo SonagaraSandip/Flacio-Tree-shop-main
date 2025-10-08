@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { X, Heart, Star, ShoppingCart } from "lucide-react";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCart } from "../contexts/CartContext";
-import LoadingEffect from "../components/loadingEffect";
+import LoadingEffect from "../components/LoadingEffect";
 import Products from "../data/products";
 import Leave from "../assets/Banner/leave.avif";
 import { toast } from "react-toastify";
