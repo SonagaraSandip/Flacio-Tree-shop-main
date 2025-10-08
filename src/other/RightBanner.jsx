@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { X, Heart, Star } from "lucide-react";
+import { X, Heart, Star, ShoppingCart } from "lucide-react";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCart } from "../contexts/CartContext";
 import LoadingEffect from "../components/loadingEffect";
@@ -68,23 +68,26 @@ export default function RightBanner() {
 
   return (
     <div className="fixed inset-0 z-50">
+      {/* Backdrop */}
       <div
         onClick={() => setShow(false)}
         className="absolute inset-0 bg-black bg-opacity-50"
       ></div>
-      <div className="relative">
+
+      {/* Modal Content */}
+      <div className="absolute right-0 top-0 h-full w-full sm:w-96 lg:w-[52vh] bg-white overflow-y-auto animate-fadeInRight">
+        {/* Close Button */}
         <button
-          className=" absolute top-4 right-4 z-10 self-end border border-gray-400 hover:bg-black hover:text-white"
+          className="absolute top-4 right-4 z-10 bg-white rounded-full p-1 border border-gray-400 hover:bg-black hover:text-white transition-colors duration-300"
           onClick={() => setShow(false)}
         >
-          <X className="hover:rotate-90 transition-transform duration-300 hover:scale-90" />
+          <X className="w-4 h-4 sm:w-5 sm:h-5" />
         </button>
-      </div>
-      <div className="absolute right-0 top-0 bg-white  flex w-[52vh] h-full overflow-y-auto animate-fadeInRight">
-        <div className="flex flex-col gap-4  w-full h-full">
-          {/* banner */}
+
+        <div className="flex flex-col gap-4 w-full h-full pb-8">
+          {/* Banner */}
           <div
-            className="min-h-52 w-full"
+            className="min-h-40 sm:min-h-52 w-full relative"
             style={{
               backgroundImage: `url(${Leave})`,
               backgroundSize: "cover",
@@ -92,22 +95,23 @@ export default function RightBanner() {
               backgroundRepeat: "no-repeat",
             }}
           >
-            <p className="flex h-full items-end text-2xl mx-4 pb-4 uppercase text-white font-semibold font-librebaskerville ">
+            <p className="absolute bottom-4 left-4 text-xl sm:text-2xl uppercase text-white font-semibold font-librebaskerville">
               before you <br /> leave ...
             </p>
           </div>
-          {/* text */}
-          <div className="flex flex-col gap-4 my-2 text-center">
-            <p className="text-xl font-poppins text-gray-500">
+
+          {/* Text Content */}
+          <div className="flex flex-col gap-4 px-4 sm:px-6 text-center">
+            <p className="text-lg sm:text-xl font-poppins text-gray-500">
               Take{" "}
-              <span className="text-2xl font-librebaskerville text-black">
+              <span className="text-xl sm:text-2xl font-librebaskerville text-black">
                 15% off
               </span>{" "}
               your first order
             </p>
-            <p className=" text-gray-500 font-poppins">
-              Enter the code :{" "}
-              <span className="border-b border-gray-800 text-black">
+            <p className="text-gray-500 font-poppins text-sm sm:text-base">
+              Enter the code:{" "}
+              <span className="border-b border-gray-800 text-black font-medium">
                 FIRST15
               </span>
             </p>
@@ -116,13 +120,14 @@ export default function RightBanner() {
                 navigate("/collections/all");
                 setShow(false);
               }}
-              className="text-md bg-zinc-800 mt-2 text-white mx-8 px-4 py-2 uppercase font-poppins hover:bg-green-950 transition-colors duration-300"
+              className="text-sm sm:text-md bg-zinc-800 mt-2 text-white px-4 py-3 sm:py-2 uppercase font-poppins hover:bg-green-950 transition-colors duration-300 mx-4 sm:mx-8"
             >
-              continue shopping
+              Continue Shopping
             </button>
           </div>
-          {/*recommend */}
-          <div className="flex flex-col gap-4 mx-6">
+
+          {/* Recommended Products */}
+          <div className="flex flex-col gap-4 px-4 sm:px-6">
             <p className="text-md font-poppins pb-4 border-b border-gray-300">
               Recommended
             </p>
@@ -131,90 +136,123 @@ export default function RightBanner() {
               const isProductInWishlist = isInWishlist(product.id);
 
               return (
-                <div key={product.id} className="flex gap-4 my-2">
-                  <button onClick={() => {navigate(`/products/${product.name.toLowerCase().replace(/\s+/g, "-")}`); setShow(false);}}>
+                <div
+                  key={product.id}
+                  className="flex gap-3 sm:gap-4 py-3 border-b border-gray-100"
+                >
+                  {/* Product Image */}
+                  <button
+                    onClick={() => {
+                      navigate(
+                        `/products/${product.name
+                          .toLowerCase()
+                          .replace(/\s+/g, "-")}`
+                      );
+                      setShow(false);
+                    }}
+                    className="flex-shrink-0"
+                  >
                     <img
                       src={product.frontImage}
                       alt={product.name}
-                      className="w-28 h-36 object-cover rounded-md"
+                      className="w-20 h-24 sm:w-28 sm:h-36 object-cover rounded-md"
                     />
                   </button>
-                  <div className="flex flex-col gap-1 flex-1">
+
+                  {/* Product Info */}
+                  <div className="flex flex-col gap-1 flex-1 min-w-0">
+                    {/* Stars */}
                     <div className="flex text-gray-500">
                       {renderStar(product.rating)}
                     </div>
-                    <p className="text-sm font-librebaskerville mt-1 text-gray-800">
+
+                    {/* Product Name */}
+                    <p className="text-sm font-librebaskerville mt-1 text-gray-800 line-clamp-2">
                       {product.name}
                     </p>
-                    {/* price */}
-                    <div className="flex items-center gap-1">
+
+                    {/* Price */}
+                    <div className="flex items-center gap-1 mt-1">
                       {product.discountPrice ? (
-                        <div className="flex gap-1 font-poppins text-sm">
-                          <p className="line-through text-gray-500 ">
+                        <div className="flex gap-2 font-poppins text-sm">
+                          <p className="line-through text-gray-500">
                             ${product.originalPrice.toFixed(2)}
                           </p>
-                          <p className="text-green-600">
+                          <p className="text-green-600 font-semibold">
                             ${product.discountPrice.toFixed(2)}
                           </p>
                         </div>
                       ) : (
-                        <p>${product.originalPrice.toFixed(2)}</p>
+                        <p className="font-poppins text-sm font-semibold">
+                          ${product.originalPrice.toFixed(2)}
+                        </p>
                       )}
                     </div>
-                    {/* color */}
+
+                    {/* Color Options */}
                     {product.id !== 7 && (
-                      <div className="flex gap-2">
-                        <button className="bg-black p-3 rounded-full" />
+                      <div className="flex gap-2 mt-2">
+                        <button className="w-6 h-6 sm:w-8 sm:h-8 bg-black rounded-full border-2 border-gray-300" />
                         <button
-                          className={`${
+                          className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-gray-300 ${
                             product.id === 3 ? "bg-pink-400" : "bg-white"
-                          } border border-gray-400 p-3 rounded-full `}
+                          }`}
                         />
                       </div>
                     )}
 
-                    {/* add to cart button */}
-                    {product.id === 7 ? (
-                      <button
-                        onClick={() => handleWishlist(product)}
-                        disabled={loadingWishlist[product.id]}
-                        className={`border border-gray-500 mt-2 self-start hover:bg-green-950 hover:text-white ${
-                          isProductInWishlist
-                            ? "bg-green-950 text-white"
-                            : "text-gray-600"
-                        } transition-colors duration-300 text-gray-600 p-1`}
-                      >
-                        {loadingWishlist[product.id] ? (
-                          <LoadingEffect size="small" />
-                        ) : (
-                          <Heart size={20} />
-                        )}
-                      </button>
-                    ) : (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleAddToCart(product)}
-                          className="border border-gray-300 px-4 py-1 mt-2 text-sm font-poppins hover:bg-green-950 hover:text-white transition-all duration-300"
-                        >
-                          Add to cart
-                        </button>
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 mt-3">
+                      {product.id === 7 ? (
+                        // Single wishlist button for product 7
                         <button
                           onClick={() => handleWishlist(product)}
                           disabled={loadingWishlist[product.id]}
-                          className={`border border-gray-300 mt-2 self-start hover:bg-green-950 hover:text-white ${
-                            isInWishlist(product.id)
+                          className={`flex items-center justify-center w-10 h-10 border border-gray-300 hover:bg-green-950 hover:text-white transition-colors duration-300 ${
+                            isProductInWishlist
                               ? "bg-green-950 text-white"
-                              : ""
-                          } transition-colors duration-300 text-gray-500 p-1`}
+                              : "text-gray-600"
+                          }`}
                         >
                           {loadingWishlist[product.id] ? (
                             <LoadingEffect size="small" />
                           ) : (
-                            <Heart size={20} />
+                            <Heart size={18} />
                           )}
                         </button>
-                      </div>
-                    )}
+                      ) : (
+                        <>
+                          {/* Add to Cart Button */}
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            className="flex-1 flex items-center justify-center gap-1 sm:gap-2 border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm font-poppins hover:bg-green-950 hover:text-white transition-all duration-300 min-h-[40px]"
+                          >
+                            <ShoppingCart size={16} className="sm:mr-1" />
+                            <span className="hidden sm:inline">
+                              Add to cart
+                            </span>
+                            <span className="sm:hidden">Cart</span>
+                          </button>
+
+                          {/* Wishlist Button */}
+                          <button
+                            onClick={() => handleWishlist(product)}
+                            disabled={loadingWishlist[product.id]}
+                            className={`flex items-center justify-center w-10 h-10 border border-gray-300 hover:bg-green-950 hover:text-white transition-colors duration-300 ${
+                              isProductInWishlist
+                                ? "bg-green-950 text-white"
+                                : "text-gray-600"
+                            }`}
+                          >
+                            {loadingWishlist[product.id] ? (
+                              <LoadingEffect size="small" />
+                            ) : (
+                              <Heart size={18} />
+                            )}
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

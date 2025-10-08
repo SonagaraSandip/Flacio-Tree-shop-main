@@ -33,8 +33,8 @@ const CompareModel = ({ onClose }) => {
     addToCart({
       product,
       selectedVariant,
-      quantity: 1
-    })
+      quantity: 1,
+    });
     toast.success(`Added ${product.name} to cart`);
   };
 
@@ -257,18 +257,6 @@ const CompareModel = ({ onClose }) => {
           </table>
         </div>
       </div>
-
-      {/*if Add to cart is open */}
-      {/* {isAddToCart && selectedProduct && (
-        <AddToCartModal
-          product={selectedProduct}
-          selectedVariant={selectedVariant[selectedProduct.id]}
-          onClose={() => setIsAddToCart(false)}
-          cart={cart}
-          total={total}
-          updateQuantity={updateQuantity}
-        />
-      )} */}
     </div>
   );
 };

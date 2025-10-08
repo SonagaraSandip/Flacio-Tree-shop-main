@@ -54,7 +54,7 @@ const WishList = () => {
               <ProductCard product={item.product} />
               <button
                 onClick={(e) => handleRemoveWishlist(e, item.id)}
-                className="absolute top-2 sm:top-3 lg:top-4 right-2 sm:right-3 lg:right-2 bg-white rounded-full p-1 sm:p-1.5 lg:p-1 shadow-md hover:shadow-lg transition-all duration-300 z-10 hover:scale-110"
+                className="hidden md:block absolute top-2 sm:top-3 lg:top-4 right-2 sm:right-3 lg:right-2 bg-white rounded-full p-1 sm:p-1.5 lg:p-1 shadow-md hover:shadow-lg transition-all duration-300 z-10 hover:scale-110"
               >
                 {/* <Tooltip text="Remove from wishlist" onMouseEnter={() => setShowToolTip("wishlist")} /> */}
 
@@ -67,6 +67,18 @@ const WishList = () => {
                       </span>
                       <div className="bg-inherit rotate-45 p-1 absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2"></div>
                     </div>
+                  </div>
+                </div>
+              </button>
+
+              {/* show this in mobile  */}
+              <button
+                onClick={(e) => handleRemoveWishlist(e, item.id)}
+                className="md:hidden absolute top-4 left-3 sm:left-3 bg-white rounded-full p-1 sm:p-1.5 lg:p-1 shadow-md hover:shadow-lg transition-all duration-300 z-10 hover:scale-110"
+              >
+                <div className="flex flex-col items-center gap-1 lg:gap-2 rounded-full transition-all duration-300">
+                  <div className="group relative rounded-full">
+                    <X size={16} />
                   </div>
                 </div>
               </button>

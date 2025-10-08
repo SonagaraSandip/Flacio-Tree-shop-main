@@ -46,11 +46,11 @@ const Faqs = () => {
   ];
 
   return (
-    <div className="container pt-[150px]">
-      <div className="flex flex-col gap-2 pb-8 px-14 border-b border-gray-300">
-        <h1 className="text-6xl font-librebaskerville ">FAQs</h1>
-        <div className="flex gap-2 font-poppins text-md">
-          <button onClick={() => navigate("/")} className="underline ">
+    <div className="container pt-[100px] sm:pt-[120px] lg:pt-[150px]">
+      <div className="flex flex-col gap-2 pb-6 sm:pb-8 px-4 sm:px-8 lg:px-14 border-b border-gray-300">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-librebaskerville text-center sm:text-left">FAQs</h1>
+        <div className="flex gap-2 font-poppins text-sm sm:text-md justify-center sm:justify-start">
+          <button onClick={() => navigate("/")} className="underline">
             Home
           </button>
           /<span>FAQs</span>
@@ -58,16 +58,16 @@ const Faqs = () => {
       </div>
 
       {/* faqs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 px-14 my-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 px-4 sm:px-6 lg:px-8 xl:px-14 my-8 sm:my-12 lg:my-16">
         {data.map((item) => (
-          <div key={item.title} className="flex flex-col ">
-            <h1 className="text-3xl font-librebaskerville">{item.title}</h1>
-            <p className="font-poppins mt-8 text-md font-semibold text-gray-700">{item.q1}</p>
-            <p className="text-sm text-gray-500 font-poppins">{item.ans1}</p>
-            <p className="font-poppins mt-6 text-md font-semibold text-gray-700">{item.q2}</p>
-            <p className="text-sm text-gray-500 font-poppins">{item.ans2}</p>
-            <p className="font-poppins mt-6 text-md font-semibold text-gray-700">{item.q3}</p>
-            <p className="text-sm text-gray-500 font-poppins">{item.ans3}</p>
+          <div key={item.title} className="flex flex-col">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-librebaskerville text-center sm:text-left">{item.title}</h1>
+            <p className="font-poppins mt-4 sm:mt-6 lg:mt-8 text-sm sm:text-md font-semibold text-gray-700">{item.q1}</p>
+            <p className="text-xs sm:text-sm text-gray-500 font-poppins mt-1 sm:mt-2">{item.ans1}</p>
+            <p className="font-poppins mt-4 sm:mt-6 text-sm sm:text-md font-semibold text-gray-700">{item.q2}</p>
+            <p className="text-xs sm:text-sm text-gray-500 font-poppins mt-1 sm:mt-2">{item.ans2}</p>
+            <p className="font-poppins mt-4 sm:mt-6 text-sm sm:text-md font-semibold text-gray-700">{item.q3}</p>
+            <p className="text-xs sm:text-sm text-gray-500 font-poppins mt-1 sm:mt-2">{item.ans3}</p>
           </div>
         ))}
       </div>

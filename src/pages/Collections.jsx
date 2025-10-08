@@ -45,12 +45,12 @@ const Collections = () => {
   ];
 
   return (
-    <div className="mt-[130px]">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-12">
+    <div className="pt-20 sm:pt-24 lg:pt-[150px] ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-4 sm:px-6 md:px-8 lg:mx-12">
         {CollectionData.map((collection, index) => (
           <div
             key={index}
-            className=" mx-4 mb-4 relative"
+            className="relative"
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
           >
@@ -58,25 +58,24 @@ const Collections = () => {
               src={collection.img}
               alt={collection.title}
               loading="lazy"
-              className="overflow-hidden h-[300px] w-full"
+              className="overflow-hidden h-[250px] sm:h-[280px] md:h-[300px] w-full object-cover"
             />
             {hoveredIndex === index && (
-              <div className="absolute top-0 left-0 right-0 bottom-16 flex items-center bg-black bg-opacity-25 transition-all duration-500">
+              <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center bg-black bg-opacity-25 transition-all duration-500">
                 <Link
                   to={`/collections/${collection.link}`}
-                  className=" self-end mb-8 bg-white mx-auto text-xs font-librebaskerville px-4 py-2 text-black hover:bg-green-900 hover:text-white cursor-pointer"
+                  className="self-center bg-white mx-auto text-xs font-librebaskerville px-4 py-2 text-black hover:bg-green-900 hover:text-white cursor-pointer"
                 >
-                  {" "}
                   VIEW ALL
                 </Link>
               </div>
             )}
 
-            <div className="flex flex-col text-center my-2 ">
-              <p className="font-librebaskerville text-md ">
+            <div className="flex flex-col text-center my-2">
+              <p className="font-librebaskerville text-sm sm:text-md">
                 {collection.title}
               </p>
-              <p className="font-poppins text-sm text-gray-500">
+              <p className="font-poppins text-xs sm:text-sm text-gray-500">
                 {collection.count} Products
               </p>
             </div>

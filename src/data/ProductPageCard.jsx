@@ -89,6 +89,8 @@ const ProductPageCard = () => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   const [loading, setLoading] = useState({
     quickView: false,
     addToCart: false,
@@ -322,7 +324,7 @@ const ProductPageCard = () => {
 
     if (isProductInWishlist) {
       removeFromWishlist(
-        `${productpage.id}-${selectedVariant?.color || "default"}`,
+        `${productpage.id}`,
         toast.success(`${productpage.name} removed from Wishlist`)
       );
     } else {
@@ -499,9 +501,37 @@ const ProductPageCard = () => {
     }, 5000);
   };
 
+  // touch gesture handlers
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      handleNextImage();
+    }
+    if (isRightSwipe) {
+      handlePrevImage();
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
   return (
-    <div className="pt-[120px] ">
-      <div className="mx-12 font-librebaskerville text-sm text-black pb-4">
+    <div className="pt-[80px] sm:pt-[100px] lg:pt-[120px] ">
+      <div className="mx-4 sm:mx-6 lg:mx-12 font-librebaskerville text-sm text-black pb-4 px-2">
         <span
           onClick={() => navigate("/")}
           className="hover:border-b-2 hover:border-black hover:text-black cursor-pointer"
@@ -511,11 +541,14 @@ const ProductPageCard = () => {
         / {productpage.name}{" "}
       </div>
 
-      <div key={productpage.id} className="flex gap-4 mx-8 items-stretch">
+      <div
+        key={productpage.id}
+        className="flex flex-col sm:flex-row gap-4 mx-2 sm:mx-4 lg:mx-8 items-stretch"
+      >
         {/* Product Images */}
-        <div className="w-full lg:w-[60%] flex h-full  sticky top-0 self-start">
-          <div className="h-full w-full flex">
-            <div className="px-4">
+        <div className="w-full lg:w-[60%] flex flex-col lg:flex-row h-auto lg:h-full lg:sticky lg:top-0 self-start">
+          <div className="flex lg:flex-row flex-col lg:w-full lg:h-full ">
+            <div className="flex lg:flex-col flex-row gap-2 lg:gap-0 px-2 lg:px-4 py-2 lg:py-0">
               {productpage.variants.map((variant, index) => {
                 const hasVideo = variant.video;
                 const is360View = variant.type === "360";
@@ -525,7 +558,7 @@ const ProductPageCard = () => {
                   <div
                     key={`${variant.color || "video-360"} - ${index}`}
                     onClick={() => handleColorSelect(variant, index)}
-                    className={`hover:border hover:border-gray-700 mb-6 ${
+                    className={`hover:border hover:border-gray-700 mb-2 lg:mb-6 flex-shrink-0 ${
                       currentImageIndex === index ? "border border-black" : ""
                     }`}
                   >
@@ -535,7 +568,7 @@ const ProductPageCard = () => {
                         src={variant.image || !hasVideo ? variant.image : ""}
                         loading="lazy"
                         alt={`${productpage.name} - ${variant.color}`}
-                        className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                        className={`h-20 w-16 lg:h-32 lg:w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
                           currentImageIndex === index ? "scale-75" : ""
                         }`}
                       />
@@ -547,14 +580,14 @@ const ProductPageCard = () => {
                           src={variant.imagePreview || variant.image}
                           loading="lazy"
                           alt={`${productpage.name} - ${variant.color}`}
-                          className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                          className={`h-20 w-16 lg:h-32 lg:w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
                             currentImageIndex === index ? "scale-75" : ""
                           }`}
                         />
                         <div className="absolute inset-0 flex items-center justify-center ">
                           <Play
                             size={40}
-                            className="bg-gray-200 bg-opacity-45 rounded-full p-2"
+                            className="bg-gray-200 bg-opacity-45 rounded-full p-1 lg:p-2"
                           />
                         </div>
                       </div>
@@ -567,7 +600,7 @@ const ProductPageCard = () => {
                           src={variant.imagePreview || variant.image}
                           alt="360"
                           // style={{cursor: 'pointer'}}
-                          className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                          className={`h-20 w-16 lg:h-32 lg:w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
                             currentImageIndex === index ? "scale-75" : ""
                           }`}
                         />
@@ -576,7 +609,7 @@ const ProductPageCard = () => {
                             className={`bg-green-900  flex items-center justify-center rounded-full text-white transition-all duration-500 ${
                               currentImageIndex === index
                                 ? "h-7 w-7 text-xs opacity-95"
-                                : "h-10 w-10 opacity-80"
+                                : "h-6 w-6 text-xs lg:h-10 lg:w-10 opacity-80"
                             }`}
                           >
                             360°
@@ -591,14 +624,14 @@ const ProductPageCard = () => {
                         <img
                           src={variant.imagePreview || variant.image}
                           alt="3D image preview"
-                          className={`h-32 w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
+                          className={`h-20 w-16 lg:h-32 lg:w-28 flex object-cover cursor-pointer hover:scale-75 transition-transform duration-300 ${
                             currentImageIndex === index ? "scale-75" : ""
                           }`}
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
                           <Box
                             size={40}
-                            className="bg-green-900 text-white bg-opacity-75 rounded-full p-2"
+                            className="bg-green-900 text-white bg-opacity-75 rounded-full p-1 lg:p-2"
                           />
                         </div>
                       </div>
@@ -609,9 +642,9 @@ const ProductPageCard = () => {
             </div>
 
             {/* Discount Badge */}
-            <div className="absolute z-10 pt-16 left-3/4 xl:left-[750px] transform -translate-x-1/2 -translate-y-1/2">
+            <div className="hidden lg:block absolute z-10 pt-4 lg:pt-16 left-1/2 lg:left-3/4 xl:left-[780px] transform -translate-x-1/2 -translate-y-1/2">
               {isOutOfStock ? (
-                <span className="bg-gray-400 text-white text-sm px-2 py-1 ">
+                <span className="bg-gray-400 text-white text-xs lg:text-sm px-2 py-1 ">
                   Out of Stock
                 </span>
               ) : (
@@ -624,7 +657,7 @@ const ProductPageCard = () => {
             </div>
 
             <div
-              className="relative flex h-full w-full"
+              className="relative flex h-auto lg:h-full w-full"
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
@@ -632,8 +665,8 @@ const ProductPageCard = () => {
                 <Tree360Viewer image={selectedVariant.image} />
               ) : selectedVariant?.type === "3D" ? (
                 <div
-                  className="h-full w-full "
-                  style={{ height: "700px", minHeight: "700px" }}
+                  className="h-1/2 lg:h-full w-full "
+                  style={{ height: "700px", minHeight: "400px" }}
                 >
                   <Tree3DViewer glbFile={selectedVariant.glbFile} />
                 </div>
@@ -644,7 +677,7 @@ const ProductPageCard = () => {
                   loading="lazy"
                   onClick={() => setIsOpen(true)}
                   style={{ cursor: hovered ? "move " : "default" }}
-                  className={`w-full h-auto pr-8 object-cover ${
+                  className={`w-full h-auto object-cover ${
                     hovered ? " " : "cursor-pointer"
                   } `}
                 />
@@ -656,14 +689,14 @@ const ProductPageCard = () => {
                     controls
                     controlsList="nodownload"
                     loading="lazy"
-                    className="w-full h-full object-cover"
+                    className="w-full h-auto lg:h-full object-cover"
                     onPlay={handleVideoPlay}
                     onPause={handleVideoPause}
                   />
                   {!isPlaying && (
                     <button
                       onClick={handlePlayPause}
-                      className="absolute flex items-center justify-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-300 w-12 h-12 rounded-full "
+                      className="absolute flex items-center justify-center top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-300 w-10 h-10 lg:w-12 lg:h-12 rounded-full "
                     >
                       {isPlaying ? <Pause /> : <Play />}
                     </button>
@@ -676,7 +709,7 @@ const ProductPageCard = () => {
                   <button
                     onClick={handlePrevImage}
                     disabled={currentImageIndex === 0}
-                    className={`absolute z-10 top-1/2 left-4 border border-gray-500 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2  ${
+                    className={`hidden lg:flex absolute z-10 top-1/2 left-4 border border-gray-500 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2  ${
                       currentImageIndex === 0
                         ? "opacity-50 cursor-not-allowed"
                         : ""
@@ -689,7 +722,7 @@ const ProductPageCard = () => {
                     disabled={
                       currentImageIndex === productpage.variants.length - 1
                     }
-                    className={`absolute z-10 top-1/2 border border-gray-500 right-12 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2 ${
+                    className={`hidden lg:flex absolute z-10 top-1/2 border border-gray-500 right-12 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2 ${
                       currentImageIndex === productpage.variants.length - 1
                         ? "opacity-50 cursor-not-allowed"
                         : ""
@@ -699,16 +732,44 @@ const ProductPageCard = () => {
                   </button>
                 </>
               )}
+
+              {/* show this button in mobiel */}
+              <div className="lg:hidden flex justify-between w-full absolute top-1/2 transform -translate-y-1/2 px-2">
+                <button
+                  onClick={handlePrevImage}
+                  disabled={currentImageIndex === 0}
+                  className={`bg-white bg-opacity-80 border border-gray-500 rounded-full p-1 ${
+                    currentImageIndex === 0
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={handleNextImage}
+                  disabled={
+                    currentImageIndex === productpage.variants.length - 1
+                  }
+                  className={`bg-white bg-opacity-80 border border-gray-500 rounded-full p-1 ${
+                    currentImageIndex === productpage.variants.length - 1
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
         {/* product details */}
-        <div className="flex flex-col w-full lg:w-[40%]  gap-1 h-full sticky top-0 max-h-full ">
-          <h2 className="text-3xl font-librebaskerville mb-1">
+        <div className="flex flex-col w-full lg:w-[40%] gap-1 h-auto lg:h-full lg:sticky lg:top-0 max-h-full px-4 sm:px-6 lg:px-0">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-librebaskerville mb-1">
             {productpage.name}
           </h2>
           {/* price */}
-          <h2 className="text-2xl font-librebaskerville text-gray-500">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-librebaskerville text-gray-500">
             {/*  is price range is available*/}
             {productpage.priceRange && !productpage.discountPrice
               ? `$ ${productpage.originalPrice.toFixed(
@@ -739,13 +800,13 @@ const ProductPageCard = () => {
           </h2>
           <div className="border border-gray-100 my-3" />
 
-          <div className="flex mb-2">
+          <div className="flex mb-2 items-center">
             <IoIosEye
               size={24}
               className="mr-2 flex items-center animate-pulse"
             />
             {viewer}
-            <span className="ml-1 font-poppins text-md ">
+            <span className="ml-1 font-poppins text-sm lg:text-md ">
               people are viewing this right now
             </span>
           </div>
@@ -753,7 +814,7 @@ const ProductPageCard = () => {
           {/* outofstock text */}
           {isOutOfStock ? (
             <div className="relative flex items-center mt-2 gap-2">
-              <span className="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-red-700 opacity-70 "></span>
+              <span className="absolute inline-flex left-[2px] h-3 w-3 lg:h-4 lg:w-4 animate-ping rounded-full bg-red-700 opacity-70 "></span>
               <CircleCheck
                 size={20}
                 className="relative inline-flex text-red-700 rounded-full shadow-3xl "
@@ -771,7 +832,7 @@ const ProductPageCard = () => {
                 className="mr-2 flex items-center animate-pulse"
               />
 
-              <span className="font-poppins text-md text-red-500 font-semibold">
+              <span className="font-poppins  text-sm lg:text-md text-red-500 font-semibold">
                 {productpage.sellOrder}
               </span>
             </div>
@@ -784,8 +845,8 @@ const ProductPageCard = () => {
                 size={20}
                 className="relative inline-flex text-green-700  rounded-full shadow-3xl mr-2"
               />
-              <span className="absolute inline-flex left-[2px] h-4 w-4 animate-ping rounded-full bg-green-700 opacity-50"></span>
-              <p className=" text-md font-poppins text-green-700 font-semibold">
+              <span className="absolute inline-flex left-[2px] w-3 lg:h-4 lg:w-4 animate-ping rounded-full bg-green-700 opacity-50"></span>
+              <p className=" text-sm font-poppins text-green-700 font-semibold">
                 In Stock
               </p>
             </div>
@@ -794,7 +855,7 @@ const ProductPageCard = () => {
           )}
 
           {/* Description */}
-          <p className="text-md mt-4 font-poppins text-gray-500">
+          <p className="text-sm lg:text-md mt-4 font-poppins text-gray-500">
             {productpage.description}
           </p>
 
@@ -887,7 +948,7 @@ const ProductPageCard = () => {
             </div>
           ) : (
             <>
-              <h1 className="font-poppins mt-2 text-gray-600">
+              <h1 className="font-poppins mt-2 text-gray-600 text-sm lg:text-md">
                 Color :{" "}
                 <span className="text-sm font-librebaskerville text-black">
                   {selectedVariant?.color}
@@ -938,7 +999,7 @@ const ProductPageCard = () => {
           {productpage.name.toLowerCase().replace(" ", "-") ===
             "peace-lily" && (
             <div className="flex flex-col w-ful">
-              <h1 className="font-poppins text-sm mt-4 text-gray-900">
+              <h1 className="font-poppins text-xs lg:text-sm mt-4 text-gray-900">
                 Only <span className="text-red-600">90 item(s)</span> left in
                 stock
               </h1>
@@ -956,14 +1017,14 @@ const ProductPageCard = () => {
             "the-beginner-set" && (
             <div className="flex flex-col gap-2 my-4">
               <div className="flex gap-2 font-poppins ">
-                <h1 className="text-md ">Size :</h1>
-                <p className="text-md">{selectSize} cm</p>
+                <h1 className="text-sm lg:text-md ">Size :</h1>
+                <p className="text-sm lg:text-md">{selectSize} cm</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {[30, 50, 60].map((size, index) => (
                   <div key={index} className="relative">
                     <button
-                      className={`flex font-poppins px-5 py-2 border transition-transform duration-500 ${
+                      className={`flex font-poppins px-3 py-1 lg:px-5 lg:py-2 border transition-transform duration-500 text-sm lg:text-md ${
                         selectSize === size
                           ? "border-black bg-black text-white"
                           : "hover:bg-zinc-900 hover:text-white text-gray-500 border-gray-500"
@@ -979,7 +1040,7 @@ const ProductPageCard = () => {
           )}
 
           {/* Add to Cart Button */}
-          <div className="flex mt-6 items-center">
+          <div className="flex mt-6 items-center  gap-2">
             {!isOutOfStock ? (
               productpage.name.toLowerCase().replace(" ", "-") ===
               "jade-succulent" ? (
@@ -987,7 +1048,7 @@ const ProductPageCard = () => {
                   onClick={() => handleAddToCartJade()}
                   className="w-full flex items-center justify-center group text-white bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-700 px-4 py-3 hover:bg-gradient-to-r hover:from-green-700 hover:via-green-950 hover:to-green-700 transition-all duration-500"
                 >
-                  <span className="text-md font-poppins group-hover:animate-bounceX transition-transform duration-300">
+                  <span className="text-sm lg:text-md font-poppins group-hover:animate-bounceX transition-transform duration-300">
                     {loading.addToCart ? (
                       <LoadingEffect size="small" />
                     ) : (
@@ -997,10 +1058,10 @@ const ProductPageCard = () => {
                 </button>
               ) : (
                 <div className="flex w-full gap-2">
-                  <div className="flex items-center self-center gap-2 border border-gray-300  px-4 py-3">
+                  <div className="flex items-center self-center gap-2 border border-gray-300 px-2 lg:px-4 py-2 lg:py-3">
                     <button
                       onClick={() => handleCurrentProductQuantityChange(-1)}
-                      className=" px-3 "
+                      className="px-2 lg:px-3 "
                     >
                       <Minus size={20} />
                     </button>
@@ -1021,7 +1082,7 @@ const ProductPageCard = () => {
 
                     <button
                       onClick={() => handleCurrentProductQuantityChange(1)}
-                      className="px-3 "
+                      className="px-2 lg:px-3 "
                     >
                       <Plus size={20} />
                     </button>
@@ -1030,7 +1091,7 @@ const ProductPageCard = () => {
                     onClick={() => handleAddToCart(productpage.name)}
                     className="w-full flex items-center justify-center group text-white  px-4 py-3 bg-gradient-to-r from-zinc-700 via-zinc-500 to-zinc-700 hover:bg-gradient-to-r hover:from-green-700 hover:via-green-950 hover:to-green-700 transition-all duration-500 "
                   >
-                    <span className="text-sm font-poppins group-hover:animate-bounceX transition-transform duration-300">
+                    <span className="text-xs lg:text-sm font-poppins group-hover:animate-bounceX transition-transform duration-300">
                       {loading.addToCart ? (
                         <LoadingEffect size="small" />
                       ) : (
@@ -1045,19 +1106,25 @@ const ProductPageCard = () => {
                 className="w-full bg-gray-400 text-white px-4 py-3 cursor-not-allowed"
                 disabled
               >
-                <span className="text-md font-poppins">Out of Stock</span>
+                <span className="text-sm lg:text-md font-poppins">
+                  Out of Stock
+                </span>
               </button>
             )}
             <button
               onClick={handleWishlistToggle}
-              className={`flex text-center ml-2 border border-gray-300 px-4 py-3 hover:bg-green-950 hover:text-white hover:border-gray-300 transition-opacity duration-300 ${
+              className={`flex text-center sm:ml-2 border border-gray-300 px-4 py-3 hover:bg-green-950 hover:text-white hover:border-gray-300 transition-opacity duration-300 ${
                 isProductInWishlist
                   ? "bg-green-950 text-white"
                   : "bg-white text-black"
               }`}
               disabled={loading.wishlist}
             >
-              {loading.wishlist ? <LoadingEffect size="medium" /> : <Heart />}
+              {loading.wishlist ? (
+                <LoadingEffect size="medium" />
+              ) : (
+                <Heart size={18} />
+              )}
             </button>
           </div>
 
@@ -1065,7 +1132,7 @@ const ProductPageCard = () => {
           {isOutOfStock && (
             <button
               onClick={() => setNotifyMe(true)}
-              className="text-sm font-librebaskerville border border-black text-gray-800 hover:bg-gray-800 hover:text-white hover:border-white px-4 py-2 my-2 transition-colors duration-300"
+              className="text-xs lg:text-sm font-librebaskerville border border-black text-gray-800 hover:bg-gray-800 hover:text-white hover:border-white px-4 py-2 my-2 transition-colors duration-300"
             >
               NOTIFY ME WHEN AVAILABLE
             </button>
@@ -1083,7 +1150,7 @@ const ProductPageCard = () => {
                     onClick={handleTermsChange}
                     className="w-4 h-4 mt-1 cursor-pointer"
                   />{" "}
-                  <p className="text-gray-500 ">
+                  <p className="text-xs lg:text-sm text-gray-500 ">
                     I agree with the{" "}
                     <span className="text-gray-950 border-b font-poppins border-black hover:border-none cursor-pointer hover:font-semibold">
                       Terms and conditions
@@ -1091,7 +1158,7 @@ const ProductPageCard = () => {
                   </p>
                 </div>
                 <button
-                  className={`w-full font-poppins text-md flex items-center justify-center group  px-4 py-3  border  mt-2 transition-opacity duration-1000 ${
+                  className={`w-full font-poppins text-xs lg:text-sm flex items-center justify-center group  px-4 py-3  border mt-2 transition-opacity duration-1000 ${
                     acceptTerms
                       ? "cursor-pointer bg-gradient-to-l from-green-900 via-green-600 to-green-900 text-white border-white animate-moveStripes rounded-md"
                       : "cursor-not-allowed border-gray-400"
@@ -1106,10 +1173,10 @@ const ProductPageCard = () => {
             )}
 
           {/* compare | shipping | share | icons */}
-          <div className="flex  sm:gap-4 md:gap-6 lg:gap-8 items-center mt-4 text-gray-500 ">
+          <div className="flex gap-3 sm:gap-4 md:gap-6 lg:gap-8 items-center mt-2 lg:mt-4 text-gray-500 ">
             <button
               onClick={handleCompareToggle}
-              className="group flex items-center cursor-pointer"
+              className="hidden lg:flex group items-center cursor-pointer"
             >
               <div
                 className={`w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2`}
@@ -1138,25 +1205,27 @@ const ProductPageCard = () => {
               onClick={() => setIsOpenQuestion(true)}
               className="group flex items-center cursor-pointer"
             >
-              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
+              <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
                 <CircleQuestionMark
                   size={20}
                   className=" flex items-center justify-center"
                 />
               </div>
-              <span className="text-sm font-librebaskerville">Quetions</span>
+              <span className="text-xs lg:text-sm font-librebaskerville">
+                Quetions
+              </span>
             </div>
             <div
               onClick={() => setIsShipping(true)}
               className="group flex items-center cursor-pointer"
             >
-              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
+              <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
                 <Package
                   size={20}
-                  className=" flex items-center justify-center"
+                  className="flex items-center justify-center"
                 />
               </div>
-              <span className="text-sm font-librebaskerville">
+              <span className="text-xs lg:text-sm font-librebaskerville">
                 Shipping Info
               </span>
             </div>
@@ -1164,19 +1233,24 @@ const ProductPageCard = () => {
               onClick={() => setIsShare(true)}
               className="group flex items-center cursor-pointer"
             >
-              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
+              <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gray-200 rounded-full flex items-center justify-center group-hover:bg-green-900 group-hover:text-white transition-colors duration-300 mr-2">
                 <Link size={20} className=" flex items-center justify-center" />
               </div>
-              <span className="text-sm font-librebaskerville">Share</span>
+              <span className="text-xs lg:text-sm font-librebaskerville">
+                Share
+              </span>
             </div>
           </div>
 
           {/* order in next 12 hours*/}
           {!isOutOfStock && (
-            <div className="flex items-center border-y border-gray-200 mt-4 gap-2 p-6">
-              <Truck size={28} className="text-gray-700 rounded-full " />
-              <div className="h-10 w-px bg-gray-300 mx-2" />
-              <p className="font-poppins text-gray-500 ">
+            <div className="flex items-center border-y border-gray-200 mt-4 gap-2 p-4 lg:p-6">
+              <Truck
+                size={20}
+                className="text-gray-700 rounded-full flex-shrink-0"
+              />
+              <div className="h-8 lg:h-10 w-px bg-gray-300 mx-2 flex-shrink-0"></div>
+              <p className="font-poppins text-xs lg:text-sm text-gray-500">
                 Order within the next 12 hours 22 minutes to get it <br />
                 between{" "}
                 <span className="border-b border-black text-black">
@@ -1191,21 +1265,21 @@ const ProductPageCard = () => {
           )}
 
           {/* buy more save more */}
-          <div className="flex flex-col w-full bg-gray-100 mt-8 p-6 ">
-            <h1 className="font-poppins flex items-center justify-center text-black mb-6">
+          <div className="flex flex-col w-full bg-gray-100 mt-6 lg:mt-8 p-4 lg:p-6">
+            <h1 className="font-poppins flex items-center justify-center text-black mb-4 lg:mb-6 text-sm lg:text-md">
               Buy more save more!
             </h1>
-            <div className="flex justify-between px-2">
+            <div className="flex justify-between px-1 lg:px-2 items-center">
               <div className="flex flex-col">
-                <h2 className="font-poppins text-black">
+                <h2 className="font-poppins text-black text-xs lg:text-sm">
                   5 item (s) get{" "}
-                  <span className="text-sm text-red-600 font-semibold">
+                  <span className="text-xs lg:text-sm text-red-600 font-semibold">
                     10% off
                   </span>
                 </h2>
-                <p className=" text-gray-500 text-xs">on each product</p>
+                <p className="text-gray-500 text-xs">on each product</p>
               </div>
-              <button className="text-sm font-poppins border border-black px-6 bg-gradient-to-r from-green-100 via-white  to-green-100 hover:bg-gradient-to-r hover:from-green-500 hover:via-green-700 hover:to-green-500 hover:text-white transition-colors duration-300">
+              <button className="text-xs lg:text-sm font-poppins border border-black px-3 lg:px-6 py-1 lg:py-2 bg-gradient-to-r from-green-100 via-white to-green-100 hover:bg-gradient-to-r hover:from-green-500 hover:via-green-700 hover:to-green-500 hover:text-white transition-colors duration-300">
                 ADD
               </button>
             </div>
@@ -1232,7 +1306,7 @@ const ProductPageCard = () => {
                 </div>
                 <img
                   src={TigerAloe}
-                  onClick={() => navigate("/product/tiger-aloe")}
+                  onClick={() => navigate("/products/tiger-aloe")}
                   alt="tiger aloe"
                   loading="lazy"
                   className="w-1/4 hover:scale-110 transition-all duration-300 cursor-pointer"
@@ -1283,33 +1357,58 @@ const ProductPageCard = () => {
               alt={productpage.name}
               loading="lazy"
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl mx-auto max-h-screen object-contain py-8"
-            ></img>
+              className="w-full max-w-xs sm:max-w-sm md:max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto max-h-[70vh] sm:max-h-[80vh] lg:max-h-screen object-contain py-4 sm:py-6 lg:py-8 px-2"
+            />
+
             <div
               onClick={(e) => e.stopPropagation()}
-              className="flex gap-4 absolute bottom-12 items-center justify-center"
+              className="flex gap-2 sm:gap-3 lg:gap-4 absolute bottom-4 sm:bottom-8 lg:bottom-12 items-center justify-center"
             >
               <button
                 onClick={handlePrevImage}
-                // disabled={currentImageIndex === 0}
-                className={`  bg-white text-gray-500 w-10 h-10 rounded-full items-center justify-center flex hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg `}
+                className="bg-white text-gray-500 w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full items-center justify-center flex hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg"
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft
+                  size={16}
+                  className="sm:w-5 sm:h-5 lg:w-6 lg:h-6"
+                />
               </button>
+
               <button
                 onClick={() => setIsOpen(false)}
-                className=" bg-white text-gray-800 w-14 h-14 rounded-full items-center justify-center flex  hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg "
+                className="bg-white text-gray-800 w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full items-center justify-center flex hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg"
               >
-                <X />
+                <X size={16} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
               </button>
+
               <button
                 onClick={handleNextImage}
-                // disabled={currentImageIndex === productpage.variants.length - 1}
-                className={`bg-white text-gray-500 w-10 h-10 rounded-full items-center justify-center flex  hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg
-                  `}
+                className="bg-white text-gray-500 w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full items-center justify-center flex hover:bg-green-900 hover:text-white transition-colors duration-300 shadow-lg"
               >
-                <ChevronRight size={24} />
+                <ChevronRight
+                  size={16}
+                  className="sm:w-5 sm:h-5 lg:w-6 lg:h-6"
+                />
               </button>
+            </div>
+
+            {/* Mobile swipe gestures */}
+            <div
+              className="absolute inset-0 lg:hidden"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            ></div>
+
+            <button
+              onClick={() => setIsOpen(false)}
+              className="lg:hidden absolute top-4 right-4 bg-white bg-opacity-80 rounded-full p-2 shadow-lg hover:bg-green-900 hover:text-white transition-colors duration-300"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="lg:hidden absolute top-4 left-4 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+              {currentImageIndex + 1} / {productpage.variants.length}
             </div>
           </div>
         )}
@@ -1317,59 +1416,59 @@ const ProductPageCard = () => {
         {isOpenQuestion && (
           <div
             onClick={() => setIsOpenQuestion(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen px-4 sm:px-6"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-lg mx-auto p-8 flex flex-col items-center justify-center  "
+              className="bg-white w-full max-w-md sm:max-w-lg mx-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-center max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setIsOpenQuestion(false)}
-                className=" w-full flex items-center justify-end"
+                className="w-full flex items-center justify-end mb-4"
               >
-                <X className="text-base font-normal text-gray-500 hover:text-black" />
+                <X className="text-base font-normal text-gray-500 hover:text-black w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <h1 className="text-2xl text-black w-full font-librebaskerville ">
-                Quetion
+              <h1 className="text-xl sm:text-2xl text-black w-full font-librebaskerville mb-4 sm:mb-6">
+                Question
               </h1>
               <form className="w-full">
-                <div className="flex flex-col my-4 gap-6 text-md font-poppins w-full">
-                  <div className="flex gap-6 w-full">
+                <div className="flex flex-col gap-4 sm:gap-6 text-sm sm:text-md font-poppins w-full">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full">
                     <input
                       type="text"
                       name="name"
                       placeholder="Your Name"
                       required
-                      className="bg-zinc-100 text-black p-2 w-full "
+                      className="bg-zinc-100 text-black p-3 sm:p-2 w-full text-sm sm:text-base"
                     />
                     <input
                       type="email"
-                      name="name"
+                      name="email"
                       required
                       placeholder="Your Email"
-                      className="bg-zinc-100 text-black p-2 w-full"
+                      className="bg-zinc-100 text-black p-3 sm:p-2 w-full text-sm sm:text-base"
                     />
                   </div>
                   <input
-                    type="number"
+                    type="tel"
                     name="tel"
-                    allow="tel"
-                    placeholder="Your phone Number"
+                    placeholder="Your Phone Number"
                     minLength={8}
-                    maxLength={10}
+                    maxLength={15}
                     required
-                    className="bg-zinc-100 text-black p-2 w-full"
+                    className="bg-zinc-100 text-black p-3 sm:p-2 w-full text-sm sm:text-base"
                   />
                   <textarea
-                    type="text"
-                    rows={8}
-                    name="name"
-                    placeholder="Your messasge..."
-                    className="bg-zinc-100 text-black p-2 w-full"
+                    rows={4}
+                    sm:rows={6}
+                    lg:rows={8}
+                    name="message"
+                    placeholder="Your message..."
+                    className="bg-zinc-100 text-black p-3 sm:p-2 w-full text-sm sm:text-base resize-vertical min-h-[120px] sm:min-h-[150px]"
                   />
                   <button
                     type="submit"
-                    className="border border-black bg-white hover:bg-green-900 text-black hover:text-white p-2 w-full font-poppins"
+                    className="border border-black bg-white hover:bg-green-900 text-black hover:text-white p-3 sm:p-2 w-full font-poppins text-sm sm:text-base transition-colors duration-300"
                   >
                     Submit
                   </button>
@@ -1382,43 +1481,48 @@ const ProductPageCard = () => {
         {isShipping && (
           <div
             onClick={() => setIsShipping(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen px-4 sm:px-6"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-3xl mx-auto p-8 flex flex-col items-center justify-center  "
+              className="bg-white w-full max-w-md sm:max-w-2xl lg:max-w-3xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-center max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setIsShipping(false)}
-                className=" w-full flex items-center justify-end"
+                className="w-full flex items-center justify-end mb-4"
               >
-                <X className="text-base font-normal text-gray-500 hover:text-black" />
+                <X className="text-base font-normal text-gray-500 hover:text-black w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <h1 className="text-2xl text-black w-full font-librebaskerville ">
+              <h1 className="text-xl sm:text-2xl text-black w-full font-librebaskerville mb-6 sm:mb-8">
                 Shipping Info
               </h1>
-              <div className="flex flex-col mt-8 mb-4 gap-4 text-md font-poppins w-full ">
-                <h1 className="">
-                  <span className="font-semibold">Return Policy :</span>
-                  <span className="text-gray-500">
-                    {" "}
+              <div className="flex flex-col gap-4 sm:gap-6 text-sm sm:text-md font-poppins w-full">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                  <span className="font-semibold text-sm sm:text-md">
+                    Return Policy:
+                  </span>
+                  <span className="text-gray-500 text-sm sm:text-md">
                     We will gladly accept returns for any reason within 30 days
                     of receipt of delivery.
                   </span>
-                </h1>
-                <h1>
-                  <span className="font-semibold">Availability :</span>{" "}
-                  <span className="text-gray-500">
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                  <span className="font-semibold text-sm sm:text-md">
+                    Availability:
+                  </span>
+                  <span className="text-gray-500 text-sm sm:text-md">
                     Ships anywhere in the United States.
                   </span>
-                </h1>
-                <h1>
-                  <span className="font-semibold">Processing Time :</span>
-                  <span className="text-gray-500">
+                </div>
+                <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-2">
+                  <span className="font-semibold text-sm sm:text-md">
+                    Processing Time:
+                  </span>
+                  <span className="text-gray-500 text-sm sm:text-md">
                     Allow 3-4 business days processing time for your order to
                     ship.
                   </span>
-                </h1>
+                </div>
               </div>
             </div>
           </div>
@@ -1427,44 +1531,50 @@ const ProductPageCard = () => {
         {notifyMe && (
           <div
             onClick={() => setNotifyMe(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen px-4 sm:px-6"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-3xl mx-auto p-6 flex flex-col items-center justify-center  "
+              className="bg-white w-full max-w-md lg:max-w-3xl mx-auto p-4 sm:p-6 flex flex-col items-center justify-center max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setNotifyMe(false)}
-                className="w-full flex items-center justify-end"
+                className="w-full flex items-center justify-end mb-4"
               >
-                <X className="text-base font-normal text-gray-500 hover:text-black" />
+                <X className="text-base font-normal text-gray-500 hover:text-black w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <div className="flex  gap-6">
+              <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 w-full">
                 {/* left side image */}
-                <div className="flex flex-col w-full gap-4">
-                  <img src={Dragon} alt="dragon image" className="w-76 h-96" />
-                  <div className="gap-1 mt-4">
-                    <p className="uppercase font-librebaskerville text-sm ">
+                <div className="flex flex-col w-full lg:w-2/5 gap-3 sm:gap-4">
+                  <img
+                    src={Dragon}
+                    alt="dragon image"
+                    className="w-full h-48 sm:h-64 lg:h-96 object-cover"
+                  />
+                  <div className="gap-1 mt-2 sm:mt-4">
+                    <p className="uppercase font-librebaskerville text-xs sm:text-sm">
                       Pink Dragon Tree
                     </p>
-                    <p className="font-poppins  text-gray-500">$80.00</p>
+                    <p className="font-poppins text-gray-500 text-sm sm:text-md">
+                      $80.00
+                    </p>
                   </div>
                 </div>
                 {/* right side form  */}
-                <div className="flex flex-col w-full gap-2">
-                  <h1 className="text-2xl font-librebaskerville">
+                <div className="flex flex-col w-full lg:w-3/5 gap-2 sm:gap-3">
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-librebaskerville">
                     Back in stock alert
                   </h1>
-                  <p className="font-poppins text-sm text-gray-500">
+                  <p className="font-poppins text-xs sm:text-sm text-gray-500">
                     We will send you a notification as soon as this product is
                     available again.
                   </p>
                   <form
                     noValidate
                     onSubmit={handleSubmit}
-                    className="flex flex-col gap-4 mt-4"
+                    className="flex flex-col gap-3 sm:gap-4 mt-2 sm:mt-4"
                   >
-                    <div className="flex gap-4">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                       <input
                         type="text"
                         name="name"
@@ -1473,7 +1583,7 @@ const ProductPageCard = () => {
                         placeholder="Your name"
                         required
                         style={{ outline: "none" }}
-                        className="bg-zinc-100 text-black p-3 w-full"
+                        className="bg-zinc-100 text-black p-2 sm:p-3 w-full text-sm sm:text-base"
                       />
                       <input
                         type="email"
@@ -1483,31 +1593,32 @@ const ProductPageCard = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         style={{ outline: "none" }}
-                        className="bg-zinc-100 text-black p-3 w-full"
+                        className="bg-zinc-100 text-black p-2 sm:p-3 w-full text-sm sm:text-base"
                       />
                     </div>
                     <input
-                      type="number"
+                      type="tel"
                       name="phone"
                       placeholder="Your phone"
                       value={number}
                       onChange={(e) => setNumber(e.target.value)}
                       required
                       style={{ outline: "none" }}
-                      className="bg-zinc-100 text-black p-3 w-full"
+                      className="bg-zinc-100 text-black p-2 sm:p-3 w-full text-sm sm:text-base"
                     />
                     <textarea
-                      type="text"
                       placeholder="Your message"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       style={{ outline: "none" }}
-                      rows="6"
-                      className="bg-zinc-100 text-gray-500 p-3 w-full"
+                      rows="3"
+                      sm:rows="4"
+                      lg:rows="6"
+                      className="bg-zinc-100 text-gray-500 p-2 sm:p-3 w-full text-sm sm:text-base resize-vertical min-h-[80px] sm:min-h-[100px]"
                     />
                     <button
                       type="submit"
-                      className="border-2 border-zinc-800 mt-2  hover:bg-green-950 uppercase hover:text-white px-6 py-4 transition-colors duration-300 font-poppins"
+                      className="border-2 border-zinc-800 mt-2 hover:bg-green-950 uppercase hover:text-white px-4 py-3 sm:px-6 sm:py-4 transition-colors duration-300 font-poppins text-sm sm:text-base"
                     >
                       submit
                     </button>
@@ -1521,55 +1632,55 @@ const ProductPageCard = () => {
         {isShare && (
           <div
             onClick={() => setIsShare(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 animate-zoom-in w-screen px-4 sm:px-6"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-lg mx-auto p-6 flex flex-col items-center justify-center  "
+              className="bg-white w-full max-w-xs sm:max-w-md lg:max-w-lg mx-auto p-4 sm:p-6 flex flex-col items-center justify-center"
             >
               <button
                 onClick={() => setIsShare(false)}
-                className=" w-full flex items-center justify-end"
+                className="w-full flex items-center justify-end mb-3 sm:mb-4"
               >
-                <X className="text-base font-normal text-gray-500 hover:text-black" />
+                <X className="text-base font-normal text-gray-500 hover:text-black w-4 h-4 sm:w-5 sm:h-5" />
               </button>
-              <h1 className="text-sm text-black w-full font-librebaskerville ">
+              <h1 className="text-xs sm:text-sm text-black w-full font-librebaskerville">
                 COPY LINK
               </h1>
-              <div className="flex font-poppins w-full mt-4 mb-2">
-                <span className="flex-1 border border-black p-2 text-sm text-wrap items-center justify-center">
+              <div className="flex flex-col sm:flex-row font-poppins w-full mt-3 sm:mt-4 mb-2 gap-2 sm:gap-0">
+                <span className="flex-1 border border-black p-2 text-xs sm:text-sm break-all">
                   {url}
                 </span>
                 <button
                   onClick={copyToClipboard}
-                  className="bg-black px-3 py-2 text-white hover:bg-green-950 "
+                  className="bg-black px-3 py-2 text-white hover:bg-green-950 text-xs sm:text-sm transition-colors duration-300 whitespace-nowrap"
                 >
                   {copied ? "Copied!" : "Copy"}
                 </button>
               </div>
               {copied && (
-                <p className="text-sm text-green-700 w-full font-librebaskerville">
+                <p className="text-xs sm:text-sm text-green-700 w-full font-librebaskerville mt-2">
                   Link copied to clipboard 👍.
                 </p>
               )}
-              <h1 className="text-sm text-black w-full font-librebaskerville mt-8">
+              <h1 className="text-xs sm:text-sm text-black w-full font-librebaskerville mt-4 sm:mt-6 lg:mt-8">
                 SHARE
               </h1>
-              <div className="flex gap-2 w-full my-2">
+              <div className="flex gap-3 sm:gap-4 w-full my-3 sm:my-4 justify-center sm:justify-start">
                 <FaWhatsapp
-                  size={28}
+                  size={24}
+                  className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 cursor-pointer hover:scale-110 transition-transform duration-300"
                   fill="#25D366"
-                  className="cursor-pointer hover:scale-110 transition-transform duration-300"
                 />
                 <FaFacebook
-                  size={28}
+                  size={24}
+                  className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 cursor-pointer hover:scale-110 transition-transform duration-300"
                   fill="#4267B2"
-                  className="cursor-pointer hover:scale-110 transition-transform duration-300"
                 />
                 <FaXTwitter
-                  size={28}
+                  size={24}
+                  className="sm:w-7 sm:h-7 lg:w-8 lg:h-8 cursor-pointer hover:scale-110 transition-transform duration-300"
                   fill="#000000"
-                  className="cursor-pointer hover:scale-110 transition-transform duration-300"
                 />
               </div>
             </div>
@@ -1579,65 +1690,72 @@ const ProductPageCard = () => {
         {viewStore && (
           <div
             onClick={() => setViewStore(false)}
-            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 w-screen"
+            className="fixed inset-0 z-40 flex items-center justify-center bg-zinc-900 bg-opacity-60 w-screen px-4 sm:px-6"
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="bg-white w-full max-w-lg mx-auto flex flex-col "
+              className="bg-white w-full max-w-xs sm:max-w-md lg:max-w-lg mx-auto flex flex-col max-h-[90vh] overflow-y-auto"
             >
               <div className="bg-zinc-100 w-full animate-zoom-in">
-                <div className="flex justify-between p-4">
-                  <div className="flex gap-4">
-                    <img src={PeaseLily} className="w-24 h-24" />
+                <div className="flex justify-between p-3 sm:p-4">
+                  <div className="flex gap-3 sm:gap-4">
+                    <img
+                      src={PeaseLily}
+                      className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-cover"
+                    />
                     <div className="flex flex-col gap-1">
-                      <h1 className="font-librebaskerville">Peace Lily</h1>
-                      <p className="text-sm text-gray-500">Black</p>
-                      <p className="flex gap-1 font-poppins text-sm">
-                        {" "}
+                      <h1 className="font-librebaskerville text-sm sm:text-base lg:text-lg">
+                        Peace Lily
+                      </h1>
+                      <p className="text-xs sm:text-sm text-gray-500">Black</p>
+                      <p className="flex gap-1 font-poppins text-xs sm:text-sm">
                         <span className="line-through text-gray-500">
                           $90.00
                         </span>
-                        <span className=" text-red-600">$60.00</span>
+                        <span className="text-red-600">$60.00</span>
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setViewStore(false)}
-                    className="flex justify-end "
+                    className="flex justify-end self-start"
                   >
-                    <X className="text-base font-normal text-gray-500 hover:text-black hover:rotate-90 hover:scale-75 transition-transform duration-300" />
+                    <X className="text-base font-normal text-gray-500 hover:text-black hover:rotate-90 hover:scale-75 transition-transform duration-300 w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>
-              <div className="flex flex-col gap-4  w-full my-6">
-                <h1 className="text-xl font-librebaskerville ml-6 mt-6">
+              <div className="flex flex-col gap-3 sm:gap-4 w-full my-4 sm:my-6 px-4 sm:px-6">
+                <h1 className="text-lg sm:text-xl font-librebaskerville mt-4 sm:mt-6">
                   Akaze store
                 </h1>
-                <div className="ml-6 flex  gap-2 items-center text-gray-500">
-                  <Check size={20} />
-                  <p className="text-xs">
+                <div className="flex gap-2 items-center text-gray-500">
+                  <Check size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <p className="text-xs sm:text-sm">
                     Pickup available, Usually ready in 24 hours
                   </p>
                 </div>
-                <div className="ml-6 flex gap-2  text-gray-500">
-                  <MapPin size={20} />
-                  <p className="text-sm">
+                <div className="flex gap-2 text-gray-500">
+                  <MapPin
+                    size={16}
+                    className="sm:w-5 sm:h-5 flex-shrink-0 mt-0.5"
+                  />
+                  <p className="text-xs sm:text-sm">
                     548 North Blackstone Avenue <br /> Fresno CA 93701 <br />
                     United States
                   </p>
                 </div>
-                <div className="ml-6 flex  gap-2 items-center text-gray-500">
-                  <Phone size={16} />
-                  <p className="text-sm">+ 10123555444</p>
+                <div className="flex gap-2 items-center text-gray-500">
+                  <Phone size={14} className="sm:w-4 sm:h-4 flex-shrink-0" />
+                  <p className="text-xs sm:text-sm">+ 10123555444</p>
                 </div>
                 <a
                   href="https://www.google.com/maps?daddr=548+North+Blackstone+Avenue+Fresno+California+United+States"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="ml-6 flex gap-2 items-center text-green-800 underline hover:no-underline cursor-pointer"
+                  className="flex gap-2 items-center text-green-800 underline hover:no-underline cursor-pointer"
                 >
-                  <Map size={20} />
-                  <p className="text-sm">Check this on google map</p>
+                  <Map size={16} className="sm:w-5 sm:h-5 flex-shrink-0" />
+                  <p className="text-xs sm:text-sm">Check this on google map</p>
                 </a>
               </div>
             </div>
@@ -1663,110 +1781,113 @@ const ProductPageCard = () => {
       {/* if product Bougth together then show this frequently bougth together  */}
       {productpage.name.toLowerCase().replace(" ", "-") ===
         "bought-together" && (
-        <div className="relative flex justify-between m-8 border border-gray-300">
-          <h1 className="absolute -top-4 left-8 text-2xl bg-white px-4 font-librebaskerville">
+        <div className="relative flex flex-col lg:flex-row justify-between m-4 sm:m-6 lg:m-8 border border-gray-300 p-4 sm:p-6 lg:p-8">
+          <h1 className="absolute -top-3 lg:-top-4 left-4 lg:left-8 text-lg sm:text-xl lg:text-2xl bg-white px-3 lg:px-4 font-librebaskerville">
             Frequently Bought Together
           </h1>
-          <div className="flex flex-col m-8">
-            <div className="flex items-center">
+          <div className="flex flex-col w-full lg:w-auto mt-4 lg:mt-0">
+            <div className="flex items-center justify-center gap-4">
               <img
                 src={boughtTogetherImages[boughtTogetherColor]}
                 alt="bought-together"
-                className="w-40 h-50 cursor-pointer hover:scale-105 transition-transform duration-300"
+                className="w-32 h-40 sm:w-36 lg:w-40 sm:h-45 lg:h-50 cursor-pointer hover:scale-105 transition-transform duration-300 object-cover"
               />
-              <Plus className="flex mx-2" />
+              <Plus className="flex mx-2 rotate-90 sm:rotate-0" />
               <img
                 src={begginerSetImages[beginnerSetColor]}
                 alt="bought-together"
-                className={`w-40 h-50 cursor-pointer  transition-transform duration-300 ${
+                className={`w-32 h-40 sm:w-36 lg:w-40 sm:h-45 lg:h-50 cursor-pointer transition-transform duration-300 object-cover ${
                   !isBegginerInclude
-                    ? "opacity-30  cursor-not-allowed"
+                    ? "opacity-30 cursor-not-allowed"
                     : "hover:scale-105"
                 }`}
               />
             </div>
-            <div className="flex gap-1 items-center justify-center mt-8">
-              <input
-                type="checkbox"
-                style={{
-                  accentColor: "green",
-                  width: "15px",
-                  height: "15px",
-                  marginRight: "10px",
-                  cursor: "pointer",
-                }}
-                checked
-              />
-
-              <h3 className="text-xs font-librebaskerville text-black ">
-                THIS PRODUCT :
-              </h3>
-              <p className="text-xs font-normal text-gray-500">
-                BOUGHT TOGETHER
-              </p>
-              <select
-                value={boughtTogetherColor}
-                onChange={(e) => setBoughtTogetherColor(e.target.value)}
-                className="text-sm font-poppins border border-gray-500 text-gray-800"
-              >
-                <option value="Red">Red</option>
-                <option value="Grey">Grey</option>
-              </select>
-              <p className="text-sm font-poppins text-gray-900">
-                ${boughtTogetherPrices[boughtTogetherColor].toFixed(2)}
-              </p>
-            </div>
-            <div className="flex gap-1 items-center justify-start mt-4 ">
-              <input
-                type="checkbox"
-                style={{
-                  accentColor: "green",
-                  width: "15px",
-                  height: "15px",
-                  marginRight: "10px",
-                  cursor: "pointer",
-                }}
-                checked={isBegginerInclude}
-                onChange={(e) => setIsBegginerInclude(e.target.checked)}
-              />
-              <p className="text-xs font-normal text-gray-500">
-                THE BEGINNER SET
-              </p>
-              <select
-                value={beginnerSetColor}
-                onChange={(e) => setBegginerSetColor(e.target.value)}
-                className="text-sm font-poppins border border-gray-500 text-gray-800"
-              >
-                <option value="Pink / 30 cm">Pink / 30 cm</option>
-                <option value="Pink / 50 cm">Pink / 50 cm</option>
-                <option value="Pink / 60 cm">Pink / 60 cm</option>
-                <option value="Orange / 30 cm">Orange / 30 cm</option>
-                <option value="Orange / 50 cm">Orange / 50 cm</option>
-                <option value="Orange / 60 cm">Orange / 60 cm</option>
-                <option value="Black / 30 cm">Black / 30 cm</option>
-                <option value="Black / 50 cm">Black / 50 cm</option>
-                <option value="Black / 60 cm">Black / 60 cm</option>
-              </select>
-              <p className="text-sm font-poppins text-gray-900">
-                ${begginerSetPrices[beginnerSetColor].toFixed(2)}
-              </p>
+            <div className="flex flex-col gap-2 mt-6 lg:mt-8">
+              <div className="flex flex-wrap gap-1 lg:gap-1 items-center justify-center lg:justify-start">
+                <input
+                  type="checkbox"
+                  style={{
+                    accentColor: "green",
+                    width: "14px",
+                    height: "14px",
+                    marginRight: "8px",
+                    cursor: "pointer",
+                  }}
+                  checked
+                />
+                <h3 className="text-xs font-normal text-black">
+                  THIS PRODUCT :
+                </h3>
+                <p className="text-xs font-normal text-gray-500">
+                  BOUGHT TOGETHER
+                </p>
+                <select
+                  value={boughtTogetherColor}
+                  onChange={(e) => setBoughtTogetherColor(e.target.value)}
+                  className="text-xs sm:text-sm font-poppins border border-gray-500 text-gray-800 px-1 py-0.5"
+                >
+                  <option value="Red">Red</option>
+                  <option value="Grey">Grey</option>
+                </select>
+                <p className="text-xs sm:text-sm font-poppins text-gray-900">
+                  ${boughtTogetherPrices[boughtTogetherColor].toFixed(2)}
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-1 lg:gap-1 items-center justify-center lg:justify-start">
+                <input
+                  type="checkbox"
+                  style={{
+                    accentColor: "green",
+                    width: "14px",
+                    height: "14px",
+                    marginRight: "8px",
+                    cursor: "pointer",
+                  }}
+                  checked={isBegginerInclude}
+                  onChange={(e) => setIsBegginerInclude(e.target.checked)}
+                />
+                <p className="text-xs font-normal text-gray-500">
+                  THE BEGINNER SET
+                </p>
+                <select
+                  value={beginnerSetColor}
+                  onChange={(e) => setBegginerSetColor(e.target.value)}
+                  className="text-xs sm:text-sm font-poppins border border-gray-500 text-gray-800 px-1 py-0.5"
+                >
+                  <option value="Pink / 30 cm">Pink / 30 cm</option>
+                  <option value="Pink / 50 cm">Pink / 50 cm</option>
+                  <option value="Pink / 60 cm">Pink / 60 cm</option>
+                  <option value="Orange / 30 cm">Orange / 30 cm</option>
+                  <option value="Orange / 50 cm">Orange / 50 cm</option>
+                  <option value="Orange / 60 cm">Orange / 60 cm</option>
+                  <option value="Black / 30 cm">Black / 30 cm</option>
+                  <option value="Black / 50 cm">Black / 50 cm</option>
+                  <option value="Black / 60 cm">Black / 60 cm</option>
+                </select>
+                <p className="text-xs sm:text-sm font-poppins text-gray-900">
+                  ${begginerSetPrices[beginnerSetColor].toFixed(2)}
+                </p>
+              </div>
             </div>
           </div>
 
           {/* price is here */}
-          <div className="flex flex-col self-start m-8 mr-8 sm:mr-24 md:mr-36 lg:mr-48">
+          <div className="flex flex-col self-center lg:self-start mt-6 lg:mt-0 lg:ml-4">
             <div className="flex gap-2">
-              <h1 className="text-md font-poppins">TOTAL PRICE : </h1>
-              <p className="text-xl font-semibold font-librebaskerville">
+              <h1 className="text-sm sm:text-md font-poppins">
+                TOTAL PRICE :{" "}
+              </h1>
+              <p className="text-lg sm:text-xl font-semibold font-librebaskerville">
                 {totalPrice.toFixed(2)}
               </p>
             </div>
-            <p className="text-sm font-poppins text-gray-500 my-2">
+            <p className="text-xs sm:text-sm font-poppins text-gray-500 my-1 sm:my-2">
               For 2 item(s)
             </p>
             <button
               onClick={handleAddToCartBoughtTogether}
-              className="bg-zinc-800 text-white hover:bg-green-800  px-4 py-2"
+              className="bg-zinc-800 text-white hover:bg-green-800 px-3 py-2 sm:px-4 sm:py-2 text-xs sm:text-sm transition-colors duration-300"
             >
               {loading.addToCart ? (
                 <LoadingEffect size="small" />

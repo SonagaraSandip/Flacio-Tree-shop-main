@@ -91,19 +91,21 @@ const Contact = () => {
         loading="lazy"
       />
 
-      <div className="flex flex-col items-center justify-end h-[300px] pb-16 text-black">
-        <h1 className="text-6xl font-librebaskerville">Contact Us</h1>
+      <div className="flex flex-col items-center justify-end h-[200px] sm:h-[250px] lg:h-[300px] pb-8 sm:pb-12 lg:pb-16 text-black">
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-librebaskerville text-center px-4">
+          Contact Us
+        </h1>
       </div>
 
       {/* content  */}
       <div className="w-full h-full bg-white ">
         {/* contact details */}
-        <div className="flex justify-between gap-8 w-full px-12  py-12">
-          <div className="flex flex-col  gap-4 w-[25%]">
-            <h1 className="text-3xl font-librebaskerville">Contact Details</h1>
+        <div className="flex flex-col lg:flex-row justify-between gap-8 w-full px-4 sm:px-6 lg:px-12 py-8 lg:py-12">
+          <div className="flex flex-col gap-4 w-full lg:w-[25%] mb-8 lg:mb-0">
+            <h1 className="text-2xl lg:text-3xl font-librebaskerville">Contact Details</h1>
             {contactDetails.map((item, idx) => (
               <div key={idx} className="flex flex-col mt-4 gap-2 ">
-                <h3 className="text-xl font-librebaskerville">{item.label}</h3>
+                <h3 className="text-lg lg:text-xl font-librebaskerville">{item.label}</h3>
                 <p className="text-gray-500 text-sm font-poppins">
                   {item.value}
                 </p>
@@ -111,60 +113,59 @@ const Contact = () => {
               </div>
             ))}
             <div className="flex flex-col mt-2 gap-2 ">
-              <h3 className="text-xl font-librebaskerville">Follow Us On</h3>
-              <div className="flex gap-4 mt-6">
-                <button className="text-3xl cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-blue-600 hover:text-blue-600">
-                  <FaFacebookF size={20} />
+              <h3 className="text-lg lg:text-xl font-librebaskerville">Follow Us On</h3>
+              <div className="flex gap-4 mt-4 lg:mt-6">
+                <button className="cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-blue-600 hover:text-blue-600">
+                  <FaFacebookF size={18} className="w-4 h-4 lg:w-5 lg:h-5" />
                 </button>
-                <button className="text-3xl cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-white hover:text-white">
-                  <FaXTwitter size={20} />
+                <button className="cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-white hover:text-white">
+                  <FaXTwitter size={18} className="w-4 h-4 lg:w-5 lg:h-5" />
                 </button>
-                <button className="text-3xl cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-green-500 hover:text-green-500">
-                  <FaWhatsapp size={20} />
+                <button className="cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-green-500 hover:text-green-500">
+                  <FaWhatsapp size={18} className="w-4 h-4 lg:w-5 lg:h-5" />
                 </button>
-                <button className="text-3xl cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-pink-500 hover:text-pink-500">
-                  <FaTiktok size={20} />
+                <button className="cursor-pointer border border-black p-2 rounded-full hover:bg-gray-900 hover:border-pink-500 hover:text-pink-500">
+                  <FaTiktok size={18} className="w-4 h-4 lg:w-5 lg:h-5" />
                 </button>
               </div>
             </div>
           </div>
-          <div className="w-[75%] flex flex-col">
-            {" "}
-            {/* Added flex-col to stack map and button */}
+          <div className="w-full lg:w-[75%] flex flex-col">
             <iframe
               src={mapEmbedUrl}
               width="100%"
-              height="100%" // Adjust height to make space for the button
+              height="500"
+              className="h-[300px] sm:h-[400px] lg:h-[600px]"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Golden Gate Park Map" // Important for accessibility and React errors
+              title="Golden Gate Park Map"
             ></iframe>
           </div>
         </div>
 
         {/* contact form */}
-        <div className="flex flex-col text-center max-w-5xl mx-auto gap-4 mt-12 mb-6">
-          <h1 className="text-3xl font-librebaskerville">
+        <div className="flex flex-col text-center max-w-5xl mx-auto gap-4 mt-8 lg:mt-12 mb-6 px-4 sm:px-6 lg:px-8">
+          <h1 className="text-2xl lg:text-3xl font-librebaskerville">
             Send Us Your Questions!
           </h1>
           <p className="font-poppins text-sm text-gray-500">
-            We’ll get back to you within two hours.
+            We'll get back to you within two hours.
           </p>
 
           {submitted && (
-            <p className="font-poppins text-md text-green-600 bg-green-100 border border-green-900 px-4 py-2">
+            <p className="font-poppins text-sm lg:text-md text-green-600 bg-green-100 border border-green-900 px-4 py-2">
               Thanks for contacting us. We'll get back to you as soon as
               possible.
             </p>
           )}
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col gap-8 my-8 w-full"
+            className="flex flex-col gap-6 lg:gap-8 my-6 lg:my-8 w-full"
             noValidate
           >
-            <div className="flex  w-full gap-8">
+            <div className="flex flex-col sm:flex-row w-full gap-4 lg:gap-8">
               <input
                 type="text"
                 name="name"
@@ -172,7 +173,7 @@ const Contact = () => {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Name"
                 required
-                className="border border-black w-full px-4 py-4"
+                className="border border-black w-full px-4 py-3 lg:py-4 text-sm lg:text-base"
                 style={{ outline: "none" }}
               />
               <input
@@ -182,39 +183,39 @@ const Contact = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="border border-black w-full px-4 py-4"
+                className="border border-black w-full px-4 py-3 lg:py-4 text-sm lg:text-base"
                 style={{ outline: "none" }}
               />
             </div>
             <textarea
               type="text"
-              rows={8}
+              rows={6}
               name="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Message"
               required
-              className="border border-black w-full px-4 py-4"
+              className="border border-black w-full px-4 py-3 lg:py-4 text-sm lg:text-base"
               style={{ outline: "none" }}
             />
 
             <button
               type="submit"
-              className="border border-gray-800 uppercase self-center px-8 py-3 bg-zinc-800 text-white font-poppins text-sm hover:bg-gradient-to-r from-green-950 via-green-500 to-green-950 hover:text-white hover:animate-moveStripes-slow"
+              className="border border-gray-800 uppercase self-center px-6 lg:px-8 py-2 lg:py-3 bg-zinc-800 text-white font-poppins text-sm hover:bg-gradient-to-r from-green-950 via-green-500 to-green-950 hover:text-white hover:animate-moveStripes-slow"
             >
               submit
             </button>
           </form>
         </div>
 
-        <div className="h-px w-full bg-gray-200 mt-8 my-4" />
+        <div className="h-px w-full bg-gray-200 mt-6 lg:mt-8 my-4 lg:my-4" />
         {/* brand */}
-        <div className="flex justify-between items-center gap-4 w-full max-w-7xl mx-auto my-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 justify-between items-center gap-4 lg:gap-4 w-full max-w-7xl mx-auto my-8 lg:my-12 px-4 sm:px-6 lg:px-8">
           {Brand.map((item, index) => (
             <img
               src={item.img}
               alt={item.title}
-              className="w-90 h-16 hover:animate-bounceX transition-transform duration-500 ease-in-out"
+              className="w-full h-12 lg:h-16 hover:animate-bounceX transition-transform duration-500 ease-in-out object-contain"
               loading="lazy"
               key={index}
             />

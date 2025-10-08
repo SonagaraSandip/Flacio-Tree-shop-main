@@ -28,22 +28,22 @@ const Controls = ({ orbitRef }) => {
 
   return (
     <Html fullscreen>
-      <div className="absolute bottom-4 right-4 flex flex-col gap-2 z-10">
+      <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 flex flex-col gap-1 sm:gap-2 z-10">
         <button
           onClick={handleZoomIn}
-          className="bg-white border rounded p-2 shadow"
+          className="bg-white border rounded p-1 sm:p-2 shadow text-xs sm:text-base"
         >
           ➕
         </button>
         <button
           onClick={handleZoomOut}
-          className="bg-white border rounded p-2 shadow"
+          className="bg-white border rounded p-1 sm:p-2 shadow text-xs sm:text-base"
         >
           ➖
         </button>
         <button
           onClick={handleFullscreen}
-          className="bg-white border rounded p-2 shadow"
+          className="bg-white border rounded p-1 sm:p-2 shadow text-xs sm:text-base"
         >
           ⛶
         </button>
@@ -57,9 +57,9 @@ const Tree3DViewer = ({ glbFile }) => {
   const orbitRef = useRef();
 
   return (
-    <div className="relative h-full w-full min-h-[700px] cursor-grab  ">
+    <div className="relative h-full w-full min-h-[300px] sm:min-h-[500px] md:min-h-[700px] cursor-grab">
       <Canvas
-        style={{ width: "100%", height: "100%"   }}
+        style={{ width: "100%", height: "100%" }}
         camera={{ position: [-90, 2, 15], fov: 45 }}
       >
           

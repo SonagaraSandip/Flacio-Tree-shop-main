@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { Search, ChevronRight, Ellipsis } from "lucide-react";
+import { Search, ChevronRight, Ellipsis, Menu, X } from "lucide-react";
 import Footer from "../pages/Footer";
 import Layout from "../pages/Layout";
 import ScrollToTop from "./ScrollToTop";
@@ -16,8 +16,9 @@ const BlogPageDetails = () => {
   const [message, setMessage] = useState("");
   const [comments, setComments] = useState([]);
   const [relatedPosts, setRelatedPosts] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  //Find the blof post based on tab and id
+  //Find the blog post based on tab and id
   const findBlogPost = () => {
     //convert URL parameter back to readable format
     const title = id.replace(/-/g, " ").toLowerCase();
@@ -26,7 +27,7 @@ const BlogPageDetails = () => {
     const tabData = BlogData[tab];
     if (!tabData) return null;
 
-    // handle both and single objects
+    // handle both array and single objects
     if (Array.isArray(tabData)) {
       return tabData.find((post) =>
         post.title.toLowerCase().includes(title.toLowerCase())
@@ -42,21 +43,21 @@ const BlogPageDetails = () => {
 
   if (!BlogPost) {
     return (
-      <div className="text-6xl flex flex-col items-center justify-center text-black h-screen">
+      <div className="text-2xl md:text-4xl lg:text-6xl flex flex-col items-center justify-center text-black h-screen px-4 text-center">
         Blog post not found
-        <h1
+        <button
           onClick={() => navigate(`/blog/${tab}`)}
-          className="text-2xl my-4 font-librebaskerville bg-green-900 px-4 py-2 text-white "
+          className="text-lg md:text-xl lg:text-2xl my-4 font-librebaskerville bg-green-900 px-4 py-2 text-white hover:bg-green-800 transition-colors"
         >
           Back to blog
-        </h1>
+        </button>
       </div>
     );
   }
 
   const Category = [
     {
-      name: "Air Puriying",
+      name: "Air Purifying",
       link: "air-purifying",
     },
     {
@@ -81,7 +82,7 @@ const BlogPageDetails = () => {
     },
   ];
 
-  // function to genarte user friendly slug from title
+  // function to generate user friendly slug from title
   const generateSlug = (title) => {
     return title.toLowerCase().replace(/\?/g, "").replace(/\s+/g, "-");
   };
@@ -111,15 +112,15 @@ const BlogPageDetails = () => {
           "I completely agree! Indoor plants have transformed my home environment and improved my mental health. They're not just decorations but living companions that purify the air and bring nature indoors.",
       };
 
-      // check if permanet comment already exits
+      // check if permanent comment already exists
       const savedComments = localStorage.getItem(`comment-${BlogPost.id}`);
       if (savedComments) {
         const comments = JSON.parse(savedComments);
-        const permanentCommentExits = comments.some(
+        const permanentCommentExists = comments.some(
           (comment) => comment.id === "permanent-1"
         );
 
-        if (!permanentCommentExits) {
+        if (!permanentCommentExists) {
           const updatedComments = [permanentComment, ...comments];
           setComments(updatedComments);
           localStorage.setItem(
@@ -204,16 +205,129 @@ const BlogPageDetails = () => {
 
     toast.success("Thanks for your valuable feedback!");
 
-    //reset subbimition after 3 second
+    //reset submission after 3 second
     setTimeout(() => {
       setSubmitted(false);
     }, 3000);
   };
 
+  // Sidebar component for mobile
+  const SidebarContent = () => (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center w-full border border-gray-300 px-4 py-2">
+        <input
+          type="text"
+          placeholder="Search Blog..."
+          className="w-full font-poppins text-gray-500 bg-transparent"
+          style={{ outline: "none" }}
+        />
+        <Search className="justify-self-end text-gray-400 cursor-pointer hover:text-gray-700" />
+      </div>
+      
+      <h1 className="font-librebaskerville text-lg mt-4 mb-2">Categories</h1>
+      {Category.map((category, index) => (
+        <div
+          key={index}
+          onClick={() => {
+            navigate(`/collections/${category.link}`);
+            setIsSidebarOpen(false);
+          }}
+          className="flex items-center font-poppins cursor-pointer text-gray-500 hover:text-black text-sm gap-1"
+        >
+          <ChevronRight size={16} className="text-gray-500" />
+          <p>{category.name}</p>
+        </div>
+      ))}
+
+      {/* Related Posts */}
+      <h1 className="font-librebaskerville text-lg mt-4 mb-2">Related Posts</h1>
+
+      {/*display related post from the same category*/}
+      {relatedPosts.length > 0 ? (
+        <div className="flex flex-col gap-2">
+          {relatedPosts.map((post, index) => (
+            <React.Fragment key={post.id}>
+              <div className="flex gap-4">
+                <Link 
+                  to={`/blog/${tab}/${generateSlug(post.title)}`}
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  <img
+                    src={post.previewImage}
+                    alt={post.title}
+                    className="cursor-pointer w-20 h-16 md:w-28 md:h-24 object-cover"
+                    loading="lazy"
+                  />
+                </Link>
+                <div className="flex flex-col gap-1">
+                  <Link
+                    to={`/blog/${tab}`}
+                    className="font-poppins text-xs cursor-pointer text-gray-500 hover:text-black"
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    {post.category.toUpperCase()}
+                  </Link>
+                  <Link 
+                    to={`/blog/${tab}/${generateSlug(post.title)}`}
+                    onClick={() => setIsSidebarOpen(false)}
+                  >
+                    <h1 className="text-sm font-poppins cursor-pointer line-clamp-2">
+                      {post.title}
+                    </h1>
+                  </Link>
+                  <p className="font-poppins cursor-pointer text-xs text-gray-500 hover:text-black">
+                    {(() => {
+                      const savedComments = localStorage.getItem(
+                        `comment-${post.id}`
+                      );
+                      const commentCounts = savedComments
+                        ? JSON.parse(savedComments).length
+                        : 0;
+                      return `${commentCounts} ${
+                        commentCounts === 1 ? "comment" : "comments"
+                      }`;
+                    })()}
+                  </p>
+                </div>
+              </div>
+              {index < relatedPosts.length - 1 && (
+                <span className="h-px w-full my-2 bg-gray-200" />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      ) : null}
+
+      {/* Tags */}
+      <h1 className="font-librebaskerville text-lg mt-4 mb-2">Tags</h1>
+      <div className="flex flex-wrap gap-2">
+        {BlogData[tab].map((post) =>
+          post.tags?.map((tag, index) => (
+            <button
+              key={index}
+              className="relative overflow-hidden border border-[#18181a] text-[#18181a] inline-block text-[13px] leading-[13px] px-3 py-2 cursor-pointer bg-white select-none group"
+            >
+              <span className="relative z-10 transition-colors duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)]">
+                {tag}
+              </span>
+
+              <span className="text-white block absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[225%] opacity-0 h-[14px] leading-[13px] z-[100] transition-all duration-[900ms] ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:translate-y-[-50%] group-hover:opacity-100">
+                {tag}
+              </span>
+
+              <span className="absolute bottom-[-50%] left-0 w-full h-full bg-green-950 transform origin-bottom transition-transform duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)] skew-y-[9.3deg] scale-y-0 group-hover:scale-y-[2]"></span>
+            </button>
+          ))
+        )}
+      </div>
+    </div>
+  );
+
   return (
     <Layout>
-      <div className="mx-12 pt-[100px]">
-        <div className="flex gap-2 font-poppins text-sm text-gray-500">
+      <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 pt-16 md:pt-20 lg:pt-[100px]">
+        {/* Breadcrumb */}
+        <div className="flex gap-2 font-poppins text-xs sm:text-sm text-gray-500 flex-wrap">
           <Link to={`/`} className="border-b border-gray-500 hover:text-black">
             Home
           </Link>{" "}
@@ -227,134 +341,51 @@ const BlogPageDetails = () => {
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
               .join(" ")}
           </Link>{" "}
-          / {BlogPost.title}
+          / <span className="truncate max-w-[150px] sm:max-w-xs">{BlogPost.title}</span>
         </div>
 
-        <div className="flex flex-col gap-6 my-2 text-center">
+        {/* Blog Header */}
+        <div className="flex flex-col gap-4 my-4 md:my-6 text-center">
           <img
             src={BlogPost.image}
-            className="h-full w-full my-4"
+            className="w-full h-auto my-2 md:my-4 rounded-lg"
             alt={BlogPost.title}
           />
           <button
             onClick={() => navigate(`/blog/${tab}`)}
-            className="bg-white border text-sm font-poppins border-gray-700 px-6 py-1 hover:bg-green-950 hover:text-white text-black self-center transition-colors duration-300"
+            className="bg-white border text-sm font-poppins border-gray-700 px-4 py-1 md:px-6 md:py-1 hover:bg-green-950 hover:text-white text-black self-center transition-colors duration-300"
           >
             {BlogPost.category}
           </button>
-          <h1 className="text-5xl font-librebaskerville">{BlogPost.title}</h1>
-          <p className="text-sm font-poppins text-gray-500">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-librebaskerville px-2">
+            {BlogPost.title}
+          </h1>
+          <p className="text-xs sm:text-sm font-poppins text-gray-500">
             By <span className="text-black">{BlogPost.author}</span> on{" "}
             {BlogPost.date}
           </p>
-          <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded-sm md:my-6 dark:bg-gray-500" />
+          <hr className="w-32 sm:w-48 h-1 mx-auto my-2 sm:my-4 bg-gray-100 border-0 rounded-sm dark:bg-gray-500" />
         </div>
 
-        <div className="flex gap-12 bg-white mb-4 md:mb-8 lg:mb-12">
-          {/*left side content */}
-          <div className="w-full flex flex-col gap-4 lg:w-[25%]">
-            <div className="flex items-center w-full border border-gray-300 px-4 py-2">
-              <input
-                type="text"
-                placeholder="Search Blog..."
-                className="w-full font-poppins text-gray-500"
-                style={{ outline: "none" }}
-              />
-              <Search className=" justify-self-end text-gray-400 cursor-pointer hover:text-gray-700" />
-            </div>
-            <h1 className="font-librebaskerville text-lg mt-4 mb-2">
-              Categories
-            </h1>
-            {Category.map((category, index) => (
-              <div
-                key={index}
-                onClick={() => navigate(`/collections/${category.link}`)}
-                className="flex items-center font-poppins cursor-pointer text-gray-500 hover:text-black text-sm gap-1"
-              >
-                <ChevronRight size={16} className="text-gray-500" />
-                <p>{category.name}</p>
-              </div>
-            ))}
+        {/* Mobile Sidebar Toggle */}
+        <div className="lg:hidden mb-4">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="flex items-center gap-2 px-4 py-2 bg-green-950 text-white rounded-lg font-poppins text-sm"
+          >
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            {isSidebarOpen ? "Close Sidebar" : "Open Sidebar"}
+          </button>
+        </div>
 
-            {/* Related Posts */}
-            <h1 className="font-librebaskerville text-lg mt-4 mb-2">
-              Related Posts
-            </h1>
-
-            {/*display related post from the same category*/}
-            {relatedPosts.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                {relatedPosts.map((post, index) => (
-                  <React.Fragment key={post.id}>
-                    <div className="flex gap-4">
-                      <Link to={`/blog/${tab}/${generateSlug(post.title)}`}>
-                        <img
-                          src={post.previewImage}
-                          alt={post.title}
-                          className="cursor-pointer w-28 h-24 object-cover"
-                          loading="lazy"
-                        />
-                      </Link>
-                      <div className="flex flex-col gap-1">
-                        <Link
-                          to={`/blog/${tab}`}
-                          className="font-poppins text-xs cursor-pointer text-gray-500 hover:text-black"
-                        >
-                          {post.category.toUpperCase()}
-                        </Link>
-                        <Link to={`/blog/${tab}/${generateSlug(post.title)}`}>
-                          <h1 className="text-sm font-poppins cursor-pointer">
-                            {post.title}
-                          </h1>
-                        </Link>
-                        <p className="font-poppins cursor-pointer text-sm text-gray-500 hover:text-black">
-                          {(() => {
-                            const savedComments = localStorage.getItem(
-                              `comment-${post.id}`
-                            );
-                            const commentCounts = savedComments
-                              ? JSON.parse(savedComments).length
-                              : 0;
-                            return `${commentCounts} ${
-                              commentCounts === 1 ? "comment" : "comments"
-                            }`;
-                          })()}
-                        </p>
-                      </div>
-                    </div>
-                    {index < relatedPosts.length - 1 && (
-                      <span className="h-px w-full my-2 bg-gray-200" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-            ) : null}
-
-            {/* Tags */}
-            <h1 className="font-librebaskerville text-lg mt-4 mb-2">Tags</h1>
-            <div className="flex flex-wrap gap-3">
-              {BlogData[tab].map((post) =>
-                post.tags?.map((tag, index) => (
-                  <button
-                    key={index}
-                    class="relative overflow-hidden border border-[#18181a] text-[#18181a] inline-block text-[15px] leading-[15px] px-[18px] py-[15px] cursor-pointer bg-white select-none group"
-                  >
-                    <span class="relative z-10 transition-colors duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)]">
-                      {tag}
-                    </span>
-
-                    <span class="text-white block absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[225%] opacity-0 h-[14px] leading-[13px] z-[100] transition-all duration-[900ms] ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:translate-y-[-50%] group-hover:opacity-100">
-                      {tag}
-                    </span>
-
-                    <span class="absolute bottom-[-50%] left-0 w-full h-full bg-green-950 transform origin-bottom transition-transform duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)] skew-y-[9.3deg] scale-y-0 group-hover:scale-y-[2]"></span>
-                  </button>
-                ))
-              )}{" "}
-            </div>
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 bg-white mb-4 md:mb-8 lg:mb-12">
+          {/* Left Sidebar - Hidden on mobile when closed */}
+          <div className={`w-full flex flex-col gap-4 lg:w-1/4 ${isSidebarOpen ? 'block' : 'hidden lg:block'}`}>
+            <SidebarContent />
           </div>
-          {/*Right side content */}
-          <div className="w-full flex flex-col gap-6 text-justify text-gray-500 text-md font-poppins lg:w-[75%]">
+
+          {/* Right side content */}
+          <div className="w-full flex flex-col gap-4 md:gap-6 text-justify text-gray-500 text-sm sm:text-base font-poppins lg:w-3/4">
             <p>
               Quisque elementum nibh at dolor pellentesque, a eleifend libero
               pharetra. Mauris neque felis, volutpat nec ullamcorper eget,
@@ -371,20 +402,23 @@ const BlogPageDetails = () => {
               earum suscipit dolorum debitis hic sint asperiores maxime deserunt
               neque explicabo molestiae autem totam illum?
             </p>
-            <div className="flex gap-4 text-zinc-900 my-2 text-lg">
-              <div className="w-1 h-36 bg-black " />
-              <div className="flex flex-col ml-16">
-                <p>
+            
+            {/* Quote Section */}
+            <div className="flex gap-3 md:gap-4 text-zinc-900 my-2 text-base md:text-lg">
+              <div className="w-1 h-24 md:h-36 bg-black flex-shrink-0" />
+              <div className="flex flex-col ml-4 md:ml-8 lg:ml-16">
+                <p className="text-sm md:text-base">
                   Maecenas semper aliquam massa. Praesent pharetra sem vitae
                   nisi eleifend molestie. Aliquam molestie scelerisque
                   ultricies. Suspendisse potenti. Phasellus interdum risus at mi
                   ullamcorper lobortis. In et metus aliquet, suscipit leo.
                 </p>
-                <h1 className="font-librebaskerville text-xl mt-8">
+                <h1 className="font-librebaskerville text-lg md:text-xl mt-4 md:mt-8">
                   ROBERT SMITH
-                </h1>{" "}
+                </h1>
               </div>
             </div>
+            
             <p>
               Donec sed tincidunt lacus. Duis vehicula aliquam vestibulum.
               Aenean at mollis mi. Cras ac urna sed nisi auctor venenatis ut id
@@ -396,29 +430,30 @@ const BlogPageDetails = () => {
               nulla, id bibendum libero. Vestibulum dui augue, malesuada nec
               tellus vel, egestas condimentum ipsum. Vestibulum ut.
             </p>
+            
             {/* Tags */}
-            <div className="flex flex-wrap gap-4 my-6">
+            <div className="flex flex-wrap gap-2 md:gap-4 my-4 md:my-6">
               {BlogData[tab].map((post) =>
                 post.tags?.map((tag, index) => (
                   <button
                     key={index}
-                    class="relative overflow-hidden border border-[#18181a] text-[#18181a] inline-block text-[15px] leading-[15px] px-[18px] py-[15px] cursor-pointer bg-white select-none group"
+                    className="relative overflow-hidden border border-[#18181a] text-[#18181a] inline-block text-[13px] md:text-[15px] leading-[13px] md:leading-[15px] px-3 md:px-[18px] py-2 md:py-[15px] cursor-pointer bg-white select-none group"
                   >
-                    <span class="relative z-10 transition-colors duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)]">
+                    <span className="relative z-10 transition-colors duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)]">
                       {tag}
                     </span>
 
-                    <span class="text-white block absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[225%] opacity-0 h-[14px] leading-[13px] z-[100] transition-all duration-[900ms] ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:translate-y-[-50%] group-hover:opacity-100">
+                    <span className="text-white block absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[225%] opacity-0 h-[14px] leading-[13px] z-[100] transition-all duration-[900ms] ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:translate-y-[-50%] group-hover:opacity-100">
                       {tag}
                     </span>
 
-                    <span class="absolute bottom-[-50%] left-0 w-full h-full bg-green-950 transform origin-bottom transition-transform duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)] skew-y-[9.3deg] scale-y-0 group-hover:scale-y-[2]"></span>
+                    <span className="absolute bottom-[-50%] left-0 w-full h-full bg-green-950 transform origin-bottom transition-transform duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)] skew-y-[9.3deg] scale-y-0 group-hover:scale-y-[2]"></span>
                   </button>
                 ))
               )}
             </div>
 
-            {/*if news then show previos and next post*/}
+            {/*if news then show previous and next post*/}
             {relatedPosts.length > 1 &&
               (() => {
                 //find current Index
@@ -436,11 +471,11 @@ const BlogPageDetails = () => {
                 return (
                   <div className="relative flex justify-between border-y border-gray-400 transition-colors duration-300 py-4">
                     {PrevPost ? (
-                      <div className="flex flex-col group text-gray-500 hover:text-black gap-2">
-                        <p className="font-poppins uppercase text-sm">Prev</p>
+                      <div className="flex flex-col group text-gray-500 hover:text-black gap-1 md:gap-2 max-w-[40%]">
+                        <p className="font-poppins uppercase text-xs md:text-sm">Prev</p>
                         <Link
                           to={`/blog/${tab}/${generateSlug(PrevPost.title)}`}
-                          className=" group text-sm font-librebaskerville"
+                          className="group text-xs md:text-sm font-librebaskerville line-clamp-2"
                         >
                           {PrevPost.title}
                         </Link>
@@ -451,20 +486,20 @@ const BlogPageDetails = () => {
 
                     <button
                       onClick={() => navigate(`/blog/${tab}`)}
-                      className="cursor-pointer group/download relative flex  items-center bg-white p-2 rounded-full hover:bg-opacity-70 font-semibold border border-black transition-all duration-300"
+                      className="cursor-pointer group/download relative flex items-center bg-white p-1 md:p-2 rounded-full hover:bg-opacity-70 font-semibold border border-black transition-all duration-300"
                     >
-                      <Ellipsis size={32} />
-                      <div className="absolute text-xs uppercase font-poppins scale-0 rounded-md py-2 px-12 text-white bg-gray-600 lg:-left-10 mb-3 bottom-full group-hover/download:scale-90 origin-bottom transition-all duration-300 shadow-lg before:content-[''] before:absolute before:top-full before:left-2/4 before:w-3 before:h-3 before:border-solid before:bg-gray-600 before:rotate-45 before:-translate-y-2/4 before:-translate-x-2/4">
+                      <Ellipsis size={24} className="md:w-8 md:h-8" />
+                      <div className="absolute text-xs uppercase font-poppins scale-0 rounded-md py-1 md:py-2 px-4 md:px-12 text-white bg-gray-600 lg:-left-10 mb-2 md:mb-3 bottom-full group-hover/download:scale-90 origin-bottom transition-all duration-300 shadow-lg before:content-[''] before:absolute before:top-full before:left-2/4 before:w-2 before:h-2 md:before:w-3 md:before:h-3 before:border-solid before:bg-gray-600 before:rotate-45 before:-translate-y-2/4 before:-translate-x-2/4">
                         Back to News
                       </div>
                     </button>
 
                     {NextPost ? (
-                      <div className="flex flex-col group text-gray-500 hover:text-black gap-2">
-                        <p className="font-poppins uppercase text-sm self-end">NEXT</p>
+                      <div className="flex flex-col group text-gray-500 hover:text-black gap-1 md:gap-2 max-w-[40%] text-right">
+                        <p className="font-poppins uppercase text-xs md:text-sm self-end">NEXT</p>
                         <Link
                           to={`/blog/${tab}/${generateSlug(NextPost.title)}`}
-                          className=" group text-sm font-librebaskerville"
+                          className="group text-xs md:text-sm font-librebaskerville line-clamp-2"
                         >
                           {NextPost.title}
                         </Link>
@@ -478,10 +513,10 @@ const BlogPageDetails = () => {
 
             {/* show comments here */}
             {comments.length > 0 && (
-              <div className="my-6 w-full font-poppins text-gray-500">
-                <h2 className="text-3xl font-librebaskerville self-center text-black ">
+              <div className="my-4 md:my-6 w-full font-poppins text-gray-500">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-librebaskerville self-center text-black text-center md:text-left">
                   Comments{" "}
-                  <span className="text-xl font-poppins text-zinc-600">
+                  <span className="text-base md:text-lg lg:text-xl font-poppins text-zinc-600">
                     ({comments.length})
                   </span>
                 </h2>
@@ -489,30 +524,30 @@ const BlogPageDetails = () => {
                 {comments.map((comment) => (
                   <div
                     key={comment.id}
-                    className="border-b text-sm border-gray-300 py-2 my-2"
+                    className="border-b text-xs md:text-sm border-gray-300 py-2 md:py-3 my-2"
                   >
-                    <div className="flex justify-between ">
-                      <p className="flex items-center gap-2 ">
-                        <div class="relative w-6 h-6 overflow-hidden bg-gray-300 rounded-full dark:bg-gray-400">
+                    <div className="flex justify-between flex-col sm:flex-row gap-1 sm:gap-0">
+                      <p className="flex items-center gap-2">
+                        <div className="relative w-5 h-5 md:w-6 md:h-6 overflow-hidden bg-gray-300 rounded-full">
                           <svg
-                            class="absolute w-4 h-4 text-gray-200 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                            className="absolute w-3 h-3 md:w-4 md:h-4 text-gray-200 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                              fill-rule="evenodd"
+                              fillRule="evenodd"
                               d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                              clip-rule="evenodd"
+                              clipRule="evenodd"
                             ></path>
                           </svg>
                         </div>
                         {comment.name}
                       </p>
-                      <p>{comment.date}</p>
+                      <p className="text-xs">{comment.date}</p>
                     </div>
-                    <p className="my-4 lg:mr-20 tracking-wider">
-                      <span className="text-black">Comment :</span>{" "}
+                    <p className="my-2 md:my-4 lg:mr-4 xl:mr-20 tracking-wide md:tracking-wider">
+                      <span className="text-black">Comment:</span>{" "}
                       {comment.message}
                     </p>
                   </div>
@@ -520,17 +555,17 @@ const BlogPageDetails = () => {
               </div>
             )}
 
-            {/* Comments */}
-            <h1 className="font-librebaskerville self-center text-4xl text-black mt-4 mb-2">
+            {/* Comments Form */}
+            <h1 className="font-librebaskerville self-center text-2xl md:text-3xl lg:text-4xl text-black mt-4 mb-2 text-center md:text-left">
               Leave a comment
             </h1>
 
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col gap-8 w-full"
+              className="flex flex-col gap-4 md:gap-6 lg:gap-8 w-full"
               noValidate
             >
-              <div className="flex  w-full gap-8">
+              <div className="flex flex-col sm:flex-row w-full gap-4 md:gap-6 lg:gap-8">
                 <input
                   type="text"
                   name="name"
@@ -538,7 +573,7 @@ const BlogPageDetails = () => {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Name"
                   required
-                  className="bg-gray-100 w-full px-4 py-4"
+                  className="bg-gray-100 w-full px-3 py-3 md:px-4 md:py-4 text-sm md:text-base"
                   style={{ outline: "none" }}
                 />
                 <input
@@ -548,25 +583,25 @@ const BlogPageDetails = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="bg-gray-100 w-full px-4 py-4"
+                  className="bg-gray-100 w-full px-3 py-3 md:px-4 md:py-4 text-sm md:text-base"
                   style={{ outline: "none" }}
                 />
               </div>
               <textarea
                 type="text"
-                rows={8}
+                rows={6}
                 name="message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Message"
                 required
-                className="bg-gray-100 w-full px-4 py-4"
+                className="bg-gray-100 w-full px-3 py-3 md:px-4 md:py-4 text-sm md:text-base resize-vertical"
                 style={{ outline: "none" }}
               />
 
               <button
                 type="submit"
-                className="border border-gray-800 self-center px-8 py-3 text-black font-poppins text-sm hover:bg-gradient-to-r from-green-950 via-green-500 to-green-950 hover:text-white hover:animate-moveStripes-slow"
+                className="border border-gray-800 self-center px-6 py-2 md:px-8 md:py-3 text-black font-poppins text-sm hover:bg-gradient-to-r from-green-950 via-green-500 to-green-950 hover:text-white hover:animate-moveStripes-slow transition-all duration-300"
               >
                 POST COMMENT
               </button>

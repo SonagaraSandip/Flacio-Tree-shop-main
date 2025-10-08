@@ -65,9 +65,9 @@ const Tree360Viewer = () => {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 select-none">
+    <div className="flex flex-col items-center space-y-4 select-none w-full">
       <div
-        className="h-full w-full relative cursor-grab"
+        className="w-full h-64 sm:h-80 md:h-96 lg:h-full relative cursor-grab"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -80,19 +80,19 @@ const Tree360Viewer = () => {
           draggable={false}
         />
       </div>
-      <div className="flex justify-center items-center gap-6 absolute bottom-8 rounded-full text-black bg-white px-4 py-2">
-        <button onClick={handlePrev}>
-          <SkipBack size={20} />
+      <div className="flex justify-center items-center gap-4 sm:gap-6 bg-white rounded-full px-3 sm:px-4 py-2 sm:py-2 shadow-lg">
+        <button onClick={handlePrev} className="p-1 sm:p-0">
+          <SkipBack size={18} className="sm:w-5 sm:h-5" />
         </button>
-        <button>
+        <button onClick={handlePlayPause} className="p-1 sm:p-0">
           {isPlaying ? (
-            <Pause fill="black" onClick={handlePlayPause} size={20} />
+            <Pause fill="black" size={18} className="sm:w-5 sm:h-5" />
           ) : (
-            <Play fill="black" onClick={handlePlayPause} size={20} />
+            <Play fill="black" size={18} className="sm:w-5 sm:h-5" />
           )}
         </button>
-        <button onClick={handleNext}>
-          <SkipForward size={20} />
+        <button onClick={handleNext} className="p-1 sm:p-0">
+          <SkipForward size={18} className="sm:w-5 sm:h-5" />
         </button>
       </div>
     </div>

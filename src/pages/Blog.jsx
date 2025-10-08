@@ -76,14 +76,16 @@ const Blog = () => {
         loading="lazy"
       />
 
-      <div className="flex flex-col items-center justify-end h-[300px] pb-16 text-black">
-        <h1 className="text-6xl font-librebaskerville">Blogs</h1>
-        <div className="flex items-center justify-center gap-6 text-xl font-poppins text-gray-500 mt-6 transition-colors duration-500">
+      <div className="flex flex-col items-center justify-end h-[200px] sm:h-[250px] lg:h-[300px] pb-8 sm:pb-12 lg:pb-16 text-black px-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-librebaskerville text-center">
+          Blogs
+        </h1>
+        <div className="flex items-center justify-center w-full overflow-x-auto gap-4 sm:gap-6 text-sm sm:text-lg lg:text-xl font-poppins text-gray-500 mt-4 sm:mt-6 transition-colors duration-500 pb-2">
           {Object.keys(BlogData).map((tab) => (
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
-              className={`${
+              className={`whitespace-nowrap flex-shrink-0 ${
                 selectedTab === tab
                   ? "border-b-2 border-gray-900 text-black"
                   : ""
@@ -98,19 +100,20 @@ const Blog = () => {
         </div>
       </div>
 
-      <div className="w-full h-full bg-white p-4 md:p-6 lg:p-12 ">
-        <div className="flex gap-12">
+           <div className="w-full h-full bg-white p-4 sm:p-6 lg:p-12">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
           {/* Left side content */}
-          <div className="w-full flex flex-col gap-4 lg:w-[25%]">
+          <div className="w-full lg:w-[25%] flex flex-col gap-4">
             <div className="flex items-center w-full border border-gray-300 px-4 py-2">
               <input
                 type="text"
                 placeholder="Search Blog..."
-                className="w-full font-poppins text-gray-500"
+                className="w-full font-poppins text-gray-500 text-sm sm:text-base"
                 style={{ outline: "none" }}
               />
-              <Search className=" justify-self-end text-gray-400 cursor-pointer hover:text-gray-700" />
+              <Search className="text-gray-400 cursor-pointer hover:text-gray-700 w-4 h-4 sm:w-5 sm:h-5" />
             </div>
+
             <h1 className="font-librebaskerville text-lg mt-4 mb-2">
               Categories
             </h1>
@@ -118,12 +121,12 @@ const Blog = () => {
               <div
                 key={tab}
                 onClick={() => handleTabChange(tab)}
-                className={` flex items-center font-poppins cursor-pointer text-sm  ${
+                className={`flex items-center font-poppins cursor-pointer text-sm ${
                   selectedTab === tab ? " text-black" : "text-gray-500"
                 }`}
               >
-                <ChevronRight size={16} className="text-gray-400" />
-                <p>
+                <ChevronRight size={16} className="text-gray-400 flex-shrink-0" />
+                <p className="truncate">
                   {tab
                     .split("-")
                     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -170,17 +173,17 @@ const Blog = () => {
                 item.tags?.map((tag, index) => (
                   <button
                     key={index}
-                    class="relative overflow-hidden border border-[#18181a] text-[#18181a] inline-block text-[15px] leading-[15px] px-[18px] py-[15px] cursor-pointer bg-white select-none group"
+                   className="relative overflow-hidden border border-[#18181a] text-[#18181a] inline-block text-xs sm:text-[15px] leading-[15px] px-3 sm:px-[18px] py-2 sm:py-[15px] cursor-pointer bg-white select-none group flex-shrink-0"
                   >
-                    <span class="relative z-10 transition-colors duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)]">
+                    <span className="relative z-10 transition-colors duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)]">
                       {tag}
                     </span>
 
-                    <span class="text-white block absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[225%] opacity-0 h-[14px] leading-[13px] z-[100] transition-all duration-[900ms] ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:translate-y-[-50%] group-hover:opacity-100">
+                    <span className="text-white block absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[225%] opacity-0 h-[14px] leading-[13px] z-[100] transition-all duration-[900ms] ease-[cubic-bezier(0.48,0,0.12,1)] group-hover:translate-y-[-50%] group-hover:opacity-100">
                       {tag}
                     </span>
 
-                    <span class="absolute bottom-[-50%] left-0 w-full h-full bg-green-950 transform origin-bottom transition-transform duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)] skew-y-[9.3deg] scale-y-0 group-hover:scale-y-[2]"></span>
+                    <span className="absolute bottom-[-50%] left-0 w-full h-full bg-green-950 transform origin-bottom transition-transform duration-[600ms] ease-[cubic-bezier(0.48,0,0.12,1)] skew-y-[9.3deg] scale-y-0 group-hover:scale-y-[2]"></span>
                   </button>
                 ))
               )}
@@ -191,7 +194,7 @@ const Blog = () => {
           <div className="w-full lg:w-[75%]">
             {/* render based on selected tab */}
             {isArrayData ? (
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-6 lg:gap-4">
                 {currentTabData.map((item, index) => (
                   <React.Fragment key={item.id}>
                     <BlogPost
@@ -201,7 +204,7 @@ const Blog = () => {
                       commentCounts={commentCounts[item.id] || 0}
                     />
                     {index < currentTabData.length - 1 && (
-                      <span className="h-px w-full my-8 bg-gray-200" />
+                        <span className="h-px w-full my-4 lg:my-8 bg-gray-200" />
                     )}
                   </React.Fragment>
                 ))}
@@ -225,23 +228,23 @@ const Blog = () => {
 };
 
 const RelatedPost = ({ data, generateSlug, tab, commentCounts }) => (
-  <div className="flex gap-4 ">
+   <div className="flex gap-3 sm:gap-4">
     <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
       <img
         src={data.previewImage}
         alt={data.title}
-        className="cursor-pointer w-28 h-24"
+            className="cursor-pointer w-20 h-16 sm:w-28 sm:h-24 object-cover"
         loading="lazy"
       />
     </Link>
-    <div className="flex flex-col gap-1">
-      <p className="font-poppins text-xs cursor-pointer text-gray-500 hover:text-black">
+    <div className="flex flex-col gap-1 flex-1">
+     <p className="font-poppins text-xs cursor-pointer text-gray-500 hover:text-black">
         {data.category.toUpperCase()}
       </p>
       <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
-        <h1 className="text-sm font-poppins cursor-pointer">{data.title}</h1>
+        <h1 className="text-sm font-poppins cursor-pointer line-clamp-1">{data.title}</h1>
       </Link>
-      <p className="font-poppins cursor-pointer text-sm text-gray-500 hover:text-black">
+     <p className="font-poppins cursor-pointer text-xs sm:text-sm text-gray-500 hover:text-black">
         {commentCounts} {commentCounts === 1 ? "comment" : "comments"}
       </p>
     </div>
@@ -250,52 +253,57 @@ const RelatedPost = ({ data, generateSlug, tab, commentCounts }) => (
 
 const BlogPost = ({ data, generateSlug, tab, commentCounts }) => (
   <div>
-    {/* Date */}
     <div className="relative">
-      <p className="absolute group top-5 -left-3 text-sm font-poppins text-white px-4 py-2 bg-zinc-800">
+      <p className="absolute top-3 sm:top-5 -left-2 sm:-left-3 text-xs sm:text-sm font-poppins text-white px-2 sm:px-4 py-1 sm:py-2 bg-zinc-800 z-10">
         {data.date}
       </p>
       <TiArrowSortedUp
-        size={24}
-        fill="bg-zinc-800"
-        className="absolute group top-12 -left-4 rotate-45"
+        size={20}
+        className="absolute top-8 sm:top-12 -left-3 sm:-left-4 rotate-45 text-zinc-800 z-10"
       />
       <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
         <img
           src={data.image}
           alt={data.title}
-          className="cursor-pointer h-full w-full"
+          className="cursor-pointer h-auto w-full"
           loading="lazy"
         />
       </Link>
     </div>
-    {/* user || comments || fashion */}
-    <div className="flex self-start  mt-4 gap-2 font-poppins text-sm">
+    
+    <div className="flex flex-col sm:flex-row sm:items-center self-start mt-4 gap-2 font-poppins text-xs sm:text-sm">
       <div className="flex items-center gap-1">
-        <User size={20} />
+        <User size={16} className="sm:w-5 sm:h-5" />
         <p className="text-gray-500">By: Tung Hoang</p>
       </div>
-      <span> / </span>
+      <span className="hidden sm:inline"> / </span>
       <div className="flex items-center gap-1">
-        <MessageSquare size={16} />
+        <MessageSquare size={14} className="sm:w-4 sm:h-4" />
         <button className="text-gray-500 hover:text-black">
           {commentCounts} {commentCounts === 1 ? "comment" : "comments"}
         </button>
       </div>
-      <span> / </span>
+      <span className="hidden sm:inline"> / </span>
       <div className="flex items-center gap-1">
-        <Folder size={16} />
+        <Folder size={14} className="sm:w-4 sm:h-4" />
         <button className="text-gray-500 hover:text-black">
           {data.category}
         </button>
       </div>
     </div>
+    
     <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
-      <h1 className="font-librebaskerville text-3xl mt-6 mb-4">{data.title}</h1>
+      <h1 className="font-librebaskerville text-xl sm:text-2xl lg:text-3xl mt-4 sm:mt-6 mb-3 sm:mb-4">
+        {data.title}
+      </h1>
     </Link>
-    <p className="text-gray-500 text-sm font-poppins">{data.excerpt}</p>
+    
+    <p className="text-gray-500 text-xs sm:text-sm font-poppins leading-relaxed">
+      {data.excerpt}
+    </p>
+    
     <Link to={`/blog/${tab}/${generateSlug(data.title)}`}>
-      <button className="bg-green-950 px-4 py-2 mt-6 text-sm font-poppins text-white hover:bg-zinc-900">
+      <button className="bg-green-950 px-4 py-2 mt-4 sm:mt-6 text-xs sm:text-sm font-poppins text-white hover:bg-zinc-900 transition-colors duration-300">
         READ MORE
       </button>
     </Link>

@@ -41,36 +41,36 @@ export default function Faqs2() {
 
   return (
     <>
-      <div className="max-w-2xl mx-auto mb-16 pt-[130px]">
-        <h2 className="text-4xl font-serif font-bold mb-10">
-          Frequently Asked Questions.
-        </h2>
-        {faqs.map((faq, idx) => (
-          <div key={faq.question} className="border-b border-gray-300 py-4">
-            <button
-              className="w-full text-left focus:outline-none"
-              onClick={() => setOpenIdx(openIdx === idx ? null : idx)} // toggle open/close
-            >
-              <span
-                className={`block text-lg  ${
-                  openIdx === idx
-                    ? "text-black font-semibold font-librebaskerville"
-                    : "font-poppins"
-                } transition-all duration-200`}
-              >
-                {faq.question}
-              </span>
-            </button>
-            {openIdx === idx && (
-              <div className="mt-2 text-gray-600 font-poppins text-base">
-                {faq.answer}
-              </div>
-            )}
+  <div className="max-w-2xl mx-auto mb-8 sm:mb-12 lg:mb-16 pt-[100px] sm:pt-[120px] lg:pt-[130px] px-4 sm:px-6 lg:px-8">
+    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold mb-6 sm:mb-8 lg:mb-10 text-center sm:text-left">
+      Frequently Asked Questions
+    </h2>
+    {faqs.map((faq, idx) => (
+      <div key={faq.question} className="border-b border-gray-300 py-3 sm:py-4">
+        <button
+          className="w-full text-left focus:outline-none"
+          onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
+        >
+          <span
+            className={`block text-base sm:text-lg ${
+              openIdx === idx
+                ? "text-black font-semibold font-librebaskerville"
+                : "font-poppins"
+            } transition-all duration-200`}
+          >
+            {faq.question}
+          </span>
+        </button>
+        {openIdx === idx && (
+          <div className="mt-2 sm:mt-3 text-gray-600 font-poppins text-sm sm:text-base">
+            {faq.answer}
           </div>
-        ))}
+        )}
       </div>
-      <Footer />
-      <ScrollToTop />
-    </>
+    ))}
+  </div>
+  <Footer />
+  <ScrollToTop />
+</>
   );
 }

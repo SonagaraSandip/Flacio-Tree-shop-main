@@ -8,7 +8,7 @@ const CompareToggle = ({product}) => {
   return (
     <>
       <div
-        className={`${
+        className={`hidden md: ${
           compare.length !== 0 ? "" : "hidden"
         } fixed top-1/2 right-0 z-40 -translate-y-1/2 items-center`}
       >

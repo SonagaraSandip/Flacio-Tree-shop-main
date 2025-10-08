@@ -10,29 +10,44 @@ import { CompareProvider } from "./contexts/CompareContext.jsx";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
+// Check if device is mobile
+const isMobile = window.innerWidth <= 768;
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <WishlistProvider>
       <CompareProvider>
         <AuthProvider>
           <CartProvider>
-          <App />
+            <App />
           </CartProvider>
         </AuthProvider>
       </CompareProvider>
     </WishlistProvider>
     <ToastContainer
-      position="top-right"
-      autoClose={1000}
+      position={isMobile ? "top-right" : "top-right"}
+      autoClose={isMobile ? 1000 : 1500}
       hideProgressBar={false}
       newestOnTop={true}
-      closeOnClick={false}
+      closeOnClick={true}
       rtl={false}
       pauseOnFocusLoss
-      draggable
-      pauseOnHover
+      draggable={!isMobile}
+      pauseOnHover={!isMobile}
       theme="light"
       transition={Bounce}
+      style={{
+        width: isMobile ? "90vw" : "auto",
+        maxWidth: isMobile ? "400px" : "500px",
+      }}
+      toastStyle={{
+        fontSize: isMobile ? "14px" : "16px",
+        minHeight: isMobile ? "48px" : "44px",
+        padding: isMobile ? "12px 16px" : "12px",
+        margin: isMobile ? "4px auto" : "8px",
+        borderRadius: isMobile ? "8px" : "4px",
+        wordBreak: "break-word",
+      }}
     />
   </StrictMode>
 );

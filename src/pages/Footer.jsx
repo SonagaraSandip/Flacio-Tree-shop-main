@@ -126,7 +126,7 @@ const Footer = () => {
   );
 
   return (
-    <div className="bg-green-950 min-h-[60vh] text-white">
+    <div className="bg-green-950 h-auto md:min-h-[60vh] text-white">
       {/* Main Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 lg:gap-6 px-4 sm:px-8 lg:px-12 pt-8 sm:pt-12">
         {/* Dynamic Sections */}
@@ -190,7 +190,7 @@ const Footer = () => {
       <div className="w-full h-0.5 bg-gray-700 mt-6" />
 
       {/* Bottom Section */}
-      <div className="flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 lg:px-12 py-6 sm:py-8 gap-4 sm:gap-0">
+      <div className="hidden md:flex flex-col sm:flex-row items-center justify-between px-4 sm:px-8 lg:px-12 py-6 sm:py-8 gap-4 sm:gap-0">
         <p className="text-sm sm:text-md font-poppins cursor-pointer hover:text-gray-400 text-center sm:text-left order-2 sm:order-1">
           © 2024 Flacio Store. All Rights Reserved
         </p>

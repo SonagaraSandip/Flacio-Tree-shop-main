@@ -65,51 +65,57 @@ const SearchModal = ({ setOpenSearch }) => {
   return (
     <div
       onClick={() => setOpenSearch(false)}
-      className="fixed inset-0 z-40  bg-zinc-900 bg-opacity-20 animate-zoom-in w-screen"
+      className="fixed inset-0 z-40 bg-zinc-900 bg-opacity-20 animate-zoom-in w-screen p-2 sm:p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="absolute top-16 right-1/2 translate-x-1/2 bg-white shadow-2xl max-h-[600px] w-full max-w-6xl mx-auto overflow-y-auto  px-4 py-6 sm:px-6 lg:px-16 lg:py-10"
+        className="absolute top-4 sm:top-8 lg:top-16 right-1/2 translate-x-1/2 bg-white shadow-2xl max-h-[90vh] sm:max-h-[80vh] w-full max-w-6xl mx-auto overflow-y-auto rounded-lg sm:rounded-none px-4 py-4 sm:px-6 lg:px-16 lg:py-10"
       >
+        {/* Close Button */}
         <button
-          className="absolute top-4 right-4 cursor-pointe text-zinc-800"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 cursor-pointer text-zinc-800 bg-white rounded-full p-1 border border-gray-300 hover:bg-black hover:text-white transition-colors duration-300"
           onClick={() => setOpenSearch(false)}
         >
-          <X className="hover:rotate-90 transition-transform duration-300 hover:scale-90" />
+          <X className="w-4 h-4 sm:w-5 sm:h-5 hover:rotate-90 transition-transform duration-300 hover:scale-90" />
         </button>
-        <div className="w-full border border-gray-400 px-4 py-2 flex items-center text-gray-500 ">
-          <Search />
+
+        {/* Search Input */}
+        <div className="w-full border border-gray-400 px-3 sm:px-4 py-2 sm:py-3 flex items-center text-gray-500 rounded-lg sm:rounded-none">
+          <Search className="w-4 h-4 sm:w-5 sm:h-5" />
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search products, journals..."
             style={{ outline: "none" }}
-            className="w-full ml-2"
+            className="w-full ml-2 sm:ml-3 text-sm sm:text-base"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            autoFocus
           />
         </div>
 
         {query && (
-          <div className="flex  gap-10">
-            {/*products  */}
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 mt-6">
+            {/* Products Section */}
             <div className="flex-1">
-              <div className="text-md flex justify-between text-gray-500 border-b border-gray-300 pb-2 mt-10 mb-4">
-                <p>{filterProducts.length} results</p>
-                <button
-                  onClick={() => {
-                    navigate("/collections/all");
-                    setOpenSearch(false);
-                  }}
-                  className="font-poppins cursor-pointer hover:text-black"
-                >
-                  view all
-                </button>
+              <div className="text-sm sm:text-md flex justify-between items-center text-gray-500 border-b border-gray-300 pb-2 mb-4">
+                <p>{filterProducts.length} product results</p>
+                {filterProducts.length > 0 && (
+                  <button
+                    onClick={() => {
+                      navigate("/collections/all");
+                      setOpenSearch(false);
+                    }}
+                    className="font-poppins cursor-pointer hover:text-black text-xs sm:text-sm"
+                  >
+                    View all products
+                  </button>
+                )}
               </div>
 
               {filterProducts.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {filterProducts.map((p) => (
-                    <div className="" key={p.id}>
+                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                  {filterProducts.slice(0, 6).map((p) => (
+                    <div key={p.id} className="group">
                       <button
                         onClick={() => {
                           navigate(
@@ -119,78 +125,138 @@ const SearchModal = ({ setOpenSearch }) => {
                           );
                           setOpenSearch(false);
                         }}
+                        className="w-full text-left"
                       >
                         <img
                           src={p.frontImage}
                           alt={p.name}
-                          className="w-52 h-60 object-cover rounded"
+                          className="w-full h-40 sm:h-48 lg:h-60 object-cover rounded group-hover:opacity-90 transition-opacity duration-300"
                         />
-                      </button>
-                      <p className="mt-2 text-sm text-black font-librebaskerville font-medium">
-                        {p.name}
-                      </p>
-                      {p.discountPrice ? (
-                        <p className="font-poppins">
-                          <span className="line-through font-poppins  text-gray-500 text-sm">
+                        <p className="mt-2 text-xs sm:text-sm text-black font-librebaskerville font-medium line-clamp-2">
+                          {p.name}
+                        </p>
+                        {p.discountPrice ? (
+                          <p className="font-poppins text-xs sm:text-sm">
+                            <span className="line-through font-poppins text-gray-500">
+                              ${p.originalPrice.toFixed(2)}
+                            </span>{" "}
+                            <span className="text-black font-semibold">
+                              ${p.discountPrice.toFixed(2)}
+                            </span>
+                          </p>
+                        ) : (
+                          <p className="text-xs sm:text-sm font-poppins text-gray-500 font-semibold">
                             ${p.originalPrice.toFixed(2)}
-                          </span>{" "}
-                          <span className="text-black ">
-                            ${p.discountPrice.toFixed(2)}
-                          </span>
-                        </p>
-                      ) : (
-                        <p className="text-sm font-poppins text-gray-500">
-                          ${p.originalPrice.toFixed(2)}
-                        </p>
-                      )}
+                          </p>
+                        )}
+                      </button>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 mt-4">
-                  No results found for{" "}
-                  <span className="font-semibold text-black">"{query}"</span> in
-                  products.
-                </p>
+                <div className="text-center py-6">
+                  <p className="text-gray-500 text-sm sm:text-base">
+                    No products found for{" "}
+                    <span className="font-semibold text-black">"{query}"</span>
+                  </p>
+                  <button
+                    onClick={() => {
+                      navigate("/collections/all");
+                      setOpenSearch(false);
+                    }}
+                    className="mt-2 text-green-700 font-poppins text-sm hover:underline"
+                  >
+                    Browse all products
+                  </button>
+                </div>
               )}
             </div>
 
-            {/* Journal */}
-            <div className="w-1/3">
-              <div className="text-md flex justify-between text-gray-500 border-b border-gray-300 pb-2 mt-10 mb-4">
-                <p>Journals</p>
-                <button
-                  onClick={() => {
-                    navigate("/collections/all");
-                    setOpenSearch(false);
-                  }}
-                  className="font-poppins cursor-pointer hover:text-black"
-                >
-                  view all
-                </button>
+            {/* Journal Section */}
+            <div className="lg:w-1/3 border-t lg:border-t-0 lg:border-l border-gray-200 pt-6 lg:pt-0 lg:pl-6">
+              <div className="text-sm sm:text-md flex justify-between items-center text-gray-500 border-b border-gray-300 pb-2 mb-4">
+                <p>Journals ({filteredJournal.length})</p>
+                {filteredJournal.length > 0 && (
+                  <button
+                    onClick={() => {
+                      navigate("/blog/news");
+                      setOpenSearch(false);
+                    }}
+                    className="font-poppins cursor-pointer hover:text-black text-xs sm:text-sm"
+                  >
+                    View all journals
+                  </button>
+                )}
               </div>
+
               {filteredJournal.length > 0 ? (
-                <ul className="space-y-2 font-poppins  text-gray-600 text-md">
-                  {filteredJournal.map((j, idx) => (
+                <ul className="space-y-3 font-poppins text-gray-600 text-sm sm:text-md max-h-80 overflow-y-auto">
+                  {filteredJournal.slice(0, 8).map((j, idx) => (
                     <li
                       key={idx}
                       onClick={() => {
                         navigate(j.link);
                         setOpenSearch(false);
                       }}
-                      className="hover:text-green-700 cursor-pointer"
+                      className="hover:text-green-700 cursor-pointer py-2 border-b border-gray-100 last:border-b-0 group"
                     >
-                      {j.title}
+                      <div className="flex items-start">
+                        <div className="w-1 h-1 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0 group-hover:bg-green-700"></div>
+                        <span className="line-clamp-2 group-hover:underline">
+                          {j.title}
+                        </span>
+                      </div>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-gray-500 mt-4">
-                  No results found for{" "}
-                  <span className="font-semibold text-black">"{query}"</span> in
-                  journal.
-                </p>
+                <div className="text-center py-6">
+                  <p className="text-gray-500 text-sm sm:text-base">
+                    No journals found for{" "}
+                    <span className="font-semibold text-black">"{query}"</span>
+                  </p>
+                  <button
+                    onClick={() => {
+                      navigate("/blog/news");
+                      setOpenSearch(false);
+                    }}
+                    className="mt-2 text-green-700 font-poppins text-sm hover:underline"
+                  >
+                    Browse all journals
+                  </button>
+                </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!query && (
+          <div className="text-center py-8 sm:py-12">
+            <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500 font-poppins text-sm sm:text-base">
+              Search for products or journals...
+            </p>
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
+              <div>
+                <p className="font-poppins text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+                  Popular Searches
+                </p>
+                <ul className="space-y-1 text-xs sm:text-sm text-gray-500">
+                  <li className="hover:text-green-700 cursor-pointer">
+                    Succulents
+                  </li>
+                  <li className="hover:text-green-700 cursor-pointer">
+                    Indoor Plants
+                  </li>
+                  <li className="hover:text-green-700 cursor-pointer">
+                    Flowers
+                  </li>
+                  <li className="hover:text-green-700 cursor-pointer">
+                    Plant Care
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         )}

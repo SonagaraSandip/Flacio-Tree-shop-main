@@ -477,7 +477,7 @@ export default function HomeModern() {
 
       {/* Top Ratign / Best Selling  */}
 
-      <div className="relative flex flex-col mx-4 sm:mx-8 lg:mx-12 my-8 lg:my-16">
+      <div className="relative flex flex-col mx-2 sm:mx-8 lg:mx-12 my-8 lg:my-16">
         {/* tabs button */}
         <div className="text-center flex items-center justify-center gap-4 lg:gap-6">
           <button
@@ -500,7 +500,7 @@ export default function HomeModern() {
         </div>
 
         {/* Images grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 mt-8 lg:mt-12 ">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0 lg:gap-6 mt-8 lg:mt-12 ">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

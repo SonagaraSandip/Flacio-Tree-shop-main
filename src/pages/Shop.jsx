@@ -2,7 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import Layout from "./Layout";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ShopBG from "../assets/Shop/bg-breadcrumb.webp";
-import { ChevronDown, Check, X, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronDown,
+  Check,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  SlidersHorizontal,
+} from "lucide-react";
 import { IoIosStarOutline } from "react-icons/io";
 import products from "../data/products";
 import ProductListCard from "../data/ProductListCard";
@@ -50,6 +57,8 @@ const Shop = () => {
   const [showAll, setShowAll] = useState(false);
   const [openFeature, setOpenFeature] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [filter, setFilter] = useState("FeaturedFilter");
 
   //right side
@@ -65,6 +74,20 @@ const Shop = () => {
     max: 153,
   });
 
+  // Add this useEffect to handle screen size detection
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => {
+      window.removeEventListener("resize", checkScreenSize);
+    };
+  }, []);
+
   const collectionMapping = React.useMemo(
     () => ({
       "air-purifying": "Air Purifying",
@@ -73,11 +96,11 @@ const Shop = () => {
       "indoor-plants": "Indoor Plants",
       "low-maintainance": "Low Maintainance",
       "plant-bundle": "Plant Bundle",
-      "wpbingo": "wpbingo",
-      "se-store" : "SE Store",
-      "akatsuki-store" : "Akatsuki Store",
-      "akaza-store" : "Akaza Store",
-      "lulu-store" : "Lulu Store",
+      wpbingo: "wpbingo",
+      "se-store": "SE Store",
+      "akatsuki-store": "Akatsuki Store",
+      "akaza-store": "Akaza Store",
+      "lulu-store": "Lulu Store",
       all: null, // no collection selected
     }),
     []
@@ -138,7 +161,7 @@ const Shop = () => {
     if (sortParam) {
       setFilter(sortParam);
     }
-  }, [collectionId, searchParams , collectionMapping]);
+  }, [collectionId, searchParams, collectionMapping]);
 
   // Update URL when filter is change
   useEffect(() => {
@@ -276,9 +299,9 @@ const Shop = () => {
           product.LowMaintainance) ||
         (selectedCollection === "Plant Bundle" && product.PlantBundle) ||
         (selectedCollection === "wpbingo" && product.wpbingo) ||
-        (selectedCollection === "SE Store" && product.SeStore) || 
+        (selectedCollection === "SE Store" && product.SeStore) ||
         (selectedCollection === "Akatsuki Store" && product.AkatsukiStore) ||
-        (selectedCollection === "Akaza Store" && product.AkazaStore) || 
+        (selectedCollection === "Akaza Store" && product.AkazaStore) ||
         (selectedCollection === "Lulu Store" && product.LuluStore);
 
       if (!collectionMatch) return false;
@@ -540,15 +563,777 @@ const Shop = () => {
         className="absolute inset-0 w-full h-full object-cover -z-10"
       />
 
-      <h1 className="flex items-center justify-center h-[300px] font-librebaskerville text-6xl  text-black ">
-        {<span>{selectedCollection || "Products"} </span>}
+      <h1 className="flex items-center justify-center h-[150px] md:h-[250px] font-librebaskerville text-4xl md:text-6xl text-black">
+        {<span className="mt-6">{selectedCollection || "Products"} </span>}
       </h1>
 
-      {/* Left side product details */}
-      <div className="container flex md:mx-auto ">
+      {/* mobile filter Toggle Button */}
+
+      {isMobile && isMobileSidebarOpen && (
         <div
-          className="w-[25%] bg-white px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8"
-          style={filterSectionStyle}
+          className="fixed inset-0 bg-black bg-opacity-50 z-50"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
+      {isMobile && (
+        <div
+          className={`fixed top-0 left-0 h-full w-4/5 max-w-sm bg-white z-50 transform transition-transform duration-700 ease-in-out overflow-y-auto ${
+            isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="p-4">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-librebaskerville">Filters</h2>
+              <button
+                onClick={() => setIsMobileSidebarOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {/* filter same as desktop */}
+            <div className="bg-white px-4 py-4">
+              {/*collection */}
+              <div className="flex flex-col my-4 cursor-pointer">
+                <h2
+                  onClick={() => {
+                    // Handle dropdown toggle
+                    setOpenCollection(!openCollection);
+                  }}
+                  className="text-lg flex justify-between font-librebaskerville mb-4"
+                >
+                  Collections
+                  <span>
+                    <ChevronDown
+                      className={`transition-transform duration-300 ${
+                        openCollection ? "-rotate-180" : ""
+                      }`}
+                    />
+                  </span>
+                </h2>
+
+                {/* reset collection button */}
+                {openCollection && selectedCollection && (
+                  <button
+                    onClick={resetCollection}
+                    className="self-start text-gray-600 mb-4 font-poppins text-sm border-b-2 border-gray-700 hover:text-red-700 "
+                  >
+                    Reset
+                  </button>
+                )}
+                <div
+                  ref={collectionRef}
+                  style={{
+                    maxHeight: heights.collection,
+                    overflow: "hidden",
+                    transition: "max-height 0.3s ease-in-out",
+                  }}
+                >
+                  {openCollection && (
+                    <ul className="space-y-3 font-poppins pb-2 ">
+                      <li
+                        onClick={() => handleCollectionChange("Air Purifying")}
+                        className={`flex justify-between items-center hover:text-green-900 ${
+                          selectedCollection === "Air Purifying"
+                            ? "text-black  "
+                            : "text-gray-500"
+                        }`}
+                      >
+                        <p className={` hover:text-green-800 `}>
+                          Air Purifying
+                        </p>
+                        <p
+                          className={`text-sm flex items-center justify-center w-6 h-6 rounded-full ${
+                            selectedCollection === "Air Purifying"
+                              ? "bg-green-950 text-white"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {products.filter((p) => p.AirPurifying).length}
+                        </p>
+                      </li>
+                      <li
+                        onClick={() => handleCollectionChange("Ceramic Pots")}
+                        className={`flex justify-between items-center hover:text-green-900 ${
+                          selectedCollection === "Ceramic Pots"
+                            ? "text-black "
+                            : "text-gray-500"
+                        }`}
+                      >
+                        <p className={` hover:text-green-800 `}>Ceramic Pots</p>
+                        <p
+                          className={`text-sm flex items-center justify-center w-6 h-6 rounded-full ${
+                            selectedCollection === "Ceramic Pots"
+                              ? "bg-green-950 text-white"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {products.filter((p) => p.CeramicPots).length}
+                        </p>
+                      </li>
+                      <li
+                        onClick={() => handleCollectionChange("Herb Seeds")}
+                        className={`flex justify-between items-center hover:text-green-900 ${
+                          selectedCollection === "Herb Seeds"
+                            ? "text-black "
+                            : "text-gray-500"
+                        }`}
+                      >
+                        <p className={` hover:text-green-800 `}>Herb Seeds</p>
+                        <p
+                          className={`text-sm flex items-center justify-center w-6 h-6 rounded-full ${
+                            selectedCollection === "Herb Seeds"
+                              ? "bg-green-950 text-white"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {products.filter((p) => p.HerbSeeds).length}
+                        </p>
+                      </li>
+                      <li
+                        onClick={() => handleCollectionChange("Indoor Plants")}
+                        className={`flex justify-between items-center hover:text-green-900 ${
+                          selectedCollection === "Indoor Plants"
+                            ? "text-black "
+                            : "text-gray-500"
+                        }`}
+                      >
+                        <p className={` hover:text-green-800 `}>
+                          Indoor Plants
+                        </p>
+                        <p
+                          className={`text-sm flex items-center justify-center w-6 h-6 rounded-full ${
+                            selectedCollection === "Indoor Plants"
+                              ? "bg-green-950 text-white"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {products.filter((p) => p.IndoorPlants).length}
+                        </p>
+                      </li>
+                    </ul>
+                  )}
+                </div>
+              </div>
+              {/* Availability */}
+              <div className="flex flex-col my-4 cursor-pointer">
+                <h2
+                  onClick={() => {
+                    // Handle dropdown toggle
+                    setOpenAvailability(!openAvailability);
+                  }}
+                  className="text-lg flex justify-between font-librebaskerville mb-4"
+                >
+                  <span className="flex">
+                    Availability{" "}
+                    {availability.inStock || availability.outOfStock ? (
+                      <span className="ml-1 h-5 w-5  text-sm flex items-center justify-center text-white bg-green-900 rounded-full">
+                        1
+                      </span>
+                    ) : null}
+                  </span>
+                  <span>
+                    <ChevronDown
+                      className={`transition-transform duration-300 ${
+                        openAvailability ? "-rotate-180" : ""
+                      }`}
+                    />
+                  </span>
+                </h2>
+
+                {/* Reset button show only when checkbox is ticked */}
+                {openAvailability &&
+                  (availability.inStock || availability.outOfStock) && (
+                    <button
+                      onClick={resetAvailability}
+                      className="self-start text-gray-600 mb-4 font-poppins text-sm border-b-2 border-gray-700 hover:text-red-700 "
+                    >
+                      Reset
+                    </button>
+                  )}
+
+                <div
+                  ref={availabilityRef}
+                  style={{
+                    maxHeight: heights.availability,
+                    overflow: "hidden",
+                    transition: "max-height 0.3s ease-in-out",
+                  }}
+                >
+                  {openAvailability && (
+                    <ul className="space-y-3 font-poppins">
+                      <li
+                        onClick={(e) => {
+                          const isStockCount = filteredProducts.filter(
+                            (fp) => fp.inStock
+                          ).length;
+
+                          if (isStockCount > 0) {
+                            handleAvailabilityChange("inStock");
+                          } else {
+                            e.stopPropagation();
+                          }
+                        }}
+                        className={`flex items-center justify-between gap-2 ${
+                          availability.inStock
+                            ? " text-black  "
+                            : filteredProducts.filter((fp) => fp.inStock)
+                                .length > 0
+                            ? "text-gray-500 hover:text-green-800 cursor-pointer"
+                            : "line-through cursor-not-allowed text-gray-500"
+                        }`}
+                      >
+                        <div className="flex items-center font-poppins gap-2">
+                          <input
+                            type="checkbox"
+                            id="inStock"
+                            name="inStock"
+                            onChange={(e) => {
+                              if (
+                                filteredProducts.filter((fp) => fp.inStock)
+                                  .length > 0
+                              ) {
+                                handleCheckBoxChange(e);
+                              } else {
+                                e.stopPropagation();
+                              }
+                            }}
+                            checked={availability.inStock}
+                            disabled={
+                              filteredProducts.filter((fp) => fp.inStock)
+                                .length === 0
+                            }
+                            className="hover:text-black cursor-pointer"
+                          />
+                          <label
+                            htmlFor="inStock"
+                            onClick={() => {
+                              filteredProducts.filter((fp) => fp.inStock)
+                                .length > 0 &&
+                                handleAvailabilityChange("inStock");
+                            }}
+                            className={` ${
+                              filteredProducts.filter((fp) => fp.inStock)
+                                .length === 0
+                                ? "line-through cursor-not-allowed click-none"
+                                : "cursor-pointer"
+                            }`}
+                          >
+                            In Stock
+                          </label>
+                        </div>
+                        <div
+                          className={`text-sm text-gray-500 flex items-center justify-center w-6 h-6 rounded-full ${
+                            availability.inStock
+                              ? "bg-green-900 text-white"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {filteredProducts.filter((p) => p.inStock).length}
+                        </div>
+                      </li>
+                      <li
+                        onClick={(e) => {
+                          const outOfStockCount = filteredProducts.filter(
+                            (fp) => fp.outOfStock
+                          ).length;
+
+                          if (outOfStockCount > 0) {
+                            handleAvailabilityChange("outOfStock");
+                          } else {
+                            e.stopPropagation();
+                          }
+                        }}
+                        className={`flex items-center justify-between gap-2 ${
+                          availability.outOfStock
+                            ? " text-black  "
+                            : filteredProducts.filter((fp) => fp.outOfStock)
+                                .length > 0
+                            ? "text-gray-500 hover:text-green-800 cursor-pointer"
+                            : "line-through cursor-not-allowed text-gray-500"
+                        } `}
+                      >
+                        <div className="flex font-poppins gap-2 ">
+                          <input
+                            type="checkbox"
+                            id="outOfStock"
+                            name="outOfStock"
+                            checked={availability.outOfStock}
+                            onChange={(e) => {
+                              if (
+                                filteredProducts.filter((fp) => fp.outOfStock)
+                                  .length > 0
+                              ) {
+                                handleCheckBoxChange(e);
+                              } else {
+                                e.stopPropagation();
+                              }
+                            }}
+                            disabled={
+                              filteredProducts.filter((fp) => fp.outOfStock)
+                                .length === 0
+                            }
+                            className={`cursor-pointer ${
+                              filteredProducts.filter((fp) => fp.outOfStock)
+                                .length === 0
+                                ? "cursor-not-allowed"
+                                : ""
+                            }`}
+                          />
+                          <label
+                            htmlFor="outOfStock"
+                            onClick={() => {
+                              filteredProducts.filter((fp) => fp.outOfStock)
+                                .length > 0 &&
+                                handleAvailabilityChange("outOfStock");
+                            }}
+                            className=" cursor-pointer"
+                          >
+                            <span
+                              className={`${
+                                filteredProducts.filter((fp) => fp.outOfStock)
+                                  .length === 0
+                                  ? "line-through cursor-not-allowed"
+                                  : ""
+                              }`}
+                            >
+                              Out of Stock
+                            </span>
+                          </label>
+                        </div>
+                        <div
+                          className={`text-sm text-gray-500 flex items-center justify-center w-6 h-6 rounded-full ${
+                            availability.outOfStock
+                              ? "bg-green-900 text-white"
+                              : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {
+                            products.filter(
+                              (p) =>
+                                p.outOfStock &&
+                                filteredProducts.filter((fp) => fp.id === p.id)
+                                  .length
+                            ).length
+                          }
+                        </div>
+                      </li>
+                    </ul>
+                  )}
+                </div>
+              </div>
+              {/* Price */}
+              <div className="flex flex-col my-8 cursor-pointer">
+                <h2
+                  onClick={() => {
+                    setOpenPrice(!openPrice);
+                  }}
+                  className="text-lg flex justify-between font-librebaskerville mb-4"
+                >
+                  <span className="flex">
+                    {" "}
+                    Price{" "}
+                    {price.max !== 153 && (
+                      <span className="ml-1 h-2 w-2 bg-green-700 rounded-full"></span>
+                    )}
+                  </span>
+                  <span>
+                    <ChevronDown
+                      className={`transition-transform duration-300 ${
+                        openPrice ? "-rotate-180" : ""
+                      }`}
+                    />
+                  </span>
+                </h2>
+
+                {/* Reset button show only when price is change */}
+                {openPrice && (price.min !== 0 || price.max !== 153) && (
+                  <button
+                    onClick={resetPrice}
+                    className="self-start text-gray-600 mb-4 font-poppins text-sm border-b-2 border-gray-700 hover:text-red-700 "
+                  >
+                    Reset
+                  </button>
+                )}
+
+                <div
+                  ref={priceRef}
+                  style={{
+                    maxHeight: heights.price,
+                    overflow: "hidden",
+                    transition: "max-height 0.3s ease-in-out",
+                  }}
+                >
+                  {openPrice && (
+                    <div className="flex flex-col gap-4">
+                      <label className=" text-gray-500 text-sm font-librebaskerville">
+                        Price: ${price.min.toFixed(2)} — ${price.max.toFixed(2)}
+                      </label>
+
+                      <div className="w-full relative h-8">
+                        {/* Track */}
+                        <div className="absolute top-1/2 -translate-y-1/2 h-1 w-full bg-gray-300 rounded"></div>
+
+                        {/* Active range */}
+                        <div
+                          className="absolute top-1/2 -translate-y-1/2 h-1 bg-black rounded"
+                          style={{
+                            left: `${(price.min / MAX_PRICE) * 100}%`,
+                            right: `${100 - (price.max / MAX_PRICE) * 100}%`,
+                          }}
+                        ></div>
+
+                        {/* Min Thumb */}
+                        <input
+                          type="range"
+                          min={MIN_PRICE}
+                          max={MAX_PRICE}
+                          value={price.min}
+                          onChange={handleMinChange}
+                          onMouseDown={() => setActiveThumb("min")}
+                          className="absolute w-full h-full top-0 left-0 opacity-0 cursor-pointer "
+                          style={{ zIndex: activeThumb === "min" ? 20 : 10 }}
+                        />
+
+                        {/* Visual Min Thumb */}
+                        <div
+                          className="absolute w-4 h-4 bg-black rounded-full top-1/2 -translate-y-1/2 -translate-x-1/2 "
+                          style={{ left: `${(price.min / MAX_PRICE) * 100}%` }}
+                        ></div>
+
+                        {/* Max Thumb */}
+                        <input
+                          type="range"
+                          min={MIN_PRICE}
+                          max={MAX_PRICE}
+                          value={price.max}
+                          onChange={handleMaxChange}
+                          onMouseDown={() => setActiveThumb("max")}
+                          className="absolute w-full h-full top-0 left-0 opacity-0 cursor-pointer "
+                          style={{ zIndex: activeThumb === "max" ? 20 : 10 }}
+                        />
+
+                        {/* Visual Max Thumb */}
+                        <div
+                          className="absolute w-4 h-4 bg-black rounded-full top-1/2 -translate-y-1/2 -translate-x-1/2 "
+                          style={{ left: `${(price.max / MAX_PRICE) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Size */}
+              <div className="flex flex-col my-8 cursor-pointer">
+                <button
+                  onClick={() => {
+                    // Handle dropdown toggle
+                    setOpenSize(!openSize);
+                  }}
+                  className="text-lg flex justify-between font-librebaskerville mb-4"
+                >
+                  <span className="flex">
+                    Size{" "}
+                    {selectedSize.length !== 0 ? (
+                      <span className="ml-1 h-4 w-4  text-sm flex items-center justify-center text-white bg-green-700 rounded-full">
+                        {selectedSize.length}
+                      </span>
+                    ) : null}
+                  </span>
+                  <ChevronDown
+                    className={`transition-transform duration-300 ${
+                      openSize ? "-rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* reset size button */}
+                {openSize && selectedSize.length > 0 && (
+                  <button
+                    onClick={() => resetSize()}
+                    className="self-start text-gray-600 mb-4 font-poppins text-sm border-b-2 border-gray-700 hover:text-red-700 "
+                  >
+                    Reset
+                  </button>
+                )}
+
+                <div
+                  ref={sizeRef}
+                  style={{
+                    maxHeight: heights.size,
+                    overflow: "hidden",
+                    transition: "max-height 0.3s ease-in-out",
+                  }}
+                >
+                  {openSize && (
+                    <div className="flex gap-4 mt-2 flex-wrap">
+                      {["30", "50", "60"].map((size) => {
+                        const isAvailable = availableSizes.includes(size);
+                        const isSelected = selectedSize.includes(size);
+                        return (
+                          <button
+                            key={size}
+                            onClick={() => {
+                              if (isAvailable) {
+                                handleSizeChange(size);
+                              }
+                            }}
+                            disabled={!isAvailable}
+                            className={`py-1 px-2 border rounded-full ${
+                              !isAvailable
+                                ? "border-gray-300 text-gray-400 cursor-not-allowed line-through"
+                                : isSelected
+                                ? "border-black bg-gray-200 hover:bg-gray-300"
+                                : "border-gray-400 hover:border-black"
+                            }`}
+                          >
+                            {size}{" "}
+                            <span className="text-gray-500 text-sm font-poppins items-center justify-center">
+                              cm
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Color */}
+              <div className="flex flex-col my-4 cursor-pointer">
+                <h2
+                  onClick={() => {
+                    // Handle dropdown toggle
+                    setOpenColor(!openColor);
+                    setTimeout(() => {
+                      setHeights((prev) => ({
+                        ...prev,
+                        color: openColor
+                          ? "0px"
+                          : `${colorRef.current?.scrollHeight}px`,
+                      }));
+                    });
+                  }}
+                  className="text-lg flex justify-between font-librebaskerville mb-4"
+                >
+                  <span className="flex">
+                    Color{" "}
+                    {selectedColor.length !== 0 ? (
+                      <span className="ml-1 h-5 w-5 text-sm flex items-center justify-center text-white bg-green-700 rounded-full">
+                        {selectedColor.length}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="transition-transform duration-300">
+                    <ChevronDown
+                      className={`transition-transform duration-300 ${
+                        openColor ? "-rotate-180" : ""
+                      }`}
+                    />
+                  </span>
+                </h2>
+
+                {/* Reset button show only when checkbox is ticked */}
+                {openColor && selectedColor.length > 0 && (
+                  <button
+                    onClick={() => resetColor()}
+                    className="self-start text-gray-600 mb-4 font-poppins text-sm border-b-2 border-gray-700 hover:text-red-700 "
+                  >
+                    Reset
+                  </button>
+                )}
+
+                <div
+                  ref={colorRef}
+                  style={{
+                    maxHeight: heights.color,
+                    overflow: "hidden",
+                    transition: "max-height 0.3s ease-in-out",
+                  }}
+                >
+                  {openColor && (
+                    <>
+                      <div className="pb-2">
+                        {visibleColors.map((color) => (
+                          <div
+                            key={color.name}
+                            onClick={() => {
+                              handleColorChange(color.name);
+                            }}
+                            className="flex items-center justify-between cursor-pointer group my-2"
+                          >
+                            <div className="flex items-center gap-2 ">
+                              {color.image ? (
+                                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-300">
+                                  <img
+                                    src={color.image}
+                                    alt={color.name}
+                                    loading="lazy"
+                                    className="object-cover w-full h-full"
+                                  />
+                                  {selectedColor.includes(color.name) && (
+                                    <Check className="absolute inset-0 m-auto  bg-black opacity-50 text-white w-8 h-8" />
+                                  )}
+                                </div>
+                              ) : (
+                                <div
+                                  className="w-8 h-8 rounded-full border border-gray-500 flex items-center justify-center cursor-pointer group-hover:opacity-80"
+                                  style={{ backgroundColor: color.value }}
+                                >
+                                  {/* selected color show tick */}
+                                  {selectedColor.includes(color.name) && (
+                                    <Check
+                                      size={24}
+                                      className={`${
+                                        color.value === "#FFFFFF"
+                                          ? "text-black"
+                                          : "text-white"
+                                      }`}
+                                    />
+                                  )}
+                                </div>
+                              )}
+                              <span className="text-sm font-poppins text-gray-700 hover:text-gray-950">
+                                {color.name}
+                              </span>
+                            </div>
+
+                            {/* right side count */}
+                            <span
+                              className={`text-sm px-2 py-0.5 rounded-full ${
+                                selectedColor.includes(color.name)
+                                  ? "bg-green-900 text-white"
+                                  : "bg-gray-200 text-gray-700"
+                              }`}
+                            >
+                              {color.count}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/*view more  */}
+                      {allColors.length > 5 && (
+                        <button
+                          onClick={() => {
+                            setShowAll(!showAll);
+                            setTimeout(() => {
+                              setHeights((prev) => ({
+                                ...prev,
+                                color: `${colorRef.current?.scrollHeight}px`,
+                              }));
+                            }, 10);
+                          }}
+                          className="text-sm mt-1 text-black hover:text-gray-500 w-full"
+                        >
+                          {showAll ? "- View More" : "+ View More"}
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Apply Filters Button for Mobile */}
+              <button
+                onClick={() => setIsMobileSidebarOpen(false)}
+                className="w-full bg-black text-white py-3 px-4 rounded-lg font-poppins mt-6"
+              >
+                Apply Filters
+              </button>
+
+              {/* Feature Product */}
+              <div className="flex flex-col my-8 cursor-pointer">
+                <h2
+                  onClick={() => {
+                    // Handle dropdown toggle
+                    setOpenFeature(!openFeature);
+                  }}
+                  className="text-lg flex justify-between font-librebaskerville mb-4"
+                >
+                  Feature Product
+                  <span className="transition-transform duration-300">
+                    <ChevronDown
+                      className={`transition-transform duration-300 ${
+                        openFeature ? "-rotate-180" : ""
+                      }`}
+                    />
+                  </span>
+                </h2>
+
+                <div
+                  ref={featureRef}
+                  style={{
+                    maxHeight: heights.feature,
+                    transition: "max-height 0.3s ease-in-out",
+                    overflow: "hidden",
+                  }}
+                >
+                  {openFeature &&
+                    feature.map((item, index) => (
+                      <div key={item.name} className="flex flex-col mt-4">
+                        <div className="flex items-center ">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            loading="lazy"
+                            onClick={() => navigate(item.link)}
+                            className="w-20 h-24 object-cover hover:scale-105 transition-transform duration-300"
+                          />
+                          <div className="ml-4 flex flex-col gap-2 ">
+                            <div className="flex text-gray-400 ">
+                              <IoIosStarOutline size={12} />
+                              <IoIosStarOutline size={12} />
+                              <IoIosStarOutline size={12} />
+                              <IoIosStarOutline size={12} />
+                              <IoIosStarOutline size={12} />
+                            </div>
+                            <h3
+                              onClick={() => navigate(item.link)}
+                              className="text-md font-librebaskerville cursor-pointer"
+                            >
+                              {item.name}
+                            </h3>
+                            <p className="text-sm text-gray-500 font-librebaskerville">
+                              {item.DiscountPrice ? (
+                                <>
+                                  <span className="line-through text-xs text-gray-500">
+                                    ${item.price.toFixed(2)}
+                                  </span>
+                                  <span className="text-gray-800 ml-1 text-sm">
+                                    ${item.DiscountPrice.toFixed(2)}
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-gray-800 text-sm">
+                                    $ {item.price.toFixed(2)}
+                                  </span>
+                                </>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        {index !== feature.length - 1 && (
+                          <div className="flex items-center justify-center h-px w-full mt-4 bg-gray-200" />
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Left side product details for desktop*/}
+      <div className="container flex flex-col md:flex-row max-w-full ">
+        <div
+          className={`${
+            isMobile ? "hidden" : "w-full md:w-[25%]"
+          } bg-white px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8`}
+          style={!isMobile ? filterSectionStyle : {}}
         >
           {/*collection */}
           <div className="flex flex-col my-4 cursor-pointer">
@@ -1265,16 +2050,34 @@ const Shop = () => {
         </div>
 
         {/* Right side product image */}
-        <div className="w-[75%] bg-white px-6 py-8">
-          <div className="flex flex-col px-6">
-            <div className="flex items-center justify-between mb-6 ">
-              <p className="text-sm text-gray-500">
+        <div
+          className={`${
+            isMobile ? "w-full" : "w-full md:w-[75%]"
+          } bg-white px-4 md:px-6 py-6 md:py-8`}
+        >
+          <div className="flex flex-col px-2 md:px-6">
+            <div className="flex md:items-center justify-between mb-6 gap-4">
+              {/*  mobile filter icon show here */}
+              {isMobile && (
+                <div className="container mx-auto px-4 mb-4">
+                  <button
+                    onClick={() => setIsMobileSidebarOpen(true)}
+                    className="bg-white border border-gray-300 py-3 px-4 "
+                  >
+                    <SlidersHorizontal size={20} />
+                  </button>
+                </div>
+              )}
+              {!isMobile && (
+                <p className="text-sm text-gray-500">
                 {filteredProducts.length === 0
                   ? "No products found."
                   : `You've viewed ${filteredProducts.length} of ${filteredProducts.length} products`}
               </p>
-              <div className="flex items-center gap-2">
-                <div className=" p-2 flex items-center justify-center gap-2 border border-gray-500">
+              )}
+              
+              <div className="flex items-center justify-between gap-2">
+                <div className="hidden lg:flex p-2 items-center justify-center gap-2 border border-gray-500">
                   <HiOutlineBars3
                     onClick={() => setLayout("list")}
                     className={`text-2xl cursor-pointer ${
@@ -1302,7 +2105,7 @@ const Shop = () => {
                 </div>
 
                 {/* filter is here */}
-                <div className=" h-full w-full flex items-center justify-center relative">
+                <div className="flex h-full w-full items-center justify-center relative">
                   <select
                     onChange={handleFilterChange}
                     value={filter}
@@ -1324,12 +2127,12 @@ const Shop = () => {
             </div>
             {/* selected Filter show here */}
             <div className="mb-4 mt-0 md:-mt-3 text-gray-500 ">
-              <div className="flex flex-wrap">
+              <div className="flex flex-wrap gap-2">
                 {availability.inStock && (
                   <span
                     onClick={() => resetAvailability()}
-                    className="flex group mr-2 text-xs font-poppins bg-gray-200 hover:bg-black group-hover:text-white hover:text-white px-2 py-1  text-gray-700 cursor-pointer transition-colors duration-300"
-                  >
+                    className="flex group text-xs font-poppins bg-gray-200 hover:bg-black hover:text-white px-2 py-1 text-gray-700 cursor-pointer transition-colors duration-300"
+                >
                     Availability : In Stock{" "}
                     <span>
                       <X
@@ -1429,13 +2232,13 @@ const Shop = () => {
                   : layout === "grid"
                   ? "grid grid-cols-2 gap-6"
                   : layout === "grid3"
-                  ? "grid grid-cols-3 gap-6"
-                  : "grid grid-cols-4 gap-6"
+                  ? "grid grid-cols-2 md:grid-cols-3 gap-1 sm:gap-4 md:gap-6"
+                  : "grid grid-cols-2 md:grid-cols-4 gap-1 sm:gap-4 md:gap-6"
               }
             >
               {currentProducts.length === 0 && (
-                <div className="col-span-4 text-center">
-                  <p className="text-gray-500 text-4xl flex items-center justify-center  font-librebaskerville mt-4">
+                <div className="col-span-full text-center">
+                  <p className="text-gray-500 text-xl md:text-4xl flex items-center justify-center font-librebaskerville mt-4">
                     No products found.
                     <br />
                     Use fewer filters or
@@ -1466,7 +2269,7 @@ const Shop = () => {
             {/* pagination */}
             {filteredProducts.length > productPerPage && (
               <div className="col-span-4 my-6 text-center">
-                <p className="text-gray-500 text-4xl flex gap-2 items-center justify-center  font-librebaskerville mt-4">
+                <p className="text-gray-500 text-4xl flex gap-2 items-center justify-center font-librebaskerville mt-4">
                   <button
                     onClick={() =>
                       currentPage > 1 && handlePageChange(currentPage - 1)

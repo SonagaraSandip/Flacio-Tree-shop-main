@@ -8,7 +8,14 @@ import ScrollToTop from "../pages/ScrollToTop";
 import { IoStar, IoStarOutline } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdDeleteForever } from "react-icons/md";
-import { User, CheckCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  User,
+  CheckCheck,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Minus,
+} from "lucide-react";
 
 const Product = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -33,6 +40,7 @@ const Product = () => {
   const [filter, setFilter] = useState("most-recent");
   const [hovered, setHovered] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [mobileTabOpen, setMobileTabOpen] = useState(false);
   const carouselRef = useRef(null);
 
   //featuredProducts
@@ -195,12 +203,394 @@ const Product = () => {
     );
   };
 
+  // Mobile tab handler
+  const handleMobileTabClick = (tab) => {
+    if (activeTab === tab) {
+      setMobileTabOpen(!mobileTabOpen);
+    } else {
+      setActiveTab(tab);
+      setMobileTabOpen(true);
+    }
+  };
+
+  // Tab content component
+  const TabContent = ({ tab, children }) => (
+    <div className={`${activeTab === tab ? "block" : "hidden"} lg:block`}>
+      {children}
+    </div>
+  );
+
   return (
-    <Layout className="">
+    <Layout>
       <ProductPageCard productpageCard={ProductPageCard} />
 
-      <div className="flex flex-col mx-8">
-        <div className="my-16 text-3xl text-gray-500 font-librebaskerville flex items-center justify-center gap-8">
+      <div className="flex flex-col mx-4 sm:mx-6 md:mx-8">
+        <div className="lg:hidden my-8">
+          {["description", "review", "shipping", "returns"].map((tab) => (
+            <div key={tab} className="border-b border-gray-300 ">
+              <button
+                onClick={() => handleMobileTabClick(tab)}
+                className="w-full flex justify-between items-center py-4 text-lg font-librebaskerville text-gray-700"
+              >
+                <span className="capitalize">{tab}</span>
+                {activeTab === tab && mobileTabOpen ? (
+                  <Minus size={20} />
+                ) : (
+                  <Plus size={20} />
+                )}
+              </button>
+              {activeTab === tab && mobileTabOpen && (
+                <div className="pb-4">
+                  {tab === "description" && (
+                    <div className="text-sm text-gray-600 font-poppins space-y-4">
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                        sed do eiusmod tempor incididunt ut labore et dolore
+                        magna aliqua. Ut enim ad minim veniam, quis nostrud
+                        exercitation ullamco laboris nisi ut aliquip ex ea
+                        commodo consequat. Duis aute irure dolor in
+                        reprehenderit in voluptate velit esse cillum dolore eu
+                        fugiat nulla pariatur.
+                      </p>
+                      <p>
+                        Don't ever play yourself. The weather is amazing, walk
+                        with me through the pathway of more success. Take this
+                        journey with me, Lion! The other day the grass was
+                        brown, now it's green because I ain't give up. Never
+                        surrender
+                      </p>
+                      <ul className="list-disc pl-5 space-y-2">
+                        <li>Claritas est etiam processus dynamicus.</li>
+                        <li>Qui sequitur mutationem consuetudium lectorum.</li>
+                        <li>
+                          Mirum est notare quam littera gothica, quam nunc.
+                        </li>
+                        <li>Investigationes demonstraverunt lectores.</li>
+                        <li>Quis autem vel eum iure reprehenderir.</li>
+                        <li>Neque porro quisquam est, qui dolorem.</li>
+                      </ul>
+                      <p>
+                        It has survived not only five centuries, but also the
+                        leap into electronic typesetting, remaining essentially
+                        unchanged. It was popularised in the 1960s with the
+                        release.
+                      </p>
+                    </div>
+                  )}
+                  {tab === "review" && (
+                    <div className="text-sm text-gray-600">
+                      {/* Mobile review content */}
+                      <div className="flex flex-col gap-4 items-center justify-center font-poppins py-4">
+                        <div className="flex gap-1 items-center">
+                          <IoStar className="w-5 h-5" />
+                          <IoStar className="w-5 h-5" />
+                          <IoStar className="w-5 h-5" />
+                          <IoStarOutline className="w-5 h-5" />
+                          <IoStarOutline className="w-5 h-5" />
+                          <span className="text-sm text-gray-500 ml-2">
+                            3.00 out of 5
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-500">
+                          Based on 1 review
+                        </p>
+                      </div>
+
+                      {!submitted ? (
+                        <button
+                          onClick={() => setWriteReview(!writeReview)}
+                          className="w-full font-poppins bg-black hover:bg-zinc-900 text-white px-6 py-3 text-sm my-4"
+                        >
+                          {writeReview ? "Cancel Review" : "Write a Review"}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => window.location.reload()}
+                          className="w-full font-poppins bg-black hover:bg-zinc-900 text-white px-6 py-3 text-sm my-4"
+                        >
+                          Refresh Page
+                        </button>
+                      )}
+
+                      {/* Mobile review form */}
+                      {writeReview && !submitted && (
+                        <form
+                          onSubmit={handleSubmitReview}
+                          className="flex flex-col gap-4 my-6 text-sm text-gray-500 font-poppins"
+                        >
+                          <h1 className="text-xl text-gray-600 font-bold font-poppins mt-4 text-center">
+                            Write a review
+                          </h1>
+                          <p className="text-sm text-gray-500 text-center">
+                            Rating
+                          </p>
+                          <div
+                            id="rating"
+                            required
+                            className="flex gap-1 justify-center"
+                          >
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                onClick={() => setRating(star)}
+                                className="cursor-pointer"
+                              >
+                                {star <= rating ? (
+                                  <IoStar
+                                    size={24}
+                                    className="text-yellow-500"
+                                  />
+                                ) : (
+                                  <IoStarOutline
+                                    size={24}
+                                    className="text-gray-500 "
+                                  />
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                          <label className="mt-4">
+                            Review Title (
+                            <span id="titleCharCount">{titleCharCount}</span>)
+                          </label>
+                          <input
+                            type="text"
+                            id="title"
+                            className="border border-gray-400 px-4 py-2 w-full"
+                            placeholder="Give your review a title"
+                            maxLength={100}
+                            value={reviewTitle}
+                            onChange={handleTitleChange}
+                          />
+
+                          <label className="mt-4">
+                            Review (<span>{commentCharCount}</span>)
+                          </label>
+                          <textarea
+                            type="text"
+                            id="review"
+                            rows={4}
+                            className="border border-gray-400 px-4 py-2 w-full"
+                            placeholder="Write your comments here.."
+                            maxLength={5000}
+                            value={comment}
+                            onChange={handleCommentChange}
+                            required
+                          />
+
+                          <label className="mt-4">
+                            Picture/Video (optional)
+                          </label>
+                          <div className="flex gap-3 flex-wrap">
+                            {images.length < 5 && (
+                              <label className="w-20 h-20 group border border-gray-300 hover:border-zinc-300 flex items-center justify-center cursor-pointer">
+                                <FaCloudUploadAlt
+                                  size={30}
+                                  className="text-gray-500 group-hover:scale-110 group-hover:text-blue-500 transition-transform duration-500"
+                                />
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  multiple
+                                  hidden
+                                  onChange={handleImageupload}
+                                />
+                              </label>
+                            )}
+                            {images.map((image, index) => (
+                              <div key={index} className="relative w-20 h-20">
+                                <img
+                                  src={image.preview}
+                                  alt="preview"
+                                  className="w-full h-full object-cover border border-gray-300"
+                                />
+                                <button>
+                                  <MdDeleteForever
+                                    size={16}
+                                    className="absolute top-1 right-1 cursor-pointer w-5 h-5 bg-gray-100 rounded-full text-red-600 hover:bg-black hover:text-white shadow-md transition-colors duration-300"
+                                    onClick={() => handleRemoveImage(index)}
+                                  />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+
+                          <p className="mt-4">
+                            Name (displayed publicly like{" "}
+                            <span className="text-black">
+                              <select className="border border-gray-300 px-2 py-1">
+                                <option value="most-recent">John Smith</option>
+                                <option value="last_initial">John S.</option>
+                                <option value="only_name">John</option>
+                                <option value="all_initial">J. S.</option>
+                                <option value="annonymous">Anonymous</option>
+                              </select>
+                            </span>
+                            )
+                          </p>
+
+                          <input
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="border border-gray-400 px-4 py-2 w-full"
+                            placeholder="Enter your name ( publicly displayed )"
+                            required
+                          />
+
+                          <label className="mt-4">Email</label>
+                          <input
+                            type="email"
+                            className="border border-gray-400 px-4 py-2 w-full"
+                            placeholder="Enter your email ( will not be published )"
+                            required
+                          />
+
+                          <p className="mt-4 text-center text-sm">
+                            How we use your data: We'll only contact you about
+                            the review you left, and only if necessary.
+                          </p>
+
+                          <div className="flex gap-4 text-base mt-4">
+                            <button
+                              onClick={() => setWriteReview(false)}
+                              className="font-poppins bg-white hover:bg-gradient-to-br from-white to-red-200 border border-black text-black px-6 py-2 flex-1"
+                            >
+                              Cancel Review
+                            </button>
+                            <button
+                              type="submit"
+                              className="font-poppins bg-black hover:bg-zinc-900 text-white px-6 py-2 flex-1"
+                            >
+                              Submit Review
+                            </button>
+                          </div>
+                        </form>
+                      )}
+
+                      {submitted && (
+                        <div className="flex flex-col items-center justify-center gap-4 my-6 text-gray-500 font-poppins ">
+                          <CheckCheck
+                            size={36}
+                            className="rounded-full text-green-600 "
+                          />
+                          <h1 className="text-xl text-green-600 font-semibold text-center">
+                            Review submitted successfully!
+                          </h1>
+                          <p className="text-center">
+                            Thank you! for your review.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Mobile reviews list */}
+                      <div className="border-y border-gray-400 mt-6">
+                        <select
+                          onChange={handleFilterChange}
+                          value={filter}
+                          className="my-4 w-full"
+                        >
+                          <option value="most-recent">Most Recent</option>
+                          <option value="highest-rating">Highest Rating</option>
+                          <option value="lowest-rating">Lowest Rating</option>
+                          <option value="only-pictures">Only Pictures</option>
+                          <option value="pictures-first">Pictures First</option>
+                          <option value="most-helpful">Most Helpful</option>
+                        </select>
+                      </div>
+
+                      {sortedReviews.map((rev, index) => (
+                        <div
+                          key={index}
+                          className="my-4 border-b border-gray-200 pb-4"
+                        >
+                          <div className="flex justify-between my-2">
+                            <div className="flex gap-1">
+                              {[1, 2, 3, 4, 5].map((star) =>
+                                star <= rev.rating ? (
+                                  <IoStar
+                                    size={16}
+                                    className="text-yellow-400"
+                                  />
+                                ) : (
+                                  <IoStarOutline
+                                    size={16}
+                                    className="text-gray-400"
+                                  />
+                                )
+                              )}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {rev.date}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-3 my-2 font-poppins text-gray-500">
+                            <div className="flex gap-2 items-center">
+                              <User className="h-6 w-6 bg-gray-200 text-black p-1" />
+                              <p className="text-sm">Name: {rev.name}</p>
+                            </div>
+                            <p className="text-gray-900 font-medium">
+                              Title: {rev.title}
+                            </p>
+                            <p className="text-sm">Comment: {rev.comment}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {tab === "shipping" && (
+                    <div className="text-sm text-gray-600 space-y-3">
+                      <p>
+                        For orders placed before 7am AEDT, we endeavour to
+                        process the same business day. Orders placed after 11am
+                        AEDT will be processed the next business day.
+                      </p>
+                      <p>
+                        During sale events and new collection launches, there
+                        may be a slightly longer processing time.
+                      </p>
+                      <p>
+                        All Auguste orders are hand-picked and packed with love
+                        from Byron Bay, Australie.
+                      </p>
+                    </div>
+                  )}
+                  {tab === "returns" && (
+                    <div className="text-sm text-gray-600 space-y-3">
+                      <p>
+                        You can choose between a refund or a credit note on full
+                        priced items.
+                      </p>
+                      <ul className="list-disc pl-5 space-y-2">
+                        <li>
+                          Item(s) must be returned in their original condition
+                          and packaging: unworn, unwashed and with all tags
+                          attached.
+                        </li>
+                        <li>
+                          Earrings cannot be returned due to health and safety
+                          reasons.
+                        </li>
+                        <li>
+                          Return shipping methods and associated costs are the
+                          responsibility of the customer.
+                        </li>
+                        <li>
+                          Sale items can not be refunded for change of mind.
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Tabs */}
+        <div className="hidden lg:flex my-8 lg:my-16 text-xl lg:text-3xl text-gray-500 font-librebaskerville items-center justify-center gap-4 lg:gap-8">
           <button
             value={"description"}
             onClick={() => setActiveTab("description")}
@@ -247,394 +637,400 @@ const Product = () => {
           </button>
         </div>
 
-        {activeTab === "description" && (
-          <div className="flex flex-col mx-4 md:mx-8 lg:mx-12 mb-12 sm:mb-16 md:mb-20 lg:mb-28 text-md text-gray-500 font-normal font-poppins gap-6">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur.
-            </p>
-            <p>
-              Don’t ever play yourself. The weather is amazing, walk with me
-              through the pathway of more success. Take this journey with me,
-              Lion! The other day the grass was brown, now it’s green because I
-              ain’t give up. Never surrender
-            </p>
-            <ul className="list-disc pl-10 ">
-              <li className="my-1">Claritas est etiam processus dynamicus.</li>
-              <li className="my-1">
-                Qui sequitur mutationem consuetudium lectorum.{" "}
-              </li>
-              <li className="my-1">
-                Mirum est notare quam littera gothica, quam nunc.
-              </li>
-              <li className="my-1">
-                Investigationes demonstraverunt lectores.
-              </li>
-              <li className="my-1">Quis autem vel eum iure reprehenderir.</li>
-              <li className="my-1">Neque porro quisquam est, qui dolorem.</li>
-            </ul>
-            <p>
-              It has survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release.
-            </p>
-          </div>
-        )}
-
-        {activeTab === "review" && (
-          <div className="relative mx-4 md:mx-8 lg:mx-12 sm:mb-16 md:mb-20 lg:mb-28">
-            <div className="flex gap-6 items-center justify-center ">
-              <div className="flex flex-col items-center justify-center font-poppins py-8">
-                <div className="flex gap-1">
-                  <IoStar />
-                  <IoStar />
-                  <IoStar />
-                  <IoStarOutline />
-                  <IoStarOutline />
-                  <span className="text-sm text-gray-500">3.00 out of 5</span>
-                </div>
-                <p className="flex gap-1 text-sm text-gray-500">
-                  Based on 1 review
-                </p>
-              </div>
-              <div className="h-24 w-px bg-gray-300 mx-8 sm:mx-12 md:mx-20 lg:mx-28" />
-              <div className="flex flex-col ">
-                <h2 className="text-gray-900 font-poppins text-xl flex items-center justify-center">
-                  Customer Reviews
-                </h2>
-                <div className="flex flex-col gap-1 my-2">
-                  <div className="flex gap-4 items-center">
-                    <div className="flex gap-1">
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                    </div>
-                    <div className="h-3 bg-gray-400 w-32" />
-                    <p className="justify-center text-gray-600">0</p>
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    <div className="flex gap-1">
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStarOutline />
-                    </div>
-                    <div className="h-3 bg-gray-400 w-32" />
-                    <p className="justify-center text-gray-600">0</p>
-                  </div>
-                  <div className="flex gap-4 items-center cursor-pointer hover:text-gray-700">
-                    <div className="flex gap-1">
-                      <IoStar />
-                      <IoStar />
-                      <IoStar />
-                      <IoStarOutline />
-                      <IoStarOutline />
-                    </div>
-                    <div className="h-3 bg-gray-600 hover:bg-gray-500 w-32" />
-                    <p className="justify-center text-gray-600 ">1</p>
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    <div className="flex gap-1">
-                      <IoStar />
-                      <IoStar />
-                      <IoStarOutline />
-                      <IoStarOutline />
-                      <IoStarOutline />
-                    </div>
-                    <div className="h-3 bg-gray-400 w-32" />
-                    <p className="justify-center text-gray-600">0</p>
-                  </div>
-                  <div className="flex gap-4 items-center">
-                    <div className="flex gap-1">
-                      <IoStar />
-                      <IoStarOutline />
-                      <IoStarOutline />
-                      <IoStarOutline />
-                      <IoStarOutline />
-                    </div>
-                    <div className="h-3 bg-gray-400 w-32" />
-                    <p className="justify-center text-gray-600">0</p>
-                  </div>
-                </div>
-              </div>
-              <div className="h-24 w-px bg-gray-300 mx-8 sm:mx-12 md:mx-20 lg:mx-28" />
-              {!submitted ? (
-                <button
-                  onClick={() => setWriteReview(!writeReview)}
-                  className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
-                >
-                  {writeReview ? "Cancel Review" : "Write a Review"}
-                </button>
-              ) : (
-                <button
-                  onClick={() => window.location.reload()}
-                  className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
-                >
-                  Refresh Page
-                </button>
-              )}
+        {/* Desktop Tab Contents */}
+        <div className="hidden lg:block">
+          {activeTab === "description" && (
+            <div className="flex flex-col mx-4 md:mx-8 lg:mx-12 mb-12 sm:mb-16 md:mb-20 lg:mb-28 text-md text-gray-500 font-normal font-poppins gap-6">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur.
+              </p>
+              <p>
+                Don't ever play yourself. The weather is amazing, walk with me
+                through the pathway of more success. Take this journey with me,
+                Lion! The other day the grass was brown, now it's green because
+                I ain't give up. Never surrender
+              </p>
+              <ul className="list-disc pl-10 ">
+                <li className="my-1">
+                  Claritas est etiam processus dynamicus.
+                </li>
+                <li className="my-1">
+                  Qui sequitur mutationem consuetudium lectorum.{" "}
+                </li>
+                <li className="my-1">
+                  Mirum est notare quam littera gothica, quam nunc.
+                </li>
+                <li className="my-1">
+                  Investigationes demonstraverunt lectores.
+                </li>
+                <li className="my-1">Quis autem vel eum iure reprehenderir.</li>
+                <li className="my-1">Neque porro quisquam est, qui dolorem.</li>
+              </ul>
+              <p>
+                It has survived not only five centuries, but also the leap into
+                electronic typesetting, remaining essentially unchanged. It was
+                popularised in the 1960s with the release.
+              </p>
             </div>
+          )}
 
-            {/* if user click on write review */}
-            {writeReview && !submitted && (
-              <form
-                onSubmit={handleSubmitReview}
-                className="flex flex-col items-center justify-center gap-4 my-6 mb-12 border-t border-gray-300 text-sm text-gray-500 font-poppins max-w-6xl mx-auto"
-              >
-                <h1 className="text-2xl text-gray-600 font-bold font-poppins mt-4">
-                  Write a review
-                </h1>
-                <p className="text-sm text-gray-500">Rating</p>
-                {/* rating star */}
-                <div id="rating" required className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      onClick={() => setRating(star)}
-                      className="cursor-pointer"
-                    >
-                      {star <= rating ? (
-                        <IoStar size={24} className="text-yellow-500" />
-                      ) : (
-                        <IoStarOutline size={24} className="text-gray-500 " />
-                      )}
-                    </span>
-                  ))}
+          {activeTab === "review" && (
+            <div className="relative mx-4 md:mx-8 lg:mx-12 sm:mb-16 md:mb-20 lg:mb-28">
+              <div className="flex gap-6 items-center justify-center ">
+                <div className="flex flex-col items-center justify-center font-poppins py-8">
+                  <div className="flex gap-1">
+                    <IoStar />
+                    <IoStar />
+                    <IoStar />
+                    <IoStarOutline />
+                    <IoStarOutline />
+                    <span className="text-sm text-gray-500">3.00 out of 5</span>
+                  </div>
+                  <p className="flex gap-1 text-sm text-gray-500">
+                    Based on 1 review
+                  </p>
                 </div>
-                <label className="mt-4">
-                  Review Title (
-                  <span id="titleCharCount">{titleCharCount}</span>)
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  className="border border-gray-400 px-4 py-2 w-1/2"
-                  placeholder="Give your review a title"
-                  maxLength={100}
-                  value={reviewTitle}
-                  onChange={handleTitleChange}
-                />
-
-                <label className="mt-4">
-                  Review (<span>{commentCharCount}</span>)
-                </label>
-                <textarea
-                  type="text"
-                  id="review"
-                  rows={4}
-                  className="border border-gray-400 px-4 py-2 w-1/2"
-                  placeholder="Write your comments here.."
-                  maxLength={5000}
-                  value={comment}
-                  onChange={handleCommentChange}
-                  required
-                />
-                {/* image upload */}
-                <label className="mt-4">Picture/Video (optional)</label>
-                <div className="flex gap-3 ">
-                  {images.length < 5 && (
-                    <label className="w-32 h-32 group border border-gray-300 hover:border-zinc-300 flex items-center justify-center cursor-pointer">
-                      <FaCloudUploadAlt
-                        size={60}
-                        className="text-gray-500 group-hover:scale-110 group-hover:text-blue-500 transition-transform duration-500"
-                      />
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        hidden
-                        onChange={handleImageupload}
-                      />
-                    </label>
-                  )}
-                  {/* preview images */}
-                  {images.map((image, index) => (
-                    <div key={index} className="relative w-32 h-32">
-                      <img
-                        src={image.preview}
-                        alt="preview"
-                        className="w-full h-full object-cover border border-gray-300"
-                      />
-                      <button>
-                        <MdDeleteForever
-                          size={16}
-                          className="absolute top-2 right-2 cursor-pointer w-6 h-6 bg-gray-100 rounded-full text-red-600 hover:bg-black hover:text-white shadow-md transition-colors duration-300"
-                          onClick={() => handleRemoveImage(index)}
-                        />
-                      </button>
+                <div className="h-24 w-px bg-gray-300 mx-8 sm:mx-12 md:mx-20 lg:mx-28" />
+                <div className="flex flex-col ">
+                  <h2 className="text-gray-900 font-poppins text-xl flex items-center justify-center">
+                    Customer Reviews
+                  </h2>
+                  <div className="flex flex-col gap-1 my-2">
+                    <div className="flex gap-4 items-center">
+                      <div className="flex gap-1">
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                      </div>
+                      <div className="h-3 bg-gray-400 w-32" />
+                      <p className="justify-center text-gray-600">0</p>
                     </div>
-                  ))}
+                    <div className="flex gap-4 items-center">
+                      <div className="flex gap-1">
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStarOutline />
+                      </div>
+                      <div className="h-3 bg-gray-400 w-32" />
+                      <p className="justify-center text-gray-600">0</p>
+                    </div>
+                    <div className="flex gap-4 items-center cursor-pointer hover:text-gray-700">
+                      <div className="flex gap-1">
+                        <IoStar />
+                        <IoStar />
+                        <IoStar />
+                        <IoStarOutline />
+                        <IoStarOutline />
+                      </div>
+                      <div className="h-3 bg-gray-600 hover:bg-gray-500 w-32" />
+                      <p className="justify-center text-gray-600 ">1</p>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                      <div className="flex gap-1">
+                        <IoStar />
+                        <IoStar />
+                        <IoStarOutline />
+                        <IoStarOutline />
+                        <IoStarOutline />
+                      </div>
+                      <div className="h-3 bg-gray-400 w-32" />
+                      <p className="justify-center text-gray-600">0</p>
+                    </div>
+                    <div className="flex gap-4 items-center">
+                      <div className="flex gap-1">
+                        <IoStar />
+                        <IoStarOutline />
+                        <IoStarOutline />
+                        <IoStarOutline />
+                        <IoStarOutline />
+                      </div>
+                      <div className="h-3 bg-gray-400 w-32" />
+                      <p className="justify-center text-gray-600">0</p>
+                    </div>
+                  </div>
                 </div>
-                <p className="mt-4">
-                  Name (displayed publicly like{" "}
-                  <span className="text-black">
-                    <select>
-                      <option value="most-recent">John Smith</option>
-                      <option value="last_initial">John S.</option>
-                      <option value="only_name">John</option>
-                      <option value="all_initial">J. S.</option>
-                      <option value="annonymous">Anonymous</option>
-                    </select>
-                  </span>
-                  )
-                </p>
-                {/* name */}
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="border border-gray-400 px-4 py-2 w-1/2"
-                  placeholder="Enter your name ( publicly displayed )"
-                  required
-                />
-                <label className="mt-4">Email</label>
-                <input
-                  type="email"
-                  className="border border-gray-400 px-4 py-2 w-1/2"
-                  placeholder="Enter your email ( will not be published )"
-                  required
-                />
-                <p className="mt-4 w-1/2 text-center text-md">
-                  How we use your data: We’ll only contact you about the review
-                  you left, and only if necessary. By submitting your review,
-                  you agree to Judge.me’s{" "}
-                  <span className="text-black cursor-pointer">terms</span>,{" "}
-                  <span className="text-black cursor-pointer">privacy</span> and{" "}
-                  <span className="text-black cursor-pointer">content </span>
-                  policies.
-                </p>
-                <div className="flex gap-4 text-base">
+                <div className="h-24 w-px bg-gray-300 mx-8 sm:mx-12 md:mx-20 lg:mx-28" />
+                {!submitted ? (
                   <button
-                    onClick={() => setWriteReview(false)}
-                    className="font-poppins bg-white hover:bg-gradient-to-br from-white to-red-200 border border-black text-black px-12 py-2 "
-                  >
-                    cancel Review
-                  </button>
-                  <button
-                    type="submit"
+                    onClick={() => setWriteReview(!writeReview)}
                     className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
                   >
-                    Submit Review
+                    {writeReview ? "Cancel Review" : "Write a Review"}
                   </button>
-                </div>
-              </form>
-            )}
-
-            {/* if summit show this message */}
-            {submitted && (
-              <div className="flex flex-col items-center justify-center gap-4 my-6 mb-12 text-gray-500 font-poppins ">
-                <CheckCheck
-                  size={36}
-                  className="rounded-full text-green-600 "
-                />
-                <h1 className="text-2xl text-green-600 font-semibold">
-                  Review submitted successfully!
-                </h1>
-                <p>Thank you! for your review.</p>
+                ) : (
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
+                  >
+                    Refresh Page
+                  </button>
+                )}
               </div>
-            )}
 
-            {/* filter selector */}
-            <div className="border-y border-gray-400">
-              <select
-                onChange={handleFilterChange}
-                value={filter}
-                className="my-4"
-              >
-                <option value="most-recent">Most Recent</option>
-                <option value="highest-rating">Highest Rating</option>
-                <option value="lowest-rating">Lowest Rating</option>
-                <option value="only-pictures">Only Pictures</option>
-                <option value="pictures-first">Pictures First</option>
-                <option value="most-helpful">Most Helpful</option>
-              </select>
-            </div>
+              {/* if user click on write review */}
+              {writeReview && !submitted && (
+                <form
+                  onSubmit={handleSubmitReview}
+                  className="flex flex-col items-center justify-center gap-4 my-6 mb-12 border-t border-gray-300 text-sm text-gray-500 font-poppins max-w-6xl mx-auto"
+                >
+                  <h1 className="text-2xl text-gray-600 font-bold font-poppins mt-4">
+                    Write a review
+                  </h1>
+                  <p className="text-sm text-gray-500">Rating</p>
+                  {/* rating star */}
+                  <div id="rating" required className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        onClick={() => setRating(star)}
+                        className="cursor-pointer"
+                      >
+                        {star <= rating ? (
+                          <IoStar size={24} className="text-yellow-500" />
+                        ) : (
+                          <IoStarOutline size={24} className="text-gray-500 " />
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                  <label className="mt-4">
+                    Review Title (
+                    <span id="titleCharCount">{titleCharCount}</span>)
+                  </label>
+                  <input
+                    type="text"
+                    id="title"
+                    className="border border-gray-400 px-4 py-2 w-1/2"
+                    placeholder="Give your review a title"
+                    maxLength={100}
+                    value={reviewTitle}
+                    onChange={handleTitleChange}
+                  />
 
-            {/* show all comment here */}
-            {sortedReviews.map((rev, index) => (
-              <div key={index} className="my-4">
-                <div className="flex justify-between my-2">
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) =>
-                      star <= rev.rating ? (
-                        <IoStar size={16} className="text-yellow-400" />
-                      ) : (
-                        <IoStarOutline size={16} className="text-gray-400" />
-                      )
+                  <label className="mt-4">
+                    Review (<span>{commentCharCount}</span>)
+                  </label>
+                  <textarea
+                    type="text"
+                    id="review"
+                    rows={4}
+                    className="border border-gray-400 px-4 py-2 w-1/2"
+                    placeholder="Write your comments here.."
+                    maxLength={5000}
+                    value={comment}
+                    onChange={handleCommentChange}
+                    required
+                  />
+                  {/* image upload */}
+                  <label className="mt-4">Picture/Video (optional)</label>
+                  <div className="flex gap-3 ">
+                    {images.length < 5 && (
+                      <label className="w-32 h-32 group border border-gray-300 hover:border-zinc-300 flex items-center justify-center cursor-pointer">
+                        <FaCloudUploadAlt
+                          size={60}
+                          className="text-gray-500 group-hover:scale-110 group-hover:text-blue-500 transition-transform duration-500"
+                        />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          hidden
+                          onChange={handleImageupload}
+                        />
+                      </label>
                     )}
+                    {/* preview images */}
+                    {images.map((image, index) => (
+                      <div key={index} className="relative w-32 h-32">
+                        <img
+                          src={image.preview}
+                          alt="preview"
+                          className="w-full h-full object-cover border border-gray-300"
+                        />
+                        <button>
+                          <MdDeleteForever
+                            size={16}
+                            className="absolute top-2 right-2 cursor-pointer w-6 h-6 bg-gray-100 rounded-full text-red-600 hover:bg-black hover:text-white shadow-md transition-colors duration-300"
+                            onClick={() => handleRemoveImage(index)}
+                          />
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                  <div className="text-sm text-gray-500">{rev.date}</div>
-                </div>
+                  <p className="mt-4">
+                    Name (displayed publicly like{" "}
+                    <span className="text-black">
+                      <select>
+                        <option value="most-recent">John Smith</option>
+                        <option value="last_initial">John S.</option>
+                        <option value="only_name">John</option>
+                        <option value="all_initial">J. S.</option>
+                        <option value="annonymous">Anonymous</option>
+                      </select>
+                    </span>
+                    )
+                  </p>
+                  {/* name */}
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="border border-gray-400 px-4 py-2 w-1/2"
+                    placeholder="Enter your name ( publicly displayed )"
+                    required
+                  />
+                  <label className="mt-4">Email</label>
+                  <input
+                    type="email"
+                    className="border border-gray-400 px-4 py-2 w-1/2"
+                    placeholder="Enter your email ( will not be published )"
+                    required
+                  />
+                  <p className="mt-4 w-1/2 text-center text-md">
+                    How we use your data: We'll only contact you about the
+                    review you left, and only if necessary. By submitting your
+                    review, you agree to Judge.me's{" "}
+                    <span className="text-black cursor-pointer">terms</span>,{" "}
+                    <span className="text-black cursor-pointer">privacy</span>{" "}
+                    and{" "}
+                    <span className="text-black cursor-pointer">content </span>
+                    policies.
+                  </p>
+                  <div className="flex gap-4 text-base">
+                    <button
+                      onClick={() => setWriteReview(false)}
+                      className="font-poppins bg-white hover:bg-gradient-to-br from-white to-red-200 border border-black text-black px-12 py-2 "
+                    >
+                      cancel Review
+                    </button>
+                    <button
+                      type="submit"
+                      className="font-poppins bg-black hover:bg-zinc-900 text-white px-12 py-2 "
+                    >
+                      Submit Review
+                    </button>
+                  </div>
+                </form>
+              )}
 
-                <div className="flex flex-col gap-3 my-2 font-poppins text-gray-500">
-                  <div className="flex gap-2">
-                    <User className="h-8 w-8 bg-gray-200 text-black" />
-                    <p className="text-md ">Name: {rev.name}</p>
-                  </div>
-                  <p className="text-gray-900">Title : {rev.title}</p>
-                  <p className="text-md">Comment: {rev.comment}</p>
+              {/* if summit show this message */}
+              {submitted && (
+                <div className="flex flex-col items-center justify-center gap-4 my-6 mb-12 text-gray-500 font-poppins ">
+                  <CheckCheck
+                    size={36}
+                    className="rounded-full text-green-600 "
+                  />
+                  <h1 className="text-2xl text-green-600 font-semibold">
+                    Review submitted successfully!
+                  </h1>
+                  <p>Thank you! for your review.</p>
                 </div>
+              )}
+
+              {/* filter selector */}
+              <div className="border-y border-gray-400">
+                <select
+                  onChange={handleFilterChange}
+                  value={filter}
+                  className="my-4"
+                >
+                  <option value="most-recent">Most Recent</option>
+                  <option value="highest-rating">Highest Rating</option>
+                  <option value="lowest-rating">Lowest Rating</option>
+                  <option value="only-pictures">Only Pictures</option>
+                  <option value="pictures-first">Pictures First</option>
+                  <option value="most-helpful">Most Helpful</option>
+                </select>
               </div>
-            ))}
-          </div>
-        )}
 
-        {activeTab === "shipping" && (
-          <div className="flex flex-col mx-4 md:mx-8 lg:mx-12 sm:mb-16 md:mb-20 lg:mb-28 text-md text-gray-500 font-normal font-poppins gap-6 lg:gap-12">
-            <p>
-              For orders placed before 7am AEDT, we endeavour to process the
-              same business day. Orders placed after 11am AEDT will be processed
-              the next business day.
-            </p>
-            <p>
-              During sale events and new collection launches, there may be a
-              slighly longer processing time.
-            </p>
-            <p>
-              All Auguste orders are hand-picked and packed with love from Byron
-              Bay, Australie.
-            </p>
-          </div>
-        )}
-        {activeTab === "returns" && (
-          <div className="flex flex-col mx-4 md:mx-8 lg:mx-12 sm:mb-16 md:mb-20 lg:mb-28 text-md text-gray-500 font-normal font-poppins gap-6">
-            <p>
-              You can choose between a refund or a credit note on full priced
-              items.
-            </p>
-            <ul className="list-disc pl-10 ">
-              <li className="my-1">
-                Item(s) must be returned in their original condition and
-                packaging: unworn, unwashed and with all tags attached.
-              </li>
-              <li className="my-1">
-                Earrings cannot be returned due to health and safety reasons.
-              </li>
-              <li className="my-1">
-                Return shipping methods and associated costs are the
-                responsibility of the customer.
-              </li>
-              <li className="my-1">
-                Sale items can not be refunded for change of mind.
-              </li>
-            </ul>
-          </div>
-        )}
+              {/* show all comment here */}
+              {sortedReviews.map((rev, index) => (
+                <div key={index} className="my-4">
+                  <div className="flex justify-between my-2">
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) =>
+                        star <= rev.rating ? (
+                          <IoStar size={16} className="text-yellow-400" />
+                        ) : (
+                          <IoStarOutline size={16} className="text-gray-400" />
+                        )
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-500">{rev.date}</div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 my-2 font-poppins text-gray-500">
+                    <div className="flex gap-2">
+                      <User className="h-8 w-8 bg-gray-200 text-black" />
+                      <p className="text-md ">Name: {rev.name}</p>
+                    </div>
+                    <p className="text-gray-900">Title : {rev.title}</p>
+                    <p className="text-md">Comment: {rev.comment}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeTab === "shipping" && (
+            <div className="flex flex-col mx-4 md:mx-8 lg:mx-12 sm:mb-16 md:mb-20 lg:mb-28 text-md text-gray-500 font-normal font-poppins gap-6 lg:gap-12">
+              <p>
+                For orders placed before 7am AEDT, we endeavour to process the
+                same business day. Orders placed after 11am AEDT will be
+                processed the next business day.
+              </p>
+              <p>
+                During sale events and new collection launches, there may be a
+                slighly longer processing time.
+              </p>
+              <p>
+                All Auguste orders are hand-picked and packed with love from
+                Byron Bay, Australie.
+              </p>
+            </div>
+          )}
+          {activeTab === "returns" && (
+            <div className="flex flex-col mx-4 md:mx-8 lg:mx-12 sm:mb-16 md:mb-20 lg:mb-28 text-md text-gray-500 font-normal font-poppins gap-6">
+              <p>
+                You can choose between a refund or a credit note on full priced
+                items.
+              </p>
+              <ul className="list-disc pl-10 ">
+                <li className="my-1">
+                  Item(s) must be returned in their original condition and
+                  packaging: unworn, unwashed and with all tags attached.
+                </li>
+                <li className="my-1">
+                  Earrings cannot be returned due to health and safety reasons.
+                </li>
+                <li className="my-1">
+                  Return shipping methods and associated costs are the
+                  responsibility of the customer.
+                </li>
+                <li className="my-1">
+                  Sale items can not be refunded for change of mind.
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
 
         {/*  Related products*/}
-        <div className="relative mx-8 mb-[100px]">
-          <h1 className="text-3xl font-librebaskerville flex items-center justify-center">
+        <div className="relative mx-4 sm:mx-6 md:mx-8 mb-12 sm:mb-16 md:mb-20 lg:mb-[100px]">
+          <h1 className="text-2xl sm:text-3xl font-librebaskerville text-center">
             Related Products
           </h1>
-          <div className="mx-auto w-24 h-[3px] bg-black mb-4 mt-2" />
+          <div className="mx-auto w-16 sm:w-24 h-[2px] sm:h-[3px] bg-black mb-4 mt-2" />
 
           <div
             className="relative"
@@ -642,41 +1038,41 @@ const Product = () => {
             onMouseLeave={() => setHovered(false)}
             ref={carouselRef}
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center mt-12">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 justify-center mt-8 sm:mt-12">
               {visibleProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-            {/*left -right button show if mouse hover */}
+
+            {/* Desktop arrows - show on hover */}
             {hovered && relatedProducts.length > 4 && (
-              <>
+              <div className="hidden lg:block">
                 <button
                   onClick={prevSlide}
-                  className={`absolute z-10 top-1/2 -left-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2 
-                    
-                  `}
+                  className="absolute z-10 top-1/2 -left-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2"
                 >
                   <ChevronLeft size={32} />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className={`absolute z-10 top-1/2 -right-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2`}
+                  className="absolute z-10 top-1/2 -right-4 transform -translate-y-1/2 bg-white transition-all duration-300 hover:bg-green-800 hover:text-white rounded-full p-2"
                 >
                   <ChevronRight size={32} />
                 </button>
-              </>
+              </div>
             )}
           </div>
         </div>
+
         {/* Recently Viewed Products */}
-        <div className=" mx-8 mb-[100px]">
-          <h1 className="text-3xl font-librebaskerville flex items-center justify-center">
+        <div className="hidden lg:block mx-2 sm:mx-4 lg::mx-8 mb-16 lg:mb-[100px]">
+          <h1 className="text-2xl sm:text-3xl font-librebaskerville text-center">
             Recently Viewed Products
           </h1>
           <div className="mx-auto w-32 h-[3px] bg-black mb-4 mt-2" />
 
           <div className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center mt-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-6 justify-center mt-4 sm:mt-8 lg:mt-12">
               {randomProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
