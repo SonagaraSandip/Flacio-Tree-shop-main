@@ -9,7 +9,7 @@ import AddToCartModal from "../other/AddToCartModal";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCompare } from "../contexts/CompareContext";
 import { useCart } from "../contexts/CartContext";
-import LoadingEffect from "../components/loadingEffect";
+import LoadingEffect from "../components/LoadingEffect";
 import { toast } from "react-toastify";
 
 const ProductCard = ({ product }) => {

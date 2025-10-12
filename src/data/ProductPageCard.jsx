@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AnimatedNumbers from "react-animated-numbers";
 import Product from "../data/products";
-import Layout from "../pages/Layout";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useCompare } from "../contexts/CompareContext";
 import { useCart } from "../contexts/CartContext";
@@ -12,7 +11,7 @@ import Tree360Viewer from "../other/Tree360Viewer";
 import Tree3DViewer from "../other/Tree3DViewer";
 import { IoIosEye } from "react-icons/io";
 import { FaGripfire } from "react-icons/fa";
-import LoadingEffect from "../components/loadingEffect";
+import LoadingEffect from "../components/LoadingEffect";
 import { toast } from "react-toastify";
 import { FaWhatsapp, FaFacebook } from "react-icons/fa";
 import {
