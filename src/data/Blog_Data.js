@@ -7,12 +7,12 @@ import LifeStyle from "../assets/blog/life-style/blog-4_720x.webp";
 import LifeStylePreview from "../assets/blog/life-style/blog-4_180x.avif";
 
 //News
-import Traveling from "../assets/blog/News/travelingblog-6_720x.webp";
-import TravelingPreview from "../assets/blog/News/travelingPreviewblog-6_180x.webp";
-import Indoor from "../assets/blog/News/Indoorblog-2_720x.webp";
-import IndoorPreview from "../assets/blog/News/IndoorPreviewblog-2_180x.webp";
-import BestPlant from "../assets/blog/News/bestPlantblog-1_720x.webp";
-import BestPlantPreview from "../assets/blog/News/BestPreviewblog-1_180x.avif";
+import Traveling from "../assets/blog/News/travelingblog6.webp";
+import TravelingPreview from "../assets/blog/News/travelingPreviewblog6.webp";
+import Indoor from "../assets/blog/News/Indoorblog2.webp";
+import IndoorPreview from "../assets/blog/News/indoorPreviewblog2.webp";
+import BestPlant from "../assets/blog/News/bestPlantblog1.webp";
+import BestPlantPreview from "../assets/blog/News/BestPreviewblog1.avif";
 
 //shorts
 import Shorts from "../assets/blog/shorts/blog-5_720x.webp";
@@ -30,7 +30,7 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
-      tags: [ "Baber" , "Baby Needs" , "Cosmetic" , "Organic"]
+      tags: ["Baber", "Baby Needs", "Cosmetic", "Organic"],
     },
   ],
   lifeStyle: [
@@ -45,7 +45,15 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
-      tags: ["Baber" , "Baby Needs" ,"Beauty", "Cosmetic", "New" , "Organic" ,"Simple"]
+      tags: [
+        "Baber",
+        "Baby Needs",
+        "Beauty",
+        "Cosmetic",
+        "New",
+        "Organic",
+        "Simple",
+      ],
     },
   ],
   news: [
@@ -60,7 +68,16 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
-       tags: ["Baber" , "Baby Needs" ,"Beauty", "Cosmetic","Hot", "New" , "Organic" ,"Simple"]
+      tags: [
+        "Baber",
+        "Baby Needs",
+        "Beauty",
+        "Cosmetic",
+        "Hot",
+        "New",
+        "Organic",
+        "Simple",
+      ],
     },
     {
       id: "news-2",
@@ -99,7 +116,7 @@ const Blog_Data = {
       excerpt:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe voluptatum, ut suscipit necessitatibus corporis magni...",
       content: "Full content would go here...",
-      tags: ["Beauty" , "Cosmetic" ,"Simple"]
+      tags: ["Beauty", "Cosmetic", "Simple"],
     },
   ],
 };
